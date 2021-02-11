@@ -20,7 +20,7 @@ namespace FEALiTE2D.Elements
             this.Restrains = new List<NodalDegreeOfFreedom>();
             this.NodalLoads = new List<NodalLoad>();
             this.SupportDisplacementLoad = new List<SupportDisplacementLoad>();
-       
+
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace FEALiTE2D.Elements
         /// <summary>
         /// An angle of rotation of the of local axes of the node around Z-axis.
         /// </summary>
-        public decimal RotaionAngle { get; set; }
+        public double RotaionAngle { get; set; }
 
         /// <summary>
         /// Gets number of degrees of freedom of the node.
@@ -88,6 +88,25 @@ namespace FEALiTE2D.Elements
         /// <param name="other">The other node.</param>
         /// <returns>Distances between 2 nodes</returns>
         public double DistanceBetween(Node2D other) => Sqrt(Pow(X - other.X, 2) + Pow(Y - other.Y, 2));
+
+        /// <summary>
+        /// Transformation matrix of the Node due to a <see cref="RotaionAngle"/>.
+        /// </summary>
+        public CSparse.Double.DenseMatrix TransformationMatrix
+        {
+            get
+            {
+                double c = Cos(RotaionAngle);
+                double s = Sin(RotaionAngle);
+                double[,] t = new double[,]
+                {
+                    {c, s, 0   },
+                    {-s, c, 0  },
+                    { 0, 0, 1 }
+                };
+                return CSparse.Double.DenseMatrix.OfArray(t) as CSparse.Double.DenseMatrix;
+            }
+        }
 
     }
 
