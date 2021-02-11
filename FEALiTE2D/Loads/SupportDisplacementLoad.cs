@@ -1,11 +1,12 @@
-﻿using System;
+﻿using FEALiTE2D.Elements;
+using System;
 
 namespace FEALiTE2D.Loads
 {
     /// <summary>
     /// Represent a class for support displacement displacements in Global Coordinates system.
     /// </summary>
-    public class SupportDisplacementLoad : ILoad
+    public class SupportDisplacementLoad
     {
         /// <summary>
         /// Creates a new class of <see cref="NodalDisplacement"/>.
@@ -45,13 +46,17 @@ namespace FEALiTE2D.Loads
         /// </summary>
         public double Rz { get; set; }
 
+        /// <inheritdoc/>
         public LoadDirection LoadDirection { get; set; }
 
+        /// <inheritdoc/>
         public LoadType LoadType => LoadType.SupportSettelement;
 
+        /// <inheritdoc/>
         public LoadCase LoadCase { get; set; }
 
-        public double[] GetGlobalFixedEndForces()
+        /// <inheritdoc/>
+        public double[] GetGlobalFixedEndForces(Node2D node)
         {
             throw new NotImplementedException();
         }

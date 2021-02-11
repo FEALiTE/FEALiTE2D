@@ -23,10 +23,11 @@ namespace FEALiTE2D.Loads
         LoadCase LoadCase { get; set; }
 
         /// <summary>
-        /// Gets the global fixed end forces.
+        /// Gets the global fixed end forces in global coordinates system.
         /// </summary>
-        /// <returns>Vector.</returns>
-        double[] GetGlobalFixedEndForces();
+        /// <param name="element">frame element</param>
+        /// <returns>global fixed end forces of this load</returns>
+        double[] GetGlobalFixedEndForces(FEALiTE2D.Elements.FrameElement2D element);
 
     }
 }

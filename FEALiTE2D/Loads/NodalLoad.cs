@@ -1,4 +1,5 @@
 ﻿using CSparse.Double;
+using FEALiTE2D.Elements;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,7 +9,7 @@ namespace FEALiTE2D.Loads
     /// <summary>
     /// Represent a class for Nodal loads in Global or local coordinates system.
     /// </summary>
-    public class NodalLoad : ILoad
+    public class NodalLoad
     {
         /// <summary>
         /// Creates a new class of <see cref="NodalLoad"/>.
@@ -25,12 +26,12 @@ namespace FEALiTE2D.Loads
         /// <param name="Mz">Moment parallel to Global Z direction.</param>
         /// <param name="direction">load direction.</param>
         /// <param name="loadCase">load case.</param>
-        public NodalLoad(double fx, double fy, double mz, LoadDirection direction, LoadCase loadCase)
-            : this()
+        public NodalLoad(double fx, double fy, double mz, LoadDirection direction, LoadCase loadCase) : this()
         {
             this.Fx = fx;
             this.Fy = fy;
             this.Mz = mz;
+            this.LoadDirection = direction;
             this.LoadCase = loadCase;
         }
 
@@ -48,15 +49,19 @@ namespace FEALiTE2D.Loads
         /// <summary>
         /// Moment in Z-Direction.
         /// </summary>
-        public double  Mz { get; set; }
+        public double Mz { get; set; }
 
+       /// <inheritdoc/>
         public LoadDirection LoadDirection { get; set; }
 
+        /// <inheritdoc/>
         public LoadType LoadType => LoadType.NodalForces;
 
+        /// <inheritdoc/>
         public LoadCase LoadCase { get; set; }
 
-        public double[] GetGlobalFixedEndForces()
+        /// <inheritdoc/>
+        public double[] GetGlobalFixedEndForces(Node2D node)
         {
             throw new NotImplementedException();
         }
@@ -72,7 +77,7 @@ namespace FEALiTE2D.Loads
                 return false;
             }
             NodalLoad nl = obj as NodalLoad;
-            if (Fx != nl.Fx || Fy != nl.Fy  || Mz != nl.Mz || LoadCase != nl.LoadCase)
+            if (Fx != nl.Fx || Fy != nl.Fy || Mz != nl.Mz || LoadCase != nl.LoadCase)
             {
                 return false;
             }
@@ -106,5 +111,7 @@ namespace FEALiTE2D.Loads
             result += LoadCase.GetHashCode();
             return result;
         }
+
+
     }
 }
