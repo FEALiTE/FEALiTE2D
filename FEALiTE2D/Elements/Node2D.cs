@@ -100,8 +100,8 @@ namespace FEALiTE2D.Elements
                 double s = Sin(RotaionAngle);
                 double[,] t = new double[,]
                 {
-                    {c, s, 0   },
-                    {-s, c, 0  },
+                    { c, s, 0 },
+                    {-s, c, 0 },
                     { 0, 0, 1 }
                 };
                 return CSparse.Double.DenseMatrix.OfArray(t) as CSparse.Double.DenseMatrix;

@@ -59,7 +59,7 @@ namespace FEALiTE2D.Tests.Loads
         [Test]
         public void FramePointLoadTestPointAndMomentLoad()
         {
-            Console.WriteLine(e1.LocalCoordinateSystemMatrix.PrintSparseMatrix());
+            Console.WriteLine(e1.LocalCoordinateSystemMatrix.PrintDenseMatrix());
 
             var pl = new FEALiTE2D.Loads.FramePointLoad(50, -90, 20, e1.Length / 2, new LoadCase("dead", LoadCaseType.Dead), LoadDirection.Global);
             var f = pl.GetGlobalFixedEndForces(e1);
