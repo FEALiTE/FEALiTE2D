@@ -6,7 +6,7 @@ namespace FEALiTE2D.CrossSections
     /// <summary>
     /// Represents a Solid Circular Cross-Section.
     /// </summary>
-    /// <seealso cref="FEALiTE.CrossSections.IFrameSection" />
+    /// <seealso cref="FEALiTE2D.CrossSections.IFrame2DSection" />
     public class CirclularSection : IFrame2DSection
     {
         /// <summary>
