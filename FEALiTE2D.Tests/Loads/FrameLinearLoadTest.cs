@@ -32,42 +32,11 @@ namespace FEALiTE2D.Tests.Loads
 
         }
 
-        [Test]
-        public void FramePointLoadTestPointLoad()
-        {
-            var pl = new FEALiTE2D.Loads.FrameUniformLoad(0, 10, LoadDirection.Local, new LoadCase("dead", LoadCaseType.Dead));
-
-
-            Console.WriteLine(e1.LocalStiffnessMatrix.PrintSparseMatrix());
-            double l = e1.Length;
-            int n = 5;
-            MathNet.Numerics.Integration.GaussLegendreRule rule = new MathNet.Numerics.Integration.GaussLegendreRule(0, l, n);
-            CSparse.Double.SparseMatrix B, BT, D, DB, K, BTDB;
-            K = new CSparse.Double.SparseMatrix(6, 6, 16);
-            double dx = l / n;
-            for (int i = 0; i < n; i++)
-            {
-                B = e1.GetBmatrixAt(rule.Abscissas[i]);
-                BT = B.Transpose() as CSparse.Double.SparseMatrix;
-                D = e1.GetConstitutiveMatrix();
-                double dv = 0.5 * l * rule.Weights[i];
-
-                DB = D.Multiply(B) as CSparse.Double.SparseMatrix;
-                BTDB = BT.Multiply(DB) as CSparse.Double.SparseMatrix;
-                K = K.Add(BTDB) as CSparse.Double.SparseMatrix;
-                K.ScaleMatrix(dv);
-                dx += l / n;
-            }
-
-            Console.WriteLine(K.PrintSparseMatrix());
-        }
-
-
         // confirmed with robot
         [Test]
         public void FrameUnifromLoadStraightTest()
         {
-            Console.WriteLine(e1.LocalCoordinateSystemMatrix.PrintSparseMatrix());
+            Console.WriteLine(e1.LocalCoordinateSystemMatrix.PrintDenseMatrix());
 
             var pl = new FEALiTE2D.Loads.FrameUniformLoad(11, 7, LoadDirection.Local, new LoadCase("dead", LoadCaseType.Dead), 3, 2);
             var f = pl.GetGlobalFixedEndForces(e1);
@@ -84,7 +53,7 @@ namespace FEALiTE2D.Tests.Loads
         public void FrameUnifromLoadLocalStraightTest2()
         {
             e1.EndNode = new Node2D(10, 10, "n2");
-            Console.WriteLine(e1.LocalCoordinateSystemMatrix.PrintSparseMatrix());
+            Console.WriteLine(e1.LocalCoordinateSystemMatrix.PrintDenseMatrix());
 
             var pl = new FEALiTE2D.Loads.FrameUniformLoad(11, 7, LoadDirection.Local, new LoadCase("dead", LoadCaseType.Dead), 3, 2);
             var f = pl.GetGlobalFixedEndForces(e1);
@@ -101,7 +70,7 @@ namespace FEALiTE2D.Tests.Loads
         public void FrameUnifromLoadGlobalStraightTest3()
         {
             e1.EndNode = new Node2D(10, 10, "n2");
-            Console.WriteLine(e1.LocalCoordinateSystemMatrix.PrintSparseMatrix());
+            Console.WriteLine(e1.LocalCoordinateSystemMatrix.PrintDenseMatrix());
 
             var pl = new FEALiTE2D.Loads.FrameUniformLoad(11, 7, LoadDirection.Global, new LoadCase("dead", LoadCaseType.Dead), 3, 2);
             var f = pl.GetGlobalFixedEndForces(e1);
@@ -117,7 +86,7 @@ namespace FEALiTE2D.Tests.Loads
         [Test]
         public void FrameTrapezoidalLoadStraightTest()
         {
-            Console.WriteLine(e1.LocalCoordinateSystemMatrix.PrintSparseMatrix());
+            Console.WriteLine(e1.LocalCoordinateSystemMatrix.PrintDenseMatrix());
 
             var pl = new FEALiTE2D.Loads.FrameTrapezoidalLoad(0, 0, -10, -20, LoadDirection.Local, new LoadCase(), 2, 1.5);
             var f = pl.GetGlobalFixedEndForces(e1);

@@ -150,13 +150,13 @@ namespace FEALiTE2D.Loads
 
             for (int i = 0; i < nn; i++)
             {
-                var n = element.GetShapeFunctionNuAt1(xi[i]);
-                fem[0] += n[0] * wx * weights[i];
-                fem[1] += n[1] * wy * weights[i];
-                fem[2] += n[2] * wy * weights[i];
-                fem[3] += n[3] * wx * weights[i];
-                fem[4] += n[4] * wy * weights[i];
-                fem[5] += n[5] * wy * weights[i];
+                var n = element.GetShapeFunctionNuAt(xi[i]);
+                fem[0] += n[0, 0] * wx * weights[i];
+                fem[1] += n[1, 1] * wy * weights[i];
+                fem[2] += n[1, 2] * wy * weights[i];
+                fem[3] += n[0, 3] * wx * weights[i];
+                fem[4] += n[1, 4] * wy * weights[i];
+                fem[5] += n[1, 5] * wy * weights[i];
             }
 
             var fansewr = new double[6];

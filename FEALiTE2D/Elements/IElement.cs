@@ -47,32 +47,32 @@ namespace FEALiTE2D.Elements
         /// <summary>
         /// Gets the local coordinate system, This should be called after <see cref="Initialize"/>
         /// </summary>
-        CSparse.Double.SparseMatrix LocalCoordinateSystemMatrix { get; }
+        CSparse.Double.DenseMatrix LocalCoordinateSystemMatrix { get; }
         
         /// <summary>
         /// Gets the transformation matrix, This should be called after <see cref="Initialize"/>
         /// </summary>
-        CSparse.Double.SparseMatrix TransformationMatrix { get; }
+        CSparse.Double.DenseMatrix TransformationMatrix { get; }
 
         /// <summary>
         /// Gets the local stiffness matrix, This should be called after <see cref="Initialize"/>
         /// </summary>
-        CSparse.Double.SparseMatrix LocalStiffnessMatrix { get; }
+        CSparse.Double.DenseMatrix LocalStiffnessMatrix { get; }
 
         /// <summary>
         /// Gets the global stiffness matrix, This should be called after <see cref="Initialize"/>
         /// </summary>
-        CSparse.Double.SparseMatrix GlobalStiffnessMatrix { get; }
+        CSparse.Double.DenseMatrix GlobalStiffnessMatrix { get; }
 
         /// <summary>
         /// Gets the local mass matrix.
         /// </summary>
-        CSparse.Double.SparseMatrix LocalMassMatrix { get; }
+        CSparse.Double.DenseMatrix LocalMassMatrix { get; }
 
         /// <summary>
         /// Gets the global mass matrix.
         /// </summary>
-        CSparse.Double.SparseMatrix GlobalMassMatrix { get; }
+        CSparse.Double.DenseMatrix GlobalMassMatrix { get; }
 
         /// <summary>
         /// Initializes the <see cref="IElement"/> to calculate its matrices or other needed properties,

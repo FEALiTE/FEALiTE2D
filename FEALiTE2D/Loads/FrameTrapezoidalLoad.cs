@@ -109,7 +109,7 @@ namespace FEALiTE2D.Loads
             LinearFunction wx = new LinearFunction(L1, l - L2, wx1, wx2);
             LinearFunction wy = new LinearFunction(L1, l - L2, wy1, wy2);
 
-            // integrate using 5 points
+            // integrate using 7 points
             int nn = 7;
             GaussLegendreRule rule = new GaussLegendreRule(L1, l - L2, nn);
             var weights = rule.Weights;
