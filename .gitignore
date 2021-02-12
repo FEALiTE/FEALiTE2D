@@ -1,8 +1,4 @@
-
-.vs/VSWorkspaceState.json
-.vs/slnx.sqlite
-.vs/ProjectSettings.json
-.vs/FEALiTE2D/v16/.suo
+.vs/
 FEALiTE2D/obj
 FEALiTE2D/bin
 FEALiTE2D.Tests/bin
