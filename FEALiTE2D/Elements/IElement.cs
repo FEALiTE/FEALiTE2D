@@ -25,9 +25,9 @@ namespace FEALiTE2D.Elements
         Node2D[] Nodes { get; }
 
         /// <summary>
-        /// Gets the nodal degrees of freedom and coordinates numbers of the nodes connected to this element.
+        /// Gets the coordinates numbers of degrees of freedom of the nodes connected to this element.
         /// </summary>
-        List<NodalDegreeOfFreedom> NodalDegreeOfFreedoms { get; }
+        List<int> DegreeOfFreedoms { get; }
 
         /// <summary>
         /// Gets or sets the loads.

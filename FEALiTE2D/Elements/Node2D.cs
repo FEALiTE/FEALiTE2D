@@ -9,6 +9,7 @@ namespace FEALiTE2D.Elements
     /// This class represents a node element the can be in any arbitrary location in x-y plan.
     /// Each node has 3 degrees of freedom (DOF) one displacement in x-direction, one displacement in y-direction and one rotation about z-direction (perpendicular to the plan)
     /// </summary>
+    [System.Diagnostics.DebuggerDisplay("label:{Label}, x:{X}, y:{Y}")]
     public class Node2D
     {
         /// <summary>
@@ -20,7 +21,7 @@ namespace FEALiTE2D.Elements
             this.Restrains = new List<NodalDegreeOfFreedom>();
             this.NodalLoads = new List<NodalLoad>();
             this.SupportDisplacementLoad = new List<SupportDisplacementLoad>();
-
+            this.CoordNumbers = new List<int>();
         }
 
         /// <summary>
@@ -29,7 +30,7 @@ namespace FEALiTE2D.Elements
         /// <param name="x">X-coordinate of the <see cref="Node2D"/> Element.</param>
         /// <param name="y">Y-coordinate of the <see cref="Node2D"/> Element.</param>
         /// <param name="label">name of the <see cref="Node2D"/> element</param>
-        public Node2D(double x, double y, string label)
+        public Node2D(double x, double y, string label) :this()
         {
             // assign variable
             this.X = x;
@@ -53,9 +54,9 @@ namespace FEALiTE2D.Elements
         public string Label { get; set; }
 
         /// <summary>
-        /// An index for each node that is set by the program.
+        /// A list of ndof numbers that is set by the program.
         /// </summary>
-        public int Id { get; internal set; }
+        public List<int> CoordNumbers { get; internal set; }
 
         /// <summary>
         /// An angle of rotation of the of local axes of the node around Z-axis.
@@ -65,7 +66,7 @@ namespace FEALiTE2D.Elements
         /// <summary>
         /// Gets number of degrees of freedom of the node.
         /// </summary>
-        public int DOF { get { return 6 - Restrains.Count; } }
+        public int DOF { get { return 3 - Restrains.Count; } }
 
         /// <summary>
         /// Gets or sets the Degrees of freedom of the <see cref="Node2D"/>.
@@ -90,6 +91,11 @@ namespace FEALiTE2D.Elements
         public double DistanceBetween(Node2D other) => Sqrt(Pow(X - other.X, 2) + Pow(Y - other.Y, 2));
 
         /// <summary>
+        /// Gets or sets the parent structure that this element is part of it.
+        /// </summary>
+        public Structure.Structure ParentStructure { get; set; }
+
+        /// <summary>
         /// Transformation matrix of the Node due to a <see cref="RotaionAngle"/>.
         /// </summary>
         public CSparse.Double.DenseMatrix TransformationMatrix
@@ -108,7 +114,60 @@ namespace FEALiTE2D.Elements
             }
         }
 
+        /// <summary>
+        /// Restrains the specified dof.
+        /// </summary>
+        /// <param name="dof">The <see cref="NodalDegreeOfFreedom"/>.</param>
+        public void Restrain(NodalDegreeOfFreedom dof)
+        {
+            if (!this.Restrains.Contains(dof))
+                this.Restrains.Add(dof);
+        }
+
+        /// <summary>
+        /// Restrains the specified dofs.
+        /// </summary>
+        /// <param name="dofs">The <see cref="NodalDegreeOfFreedom"/>.</param>
+        public void Restrain(params NodalDegreeOfFreedom[] dofs)
+        {
+            foreach (NodalDegreeOfFreedom dof in dofs)
+                if (!this.Restrains.Contains(dof))
+                    this.Restrains.Add(dof);
+        }
+
+        /// <summary>
+        /// Unrestrains the specified dof.
+        /// </summary>
+        /// <param name="dof">The <see cref="NodalDegreeOfFreedom"/>.</param>
+        public void Unrestrain(NodalDegreeOfFreedom dof)
+        {
+            if (this.Restrains.Contains(dof))
+                this.Restrains.Remove(dof);
+        }
+
+        /// <summary>
+        /// Unrestrains the specified dofs.
+        /// </summary>
+        /// <param name="dofs">The <see cref="NodalDegreeOfFreedom"/>.</param>
+        public void Unrestrain(params NodalDegreeOfFreedom[] dofs)
+        {
+            foreach (NodalDegreeOfFreedom dof in dofs)
+                if (this.Restrains.Contains(dof))
+                    this.Restrains.Remove(dof);
+        }
+
+        /// <summary>
+        /// Determines whether the specified dof is restrains.
+        /// </summary>
+        /// <param name="dof">The dof.</param>
+        /// <returns><c>true</c> if the specified dof is restrains; otherwise, <c>false</c>.</returns>
+        public bool IsRestrained(NodalDegreeOfFreedom dof)
+        {
+            if (this.Restrains.Contains(dof))
+                return true;
+            return false;
+        }
+
+     
     }
-
-
 }
