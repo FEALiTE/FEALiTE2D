@@ -27,6 +27,7 @@ namespace FEALiTE2D.Tests.Loads
             section = new Generic2DSection(28.2, 28.2, 28.2, 833, 833, 0, 0, 0, material);
 
             e1 = new FrameElement2D(n1, n2, "f1") { CrossSection = section };
+            e1.Initialize();
 
         }
 

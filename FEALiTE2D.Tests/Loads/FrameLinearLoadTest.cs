@@ -29,6 +29,7 @@ namespace FEALiTE2D.Tests.Loads
             section = new Generic2DSection(0.3 * 0.3, 0.3 * 0.3, 0.3 * 0.3, 0.3 * 0.3 * 0.3 * 0.3 / 12, 0.3 * 0.3 * 0.3 * 0.3 / 12, 0, 0, 0, material);
 
             e1 = new FrameElement2D(n1, n2, "f1") { CrossSection = section };
+            e1.Initialize();
 
         }
 
@@ -53,6 +54,7 @@ namespace FEALiTE2D.Tests.Loads
         public void FrameUnifromLoadLocalStraightTest2()
         {
             e1.EndNode = new Node2D(10, 10, "n2");
+            e1.Initialize();
             Console.WriteLine(e1.LocalCoordinateSystemMatrix.PrintDenseMatrix());
 
             var pl = new FEALiTE2D.Loads.FrameUniformLoad(11, 7, LoadDirection.Local, new LoadCase("dead", LoadCaseType.Dead), 3, 2);
@@ -70,6 +72,7 @@ namespace FEALiTE2D.Tests.Loads
         public void FrameUnifromLoadGlobalStraightTest3()
         {
             e1.EndNode = new Node2D(10, 10, "n2");
+            e1.Initialize();
             Console.WriteLine(e1.LocalCoordinateSystemMatrix.PrintDenseMatrix());
 
             var pl = new FEALiTE2D.Loads.FrameUniformLoad(11, 7, LoadDirection.Global, new LoadCase("dead", LoadCaseType.Dead), 3, 2);

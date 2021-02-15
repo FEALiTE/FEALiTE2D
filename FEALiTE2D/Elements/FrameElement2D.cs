@@ -22,7 +22,6 @@ namespace FEALiTE2D.Elements
             this.Label = label;
             this.Loads = new List<ILoad>();
             this.EndRelease = Frame2DEndRelease.NoRelease;
-            this.Initialize();
             //this.LoadCasesToIgnore = new List<LoadCase>();
         }
 
@@ -36,6 +35,8 @@ namespace FEALiTE2D.Elements
         {
             this.StartNode = startNode;
             this.EndNode = endNode;
+            this.LocalCoordinateSystemMatrix = GetLocalCoordinateSystemMatrix();
+            this.TransformationMatrix = GetTransformationMatrix();
         }
 
         /// <summary>
@@ -500,11 +501,10 @@ namespace FEALiTE2D.Elements
         /// <inheritdoc/>
         public void Initialize()
         {
-            LocalCoordinateSystemMatrix = GetLocalCoordinateSystemMatrix();
-            TransformationMatrix = GetTransformationMatrix();
-            LocalCoordinateSystemMatrix = GetLocalCoordinateSystemMatrix();
+            this.LocalCoordinateSystemMatrix = GetLocalCoordinateSystemMatrix();
+            this.TransformationMatrix = GetTransformationMatrix();
+            LocalStiffnessMatrix = GetLocalStiffnessMatrix();
             GlobalStiffnessMatrix = GetGlobalStiffnessMatrix();
-            throw new NotImplementedException();
         }
     }
 }
