@@ -105,7 +105,7 @@ namespace FEALiTE2D.Loads
                 wx2 = Q2[0]; wy2 = Q2[1];
             }
 
-            // Trapezoidal Load is an linear equation of first degree
+            // Trapezoidal Load is a linear equation of first degree
             LinearFunction wx = new LinearFunction(L1, l - L2, wx1, wx2);
             LinearFunction wy = new LinearFunction(L1, l - L2, wy1, wy2);
 
