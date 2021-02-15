@@ -6,7 +6,7 @@ namespace FEALiTE2D.CrossSections
     /// <summary>
     /// Represent a solid tube with hole.
     /// </summary>
-    /// <seealso cref="FEALiTE.CrossSections.IFrameSection" />
+    /// <seealso cref="FEALiTE2D.CrossSections.IFrame2DSection" />
     public class HollowTube : IFrame2DSection
     {
         /// <summary>

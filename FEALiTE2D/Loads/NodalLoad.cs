@@ -1,8 +1,4 @@
-﻿using CSparse.Double;
-using FEALiTE2D.Elements;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using FEALiTE2D.Elements;
 
 namespace FEALiTE2D.Loads
 {
@@ -51,7 +47,7 @@ namespace FEALiTE2D.Loads
         /// </summary>
         public double Mz { get; set; }
 
-       /// <inheritdoc/>
+        /// <inheritdoc/>
         public LoadDirection LoadDirection { get; set; }
 
         /// <inheritdoc/>
@@ -63,7 +59,18 @@ namespace FEALiTE2D.Loads
         /// <inheritdoc/>
         public double[] GetGlobalFixedEndForces(Node2D node)
         {
-            throw new NotImplementedException();
+            // create force vector
+            double[] Q = new double[3] { Fx, Fy, Mz };
+            
+            // if the forces is in global coordinate system of the node then return it.
+            if (this.LoadDirection == LoadDirection.Global)
+            {
+                return Q;
+            }
+            // transform the load vector to the local coordinate of the node.
+            double[] F = new double[3];
+            node.TransformationMatrix.TransposeMultiply(Q, F);
+            return F;
         }
 
         public override bool Equals(object obj)

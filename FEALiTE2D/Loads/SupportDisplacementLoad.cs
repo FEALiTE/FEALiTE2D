@@ -56,9 +56,20 @@ namespace FEALiTE2D.Loads
         public LoadCase LoadCase { get; set; }
 
         /// <inheritdoc/>
-        public double[] GetGlobalFixedEndForces(Node2D node)
+        public double[] GetGlobalFixedEndDisplacement(Node2D node)
         {
-            throw new NotImplementedException();
+            // create force vector
+            double[] Q = new double[3] { Ux, Uy, Rz };
+
+            // if the forces is in global coordinate system of the node then return it.
+            if (this.LoadDirection == LoadDirection.Global)
+            {
+                return Q;
+            }
+            // transform the load vector to the local coordinate of the node.
+            double[] F = new double[3];
+            node.TransformationMatrix.TransposeMultiply(Q, F);
+            return F;
         }
 
         public override bool Equals(object obj)
