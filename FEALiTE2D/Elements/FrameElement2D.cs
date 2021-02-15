@@ -16,9 +16,14 @@ namespace FEALiTE2D.Elements
         /// <summary>
         /// Creates a new instance of <see cref="FrameElement2D"/> Class
         /// </summary>
-        public FrameElement2D()
+        /// <param name="label">name of the frame element</param>
+        public FrameElement2D(string label)
         {
-
+            this.Label = label;
+            this.Loads = new List<ILoad>();
+            this.EndRelease = Frame2DEndRelease.NoRelease;
+            this.Initialize();
+            //this.LoadCasesToIgnore = new List<LoadCase>();
         }
 
         /// <summary>
@@ -27,11 +32,10 @@ namespace FEALiTE2D.Elements
         /// <param name="startNode">Start node</param>
         /// <param name="endNode">End node</param>
         /// <param name="label">name of the frame</param>
-        public FrameElement2D(Node2D startNode, Node2D endNode, string label) : this()
+        public FrameElement2D(Node2D startNode, Node2D endNode, string label) : this(label)
         {
             this.StartNode = startNode;
             this.EndNode = endNode;
-            this.Label = label;
         }
 
         /// <summary>
@@ -55,7 +59,7 @@ namespace FEALiTE2D.Elements
         public double Length => Sqrt(Pow(EndNode.X - StartNode.X, 2) + Pow(EndNode.Y - StartNode.Y, 2));
 
         /// <inheritdoc/>
-        public int DOF { get; }
+        public int DOF { get; private set; }
 
         /// <inheritdoc/>
         public string Label { get; set; }
@@ -64,7 +68,39 @@ namespace FEALiTE2D.Elements
         public Node2D[] Nodes => new[] { StartNode, EndNode };
 
         /// <inheritdoc/>
-        public List<NodalDegreeOfFreedom> NodalDegreeOfFreedoms => throw new NotImplementedException();
+        public List<int> DegreeOfFreedoms
+        {
+            get
+            {
+                List<int> coords = new List<int>();
+                List<int> numbersToBeRemoved = new List<int>();
+                coords.AddRange(StartNode.CoordNumbers);
+                coords.AddRange(EndNode.CoordNumbers);
+
+                // Removes the released coords of the connecting nodes.
+
+                if (this.EndRelease == Frame2DEndRelease.StartRelease)
+                {
+                    numbersToBeRemoved.Add(coords[2]);
+                }
+                if (this.EndRelease == Frame2DEndRelease.EndRelease)
+                {
+                    numbersToBeRemoved.Add(coords[5]);
+                }
+                if (this.EndRelease == Frame2DEndRelease.FullRlease)
+                {
+                    numbersToBeRemoved.Add(coords[2]);
+                    numbersToBeRemoved.Add(coords[5]);
+                }
+
+                foreach (int item in numbersToBeRemoved)
+                    coords.Remove(item);
+
+                this.DOF = coords.Count;
+
+                return coords;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the end release condition of the <see cref="FrameElement2D"/>
@@ -81,11 +117,27 @@ namespace FEALiTE2D.Elements
         /// </summary>
         public Structure.Structure ParentStructure { get; set; }
 
+        /*
         /// <summary>
-        /// Get The shape function at a point along the frame elements.
+        /// Indicates that the <see cref="FrameElement2D"/> is active in the current load case or not.
+        /// </summary>
+        public bool IsActive { get; set; }
+
+        /// <summary>
+        /// /Indicates that this element can only subject to Tension Loads like cables.
+        /// </summary>
+        public bool TensionOnly { get; set; }
+
+        /// <summary>
+        /// A list of <see cref="LoadCase"/> in which.. this frame element is not active.
+        /// </summary>
+        public List<LoadCase> LoadCasesToIgnore { get; set; }
+        */
+
+        /// <summary>
+        /// Get The shape function at a point along the frame elements, including displacement only.
         /// </summary>
         /// <param name="x">distance measured from start node</param>
-        /// <returns></returns>
         public DenseMatrix GetShapeFunctionNuAt(double x)
         {
             double l = this.Length;
@@ -93,12 +145,12 @@ namespace FEALiTE2D.Elements
             double xsi2 = xsi * xsi;
             double xsi3 = xsi * xsi * xsi;
 
-            double N1 = 1.0 - xsi;
-            double N2 = xsi;
-            double N3 = 1.0 - 3 * xsi2 + 2 * xsi3;
-            double N4 = l * (xsi - 2 * xsi2 + xsi3);
-            double N5 = 3 * xsi2 - 2 * xsi3;
-            double N6 = l * (-xsi2 + xsi3);
+            double N1 = 1.0 - xsi,
+                   N2 = xsi,
+                   N3 = 1.0 - 3 * xsi2 + 2 * xsi3,
+                   N4 = l * (xsi - 2 * xsi2 + xsi3),
+                   N5 = 3 * xsi2 - 2 * xsi3,
+                   N6 = l * (-xsi2 + xsi3);
 
             double[,] nu = new double[,]
             {
@@ -109,11 +161,68 @@ namespace FEALiTE2D.Elements
             return DenseMatrix.OfArray(nu) as DenseMatrix;
         }
 
+        /// <summary>
+        /// Get The shape function at a point along the frame elements, including rotation only.
+        /// </summary>
+        /// <param name="x">distance measured from start node</param>
+        public DenseMatrix GetShapeFunctionN0At(double x)
+        {
+            double l = this.Length;
+            double xsi = x / l;
+            double xsi2 = xsi * xsi;
+
+            double N7 = 6.0 * (-xsi + xsi2) / l,
+                   N8 = 1 - 4 * xsi - 3 * xsi2,
+                   N9 = 6.0 * (xsi - xsi2) / l,
+                   N10 = -2 * xsi + 3.0 * xsi2;
+
+            double[,] nu = new double[,]
+            {
+                { 0 , 0 , 0 , 0 , 0 ,  0 },
+                { 0 , N7, N8, 0 , N9, N10}
+            };
+
+            return DenseMatrix.OfArray(nu) as DenseMatrix;
+        }
+
+        /// <summary>
+        /// Get The shape function at a point along the frame elements, including displacement and rotation.
+        /// </summary>
+        /// <param name="x">distance measured from start node</param>
+        public DenseMatrix GetShapeFunctionAt(double x)
+        {
+            double l = this.Length;
+            double xsi = x / l;
+            double xsi2 = xsi * xsi;
+            double xsi3 = xsi * xsi * xsi;
+
+            double N1 = 1.0 - xsi,
+                   N2 = xsi,
+                   N3 = 1.0 - 3 * xsi2 + 2 * xsi3,
+                   N4 = l * (xsi - 2 * xsi2 + xsi3),
+                   N5 = 3 * xsi2 - 2 * xsi3,
+                   N6 = l * (-xsi2 + xsi3),
+                   N7 = 6.0 * (-xsi + xsi2) / l,
+                   N8 = 1 - 4 * xsi - 3 * xsi2,
+                   N9 = 6.0 * (xsi - xsi2) / l,
+                   N10 = -2 * xsi + 3.0 * xsi2;
+            double[,] nu = new double[,]
+            {
+                {N1 , 0 , 0 , N2, 0 ,  0 },
+                { 0 , N3, N4, 0 , N5, N6 },
+                { 0 , N7, N8, 0 , N9, N10}
+            };
+
+            return DenseMatrix.OfArray(nu) as DenseMatrix;
+        }
+
+
         public DenseMatrix GetConstitutiveMatrix()
         {
-            DenseMatrix D = new DenseMatrix(2, 2);
+            DenseMatrix D = new DenseMatrix(3, 3);
             D[0, 0] = CrossSection.A * CrossSection.Material.E;
-            D[1, 1] = CrossSection.Ix * CrossSection.Material.E;
+            D[1, 1] = CrossSection.Ax * CrossSection.Material.G;
+            D[2, 2] = CrossSection.Ix * CrossSection.Material.E;
             return D;
         }
 
@@ -123,81 +232,75 @@ namespace FEALiTE2D.Elements
             double l2 = l * l;
             double xsi = x / l;
 
-            DenseMatrix B = new DenseMatrix(2, 6);
+            DenseMatrix B = new DenseMatrix(3, 6);
 
             B[0, 0] = -1 / l;
             B[0, 3] = +1 / l;
 
-            B[1, 1] = +6 * (2 * xsi - 1) / l2;
-            B[1, 4] = -6 * (2 * xsi - 1) / l2;
+            B[2, 1] = +6 * (2 * xsi - 1) / l2;
+            B[2, 4] = -6 * (2 * xsi - 1) / l2;
 
-            B[1, 2] = -2 * (3 * xsi - 2) / l;
-            B[1, 5] = -2 * (3 * xsi - 1) / l;
+            B[2, 2] = (6 * xsi - 4) / l;
+            B[2, 5] = (6 * xsi - 2) / l;
 
             return B;
         }
 
         /// <inheritdoc/>
-        public DenseMatrix LocalCoordinateSystemMatrix
+        public DenseMatrix LocalCoordinateSystemMatrix { get; private set; }
+        private DenseMatrix GetLocalCoordinateSystemMatrix()
         {
-            get
-            {
-                double l = this.Length;
-                double s = (EndNode.Y - StartNode.Y) / l;
-                double c = (EndNode.X - StartNode.X) / l;
-                DenseMatrix T = new DenseMatrix(3, 3);
-                T[0, 0] = T[1, 1] = c;
-                T[0, 1] = s;
-                T[1, 0] = -s;
-                T[2, 2] = 1;
-                return T;
-            }
+            double l = this.Length;
+            double s = (EndNode.Y - StartNode.Y) / l;
+            double c = (EndNode.X - StartNode.X) / l;
+            DenseMatrix T = new DenseMatrix(3, 3);
+            T[0, 0] = T[1, 1] = c;
+            T[0, 1] = s;
+            T[1, 0] = -s;
+            T[2, 2] = 1;
+            return T;
         }
 
         /// <inheritdoc/>
-        public DenseMatrix TransformationMatrix
+        public DenseMatrix TransformationMatrix { get; private set; }
+        private DenseMatrix GetTransformationMatrix()
         {
-            get
+            DenseMatrix T = new DenseMatrix(6, 6);
+            var lcs = this.LocalCoordinateSystemMatrix;
+            for (int i = 0; i < 3; i++)
             {
-                DenseMatrix T = new DenseMatrix(6, 6);
-                var lcs = this.LocalCoordinateSystemMatrix;
-                for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
                 {
-                    for (int j = 0; j < 3; j++)
+                    T[i, j] = lcs.At(i, j);
+                    T[i + 3, j + 3] = lcs.At(i, j);
+                }
+            }
+            return T;
+        }
+
+        /// <inheritdoc/>
+        public DenseMatrix LocalStiffnessMatrix { get; private set; }
+        private DenseMatrix GetLocalStiffnessMatrix()
+        {
+            switch (this.EndRelease)
+            {
+                default:
+                case Frame2DEndRelease.NoRelease:
                     {
-                        T[i, j] = lcs.At(i, j);
-                        T[i + 3, j + 3] = lcs.At(i, j);
+                        return kl1_1();
                     }
-                }
-                return T;
-            }
-        }
-
-        /// <inheritdoc/>
-        public DenseMatrix LocalStiffnessMatrix
-        {
-            get
-            {
-                switch (this.EndRelease)
-                {
-                    default:
-                    case Frame2DEndRelease.NoRelease:
-                        {
-                            return kl1_1();
-                        }
-                    case Frame2DEndRelease.StartRelease:
-                        {
-                            return kl0_1();
-                        }
-                    case Frame2DEndRelease.EndRelease:
-                        {
-                            return kl1_0();
-                        }
-                    case Frame2DEndRelease.FullRlease:
-                        {
-                            return kl0_0();
-                        }
-                }
+                case Frame2DEndRelease.StartRelease:
+                    {
+                        return kl0_1();
+                    }
+                case Frame2DEndRelease.EndRelease:
+                    {
+                        return kl1_0();
+                    }
+                case Frame2DEndRelease.FullRlease:
+                    {
+                        return kl0_0();
+                    }
             }
         }
 
@@ -329,15 +432,13 @@ namespace FEALiTE2D.Elements
         }
 
         /// <inheritdoc/>
-        public DenseMatrix GlobalStiffnessMatrix
+        public DenseMatrix GlobalStiffnessMatrix { get; private set; }
+        private DenseMatrix GetGlobalStiffnessMatrix()
         {
-            get
-            {
-                var T = this.TransformationMatrix;
-                var Tt = T.Transpose();
-                var Tt_Kl = Tt.Multiply(LocalStiffnessMatrix);
-                return Tt_Kl.Multiply(T) as DenseMatrix;
-            }
+            var T = this.TransformationMatrix;
+            var Tt = T.Transpose();
+            var Tt_Kl = Tt.Multiply(LocalStiffnessMatrix);
+            return Tt_Kl.Multiply(T) as DenseMatrix;
         }
 
         /// <inheritdoc/>
@@ -349,12 +450,60 @@ namespace FEALiTE2D.Elements
         /// <inheritdoc/>
         public double[] EvaluateGlobalFixedEndForces(LoadCase loadCase)
         {
-            throw new NotImplementedException();
+            double[] f = new double[6];
+
+            foreach (ILoad load in this.Loads)
+            {
+                double[] fg = load.GetGlobalFixedEndForces(this);
+                f[0] += fg[0];
+                f[1] += fg[1];
+                f[2] += fg[2];
+                f[3] += fg[3];
+                f[4] += fg[4];
+                f[5] += fg[5];
+            }
+
+            double l = this.Length;
+            switch (this.EndRelease)
+            {
+                default:
+                case Frame2DEndRelease.NoRelease:
+                    break;
+                case Frame2DEndRelease.StartRelease:
+                    {
+                        f[1] -= 1.5 * f[2] / l;
+                        f[4] += 1.5 * f[2] / l;
+                        f[5] -= 0.5 * f[2];
+                        f[2] = 0;
+                        break;
+                    }
+                case Frame2DEndRelease.EndRelease:
+                    {
+                        f[1] -= 1.5 * f[5] / l;
+                        f[2] -= 0.5 * f[5];
+                        f[4] += 1.5 * f[5] / l;
+                        f[5] = 0;
+                        break;
+                    }
+                case Frame2DEndRelease.FullRlease:
+                    {
+                        f[1] -= (f[2] + f[5]) / l;
+                        f[4] += (f[2] + f[5]) / l;
+                        f[2] = 0;
+                        f[5] = 0;
+                        break;
+                    }
+            }
+            return f;
         }
 
         /// <inheritdoc/>
         public void Initialize()
         {
+            LocalCoordinateSystemMatrix = GetLocalCoordinateSystemMatrix();
+            TransformationMatrix = GetTransformationMatrix();
+            LocalCoordinateSystemMatrix = GetLocalCoordinateSystemMatrix();
+            GlobalStiffnessMatrix = GetGlobalStiffnessMatrix();
             throw new NotImplementedException();
         }
     }
