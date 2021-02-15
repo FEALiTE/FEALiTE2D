@@ -68,7 +68,7 @@ namespace FEALiTE2D.Loads
             }
             // transform the load vector to the local coordinate of the node.
             double[] F = new double[3];
-            node.TransformationMatrix.Multiply(Q, F);
+            node.TransformationMatrix.TransposeMultiply(Q, F);
             return F;
         }
 
