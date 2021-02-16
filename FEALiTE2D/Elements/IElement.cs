@@ -45,10 +45,31 @@ namespace FEALiTE2D.Elements
         Structure.Structure ParentStructure { get; set; }
 
         /// <summary>
+        /// This is a dictionary for global fixed end forces for each <see cref="IElement"/> at a load case.
+        /// this is used to store these values to reuse them later instead of recalling them.
+        /// </summary>
+        Dictionary<LoadCase, double[]> GlobalEndForcesForLoadCase { get; }
+
+        /// <summary>
+        /// Indicates that the <see cref="FrameElement2D"/> is active in the current load case or not.
+        /// </summary>
+        bool IsActive { get; set; }
+
+        /// <summary>
+        /// /Indicates that this element can only subject to Tension Loads like cables.
+        /// </summary>
+        bool TensionOnly { get; set; }
+
+        /// <summary>
+        /// A list of <see cref="LoadCase"/> in which.. this frame element is not active.
+        /// </summary>
+        List<LoadCase> LoadCasesToIgnore { get; set; }
+
+        /// <summary>
         /// Gets the local coordinate system, This should be called after <see cref="Initialize"/>
         /// </summary>
         CSparse.Double.DenseMatrix LocalCoordinateSystemMatrix { get; }
-        
+
         /// <summary>
         /// Gets the transformation matrix, This should be called after <see cref="Initialize"/>
         /// </summary>
@@ -78,6 +99,7 @@ namespace FEALiTE2D.Elements
         /// Initializes the <see cref="IElement"/> to calculate its matrices or other needed properties,
         /// so this will save time when we calculate all properties once and store them into variables instead of 
         /// recalculating them every time they are called.
+        /// <para>You must  call this method before using it's properties like <see cref="LocalStiffnessMatrix"/>, <see cref="GlobalStiffnessMatrix"/>, etc. this may occur in test cases.</para>
         /// </summary>
         void Initialize();
 

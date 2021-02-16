@@ -2,7 +2,7 @@
 namespace FEALiTE2D.Helper
 {
     /// <summary>
-    /// this class represents an linear equation such Y=mX+b where m is the slope and b is a constant.
+    /// this class represents a linear equation such Y=mX+b where m is the slope and b is a constant.
     /// </summary>
     internal class LinearFunction
     {
@@ -25,10 +25,10 @@ namespace FEALiTE2D.Helper
         /// m =--------          |-----|-----|------>x
         ///     x2-x1                x1       x2
         /// </summary>
-        /// <param name="x1"></param>
-        /// <param name="x2"></param>
-        /// <param name="y1"></param>
-        /// <param name="y2"></param>
+        /// <param name="x1">x coordinate of first point</param>
+        /// <param name="x2">x coordinate of second point</param>
+        /// <param name="y1">y coordinate of first point</param>
+        /// <param name="y2">y coordinate of second point</param>
         internal LinearFunction(double x1, double x2, double y1, double y2)
         {
             this.slope = (y2 - y1) / (x2 - x1);

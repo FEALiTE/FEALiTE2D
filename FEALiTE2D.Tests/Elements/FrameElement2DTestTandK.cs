@@ -30,8 +30,8 @@ namespace FEALiTE2D.Tests.Elements
 
             e1 = new FrameElement2D(n1, n2, "f1") { CrossSection = section };
             e2 = new FrameElement2D(n2, n3, "f2") { CrossSection = section };
-
-
+            e1.Initialize();
+            e2.Initialize();
         }
 
         [Test]

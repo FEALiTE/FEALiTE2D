@@ -93,6 +93,16 @@ namespace FEALiTE2D.Helper
             return sb.ToString();
         }
 
+        internal static string PrintVector(this double[] vector)
+        {
+            System.Text.StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < vector.Length; i++)
+            {
+                sb.AppendLine(vector[i].ToString());
+            }
+            return sb.ToString();
+        }
+
 #endif
 
     }
