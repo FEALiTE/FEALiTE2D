@@ -5,6 +5,7 @@ using FEALiTE2D.Helper;
 using System;
 using System.Collections.Generic;
 using static System.Math;
+using FEALiTE2D.Structure;
 
 namespace FEALiTE2D.Elements
 {
@@ -22,6 +23,7 @@ namespace FEALiTE2D.Elements
             this.Label = label;
             this.Loads = new List<ILoad>();
             this.EndRelease = Frame2DEndRelease.NoRelease;
+            this.GlobalEndForcesForLoadCase = new Dictionary<LoadCase, double[]>();
             //this.LoadCasesToIgnore = new List<LoadCase>();
         }
 
@@ -118,22 +120,17 @@ namespace FEALiTE2D.Elements
         /// </summary>
         public Structure.Structure ParentStructure { get; set; }
 
-        /*
-        /// <summary>
-        /// Indicates that the <see cref="FrameElement2D"/> is active in the current load case or not.
-        /// </summary>
+        /// <inheritdoc/>
+        public Dictionary<LoadCase, double[]> GlobalEndForcesForLoadCase { get; private set; }
+
+        /// <inheritdoc/>
         public bool IsActive { get; set; }
 
-        /// <summary>
-        /// /Indicates that this element can only subject to Tension Loads like cables.
-        /// </summary>
+        /// <inheritdoc/>
         public bool TensionOnly { get; set; }
 
-        /// <summary>
-        /// A list of <see cref="LoadCase"/> in which.. this frame element is not active.
-        /// </summary>
+        /// <inheritdoc/>
         public List<LoadCase> LoadCasesToIgnore { get; set; }
-        */
 
         /// <summary>
         /// Get The shape function at a point along the frame elements, including displacement only.
@@ -216,7 +213,6 @@ namespace FEALiTE2D.Elements
 
             return DenseMatrix.OfArray(nu) as DenseMatrix;
         }
-
 
         public DenseMatrix GetConstitutiveMatrix()
         {
@@ -503,8 +499,8 @@ namespace FEALiTE2D.Elements
         {
             this.LocalCoordinateSystemMatrix = GetLocalCoordinateSystemMatrix();
             this.TransformationMatrix = GetTransformationMatrix();
-            LocalStiffnessMatrix = GetLocalStiffnessMatrix();
-            GlobalStiffnessMatrix = GetGlobalStiffnessMatrix();
+            this.LocalStiffnessMatrix = GetLocalStiffnessMatrix();
+            this.GlobalStiffnessMatrix = GetGlobalStiffnessMatrix();
         }
     }
 }
