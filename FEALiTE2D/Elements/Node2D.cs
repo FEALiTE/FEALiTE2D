@@ -115,6 +115,20 @@ namespace FEALiTE2D.Elements
         }
 
         /// <summary>
+        /// Gets whether the node is free or restrained.
+        /// </summary>
+        public bool IsFree
+        {
+            get
+            {
+                if (this.Restrains.Count == 0)
+                    return true;
+                return false;
+            }
+        }
+
+
+        /// <summary>
         /// Restrains the specified dof.
         /// </summary>
         /// <param name="dof">The <see cref="NodalDegreeOfFreedom"/>.</param>
@@ -157,10 +171,10 @@ namespace FEALiTE2D.Elements
         }
 
         /// <summary>
-        /// Determines whether the specified dof is restrains.
+        /// Determines whether the specified dof is a restraint.
         /// </summary>
         /// <param name="dof">The dof.</param>
-        /// <returns><c>true</c> if the specified dof is restrains; otherwise, <c>false</c>.</returns>
+        /// <returns><c>true</c> if the specified dof is a restraint; otherwise, <c>false</c>.</returns>
         public bool IsRestrained(NodalDegreeOfFreedom dof)
         {
             if (this.Restrains.Contains(dof))
@@ -168,6 +182,5 @@ namespace FEALiTE2D.Elements
             return false;
         }
 
-     
     }
 }

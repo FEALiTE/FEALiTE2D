@@ -165,16 +165,20 @@ namespace FEALiTE2D.Structure
                                 }
 
                                 // fixed end vector due to support displacement.
+                                double[] dl = new double[d.Length];
+                                elem.TransformationMatrix.TransposeMultiply(d, dl);
                                 double[] f = new double[d.Length];
-                                elem.GlobalStiffnessMatrix.Multiply(d, f);
+                                elem.LocalStiffnessMatrix.Multiply(dl, f);
+                                double[] q = new double[6];
+                                elem.TransformationMatrix.TransposeMultiply(f, q);
 
                                 for (int i = 0; i < 3; i++)
                                 {
                                     if (elem.Nodes[0].CoordNumbers[i] < structure.nDOF)
-                                        Qf[elem.Nodes[0].CoordNumbers[i]] += f[i];
+                                        Qf[elem.Nodes[0].CoordNumbers[i]] += q[i];
 
                                     if (elem.Nodes[1].CoordNumbers[i] < structure.nDOF)
-                                        Qf[elem.Nodes[1].CoordNumbers[i]] += f[i + 3];
+                                        Qf[elem.Nodes[1].CoordNumbers[i]] += q[i + 3];
                                 }
                             }
                         }

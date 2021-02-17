@@ -268,20 +268,34 @@ namespace FEALiTE2D.Structure
 
             if (this.AnalysisResult == AnalysisResult.Successful)
             {
-                double[] dVector = this.DisplacementVectors[loadCase];
+                if (node.IsFree == false)
+                {
+                    foreach (var load in node.SupportDisplacementLoad)
+                    {
+                        if(load.LoadCase == loadCase)
+                        {
+                            nd.Ux += load.Ux;
+                            nd.Uy += load.Uy;
+                            nd.Rz += load.Rz;
+                        }
+                    }
+                }
+                else
+                {
+                    // get displacement from displacement vector if this node is free
+                    double[] dVector = this.DisplacementVectors[loadCase];
 
-                if (node.CoordNumbers[0] < dVector.Length)
-                    nd.Ux = dVector[node.CoordNumbers[0]];
+                    if (node.CoordNumbers[0] < dVector.Length)
+                        nd.Ux = dVector[node.CoordNumbers[0]];
 
-                if (node.CoordNumbers[1] < dVector.Length)
-                    nd.Uy = dVector[node.CoordNumbers[1]];
+                    if (node.CoordNumbers[1] < dVector.Length)
+                        nd.Uy = dVector[node.CoordNumbers[1]];
 
-                if (node.CoordNumbers[2] < dVector.Length)
-                    nd.Rz = dVector[node.CoordNumbers[2]];
+                    if (node.CoordNumbers[2] < dVector.Length)
+                        nd.Rz = dVector[node.CoordNumbers[2]];
+                }
             }
             return nd;
-        }
-
-
+        }        
     }
 }
