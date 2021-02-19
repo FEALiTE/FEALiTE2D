@@ -1,6 +1,7 @@
 ﻿using CSparse;
 using FEALiTE2D.Elements;
 using FEALiTE2D.Loads;
+using FEALiTE2D.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,7 +61,7 @@ namespace FEALiTE2D.Structure
         /// <summary>
         /// Gets or sets the analysis result.
         /// </summary>
-        public AnalysisResult AnalysisResult { get; set; }
+        public AnalysisStatus AnalysisStatus { get; private set; }
 
         /// <summary>
         /// Gets or sets the tolerance.
@@ -71,6 +72,11 @@ namespace FEALiTE2D.Structure
         /// number of dof which is the sum of free dof in each node.
         /// </summary>
         public int nDOF { get; private set; }
+
+        /// <summary>
+        /// Get analysis results
+        /// </summary>
+        public PostProcessor Results { get; private set; }
 
         /// <summary>
         /// Adds a node to the structure, We check if the node is already added to avoid duplicate nodes.
@@ -144,8 +150,7 @@ namespace FEALiTE2D.Structure
                 // get global fixed end forces for each load assigned to this element.
                 foreach (LoadCase loadCase in this.LoadCasesToRun)
                 {
-                    double[] fg = element.EvaluateGlobalFixedEndForces(loadCase);
-                    element.GlobalEndForcesForLoadCase.Add(loadCase, fg);
+                    element.EvaluateGlobalFixedEndForces(loadCase);
                 }
             }
         }
@@ -205,7 +210,7 @@ namespace FEALiTE2D.Structure
 
             if (this.LoadCasesToRun.Count <= 0)
             {
-                AnalysisResult = AnalysisResult.Failure;
+                AnalysisStatus = AnalysisStatus.Failure;
                 throw new InvalidOperationException("No load cases are set for analysis.");
             }
 
@@ -248,54 +253,15 @@ namespace FEALiTE2D.Structure
                 this.DisplacementVectors.Add(currentLC, displacementVector);
             }
 
-            AnalysisResult = AnalysisResult.Successful;
+            AnalysisStatus = AnalysisStatus.Successful;
 
             sw.Stop();
             Console.WriteLine($" No. of Equations: {this.nDOF}");
             Console.WriteLine($" Analysis End Date: {DateTime.Now}.");
             Console.WriteLine($" Analysis Took {sw.Elapsed.TotalSeconds} sec.");
+
+            this.Results = new PostProcessor(this);
         }
 
-
-        /// <summary>
-        /// Get Node's global displacement due to applied load in a load case.
-        /// </summary>
-        /// <param name="loadcase">load case</param>
-        /// <returns>Nodal Displacement</returns>
-        public Displacement GetNodeGlobalDisplacement(Node2D node, LoadCase loadCase)
-        {
-            Displacement nd = new Displacement();
-
-            if (this.AnalysisResult == AnalysisResult.Successful)
-            {
-                if (node.IsFree == false)
-                {
-                    foreach (var load in node.SupportDisplacementLoad)
-                    {
-                        if(load.LoadCase == loadCase)
-                        {
-                            nd.Ux += load.Ux;
-                            nd.Uy += load.Uy;
-                            nd.Rz += load.Rz;
-                        }
-                    }
-                }
-                else
-                {
-                    // get displacement from displacement vector if this node is free
-                    double[] dVector = this.DisplacementVectors[loadCase];
-
-                    if (node.CoordNumbers[0] < dVector.Length)
-                        nd.Ux = dVector[node.CoordNumbers[0]];
-
-                    if (node.CoordNumbers[1] < dVector.Length)
-                        nd.Uy = dVector[node.CoordNumbers[1]];
-
-                    if (node.CoordNumbers[2] < dVector.Length)
-                        nd.Rz = dVector[node.CoordNumbers[2]];
-                }
-            }
-            return nd;
-        }        
     }
 }

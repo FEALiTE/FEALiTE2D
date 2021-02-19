@@ -3,7 +3,7 @@
     /// <summary>
     /// Analysis Result
     /// </summary>
-    public enum AnalysisResult
+    public enum AnalysisStatus
     {
         /// <summary>
         /// Analysis completed successfully.
