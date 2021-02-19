@@ -76,53 +76,6 @@ namespace FEALiTE2D.Structure
                 }
             }
 
-            /*
-            // calculate reaction due to support displacement
-            foreach (SupportDisplacementLoad dis in node.SupportDisplacementLoad)
-            {
-                if (dis.LoadCase == loadCase)
-                {
-                    double[] dng = dis.GetGlobalFixedEndDisplacement(node);
-                    foreach (IElement elem in connectedElements)
-                    {
-                        double[] dg = new double[6];
-
-                        if (elem is FrameElement2D)
-                        {
-                            for (int i = 0; i < 3; i++)
-                            {
-                                if (elem.Nodes[0] == node)
-                                    dg[i] = dng[i];
-
-                                if (elem.Nodes[1] == node)
-                                    dg[i + 3] = dng[i];
-                            }
-
-                            // fixed end vector due to support displacement.
-                            double[] dl = new double[dg.Length];
-                            elem.TransformationMatrix.TransposeMultiply(dg, dl);
-                            double[] fl = new double[dg.Length];
-                            elem.LocalStiffnessMatrix.Multiply(dl, fl);
-                            double[] fg = new double[6];
-                            elem.TransformationMatrix.TransposeMultiply(fl, fg);
-
-                            if (elem.Nodes[0] == node)
-                            {
-                                R.Fx += fg[0];
-                                R.Fy += fg[1];
-                                R.Mz += fg[2];
-                            }
-                            else
-                            {
-                                R.Fx += fg[3];
-                                R.Fy += fg[4];
-                                R.Mz += fg[5];
-                            }
-                        }
-                    }
-                }
-            }
-            */
             return R;
         }
 
