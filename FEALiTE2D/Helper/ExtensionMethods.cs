@@ -7,7 +7,7 @@ namespace FEALiTE2D.Helper
     /// <summary>
     /// some extension methods to facilitate the work
     /// </summary>
-    public static class  ExtensionMethods
+    public static class ExtensionMethods
     {
         /// <summary>
         /// Scale a matrix by a factor
@@ -44,9 +44,9 @@ namespace FEALiTE2D.Helper
             int nRows = sparseMatrix.RowCount;
 
             var widths = new int[nColumns];
-            for (int i = 0; i < nRows; i++)
+            for (int j = 0; j < nColumns; j++)
             {
-                for (int j = 0; j < nColumns; j++)
+                for (int i = 0; i < nRows; i++)
                 {
                     widths[j] = Math.Max(widths[j], sparseMatrix.At(i, j).ToString().Length);
                 }
@@ -58,7 +58,7 @@ namespace FEALiTE2D.Helper
                 sb.Append(sparseMatrix.At(i, 0).ToString().PadLeft(widths[0]));
                 for (int j = 1; j < nColumns; j++) // we add the first element already, so start from 1.
                 {
-                    sb.Append($"\t\t{sparseMatrix.At(i, j).ToString().PadLeft(widths[j])}");
+                    sb.Append($"\t{sparseMatrix.At(i, j).ToString().PadLeft(widths[j])}");
                 }
                 sb.AppendLine();
             }
@@ -89,16 +89,6 @@ namespace FEALiTE2D.Helper
                     sb.Append($"\t\t{denseMatrix.At(i, j).ToString().PadLeft(widths[j])}");
                 }
                 sb.AppendLine();
-            }
-            return sb.ToString();
-        }
-
-        internal static string PrintVector(this double[] vector)
-        {
-            System.Text.StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < vector.Length; i++)
-            {
-                sb.AppendLine(vector[i].ToString());
             }
             return sb.ToString();
         }

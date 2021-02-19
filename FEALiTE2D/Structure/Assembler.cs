@@ -4,6 +4,7 @@ using FEALiTE2D.Elements;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FEALiTE2D.Helper;
 
 namespace FEALiTE2D.Structure
 {
@@ -124,12 +125,12 @@ namespace FEALiTE2D.Structure
 
                         for (int i = 0; i < 3; i++)
                         {
-                            // add and reverse the sign of the force and moment then subtract P(nodal)  -(- P(element)) will lead to positive sign
+                            // add and reverse the sign of the force and moment then subtract P(nodal)  -(P(element)) will lead to positive sign
                             if (elem.Nodes[0] == node)
-                                nodeLoad[i] += fem[i];
+                                nodeLoad[i] -= fem[i];
 
                             if (elem.Nodes[1] == node)
-                                nodeLoad[i] += fem[i + 3];
+                                nodeLoad[i] -= fem[i + 3];
                         }
                     }
                 }
@@ -146,45 +147,41 @@ namespace FEALiTE2D.Structure
 
                 foreach (SupportDisplacementLoad dis in node.SupportDisplacementLoad)
                 {
-                    if (dis.LoadCase == loadCase)
+                    if (dis.LoadCase != loadCase)
+                        continue;
+
+                    double[] dg = dis.GetGlobalFixedEndDisplacement(node);
+                    foreach (IElement elem in connectedElements)
                     {
-                        double[] dg = dis.GetGlobalFixedEndDisplacement(node);
-                        foreach (IElement elem in connectedElements)
+                        double[] d = new double[6];
+
+                        if (elem is FrameElement2D)
                         {
-                            double[] d = new double[6];
-
-                            if (elem is FrameElement2D)
+                            for (int i = 0; i < 3; i++)
                             {
-                                for (int i = 0; i < 3; i++)
-                                {
-                                    if (elem.Nodes[0] == node)
-                                        d[i] = dg[i];
+                                if (elem.Nodes[0] == node)
+                                    d[i] = dg[i];
 
-                                    if (elem.Nodes[1] == node)
-                                        d[i + 3] = dg[i];
-                                }
+                                if (elem.Nodes[1] == node)
+                                    d[i + 3] = dg[i];
+                            }
 
-                                // fixed end vector due to support displacement.
-                                double[] dl = new double[d.Length];
-                                elem.TransformationMatrix.TransposeMultiply(d, dl);
-                                double[] f = new double[d.Length];
-                                elem.LocalStiffnessMatrix.Multiply(dl, f);
-                                double[] q = new double[6];
-                                elem.TransformationMatrix.TransposeMultiply(f, q);
+                            // fixed end vector due to support displacement.
+                            double[] fg = new double[6];
+                            elem.GlobalStiffnessMatrix.Multiply(d, fg);
 
-                                for (int i = 0; i < 3; i++)
-                                {
-                                    if (elem.Nodes[0].CoordNumbers[i] < structure.nDOF)
-                                        Qf[elem.Nodes[0].CoordNumbers[i]] += q[i];
+                            for (int i = 0; i < 3; i++)
+                            {
+                                if (elem.Nodes[0].CoordNumbers[i] < structure.nDOF)
+                                    Qf[elem.Nodes[0].CoordNumbers[i]] -= fg[i];
 
-                                    if (elem.Nodes[1].CoordNumbers[i] < structure.nDOF)
-                                        Qf[elem.Nodes[1].CoordNumbers[i]] += q[i + 3];
-                                }
+                                if (elem.Nodes[1].CoordNumbers[i] < structure.nDOF)
+                                    Qf[elem.Nodes[1].CoordNumbers[i]] -= fg[i + 3];
+
                             }
                         }
                     }
                 }
-
             }
 
             return Qf;

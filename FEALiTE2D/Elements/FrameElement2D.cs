@@ -445,19 +445,19 @@ namespace FEALiTE2D.Elements
         public DenseMatrix GlobalMassMatrix => throw new NotImplementedException();
 
         /// <inheritdoc/>
-        public double[] EvaluateGlobalFixedEndForces(LoadCase loadCase)
+        public void EvaluateGlobalFixedEndForces(LoadCase loadCase)
         {
             double[] f = new double[6];
 
             foreach (ILoad load in this.Loads)
             {
                 double[] fg = load.GetGlobalFixedEndForces(this);
-                f[0] += fg[0];
-                f[1] += fg[1];
-                f[2] += fg[2];
-                f[3] += fg[3];
-                f[4] += fg[4];
-                f[5] += fg[5];
+                f[0] -= fg[0];
+                f[1] -= fg[1];
+                f[2] -= fg[2];
+                f[3] -= fg[3];
+                f[4] -= fg[4];
+                f[5] -= fg[5];
             }
 
             double l = this.Length;
@@ -491,7 +491,7 @@ namespace FEALiTE2D.Elements
                         break;
                     }
             }
-            return f;
+            this.GlobalEndForcesForLoadCase.Add(loadCase, f);
         }
 
         /// <inheritdoc/>

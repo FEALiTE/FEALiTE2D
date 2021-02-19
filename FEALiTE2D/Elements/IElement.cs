@@ -106,6 +106,6 @@ namespace FEALiTE2D.Elements
         /// <summary>
         /// Evaluate the global fixed end forces of loads at given load case.
         /// </summary>
-        double[] EvaluateGlobalFixedEndForces(LoadCase loadCase);
+        void EvaluateGlobalFixedEndForces(LoadCase loadCase);
     }
 }
