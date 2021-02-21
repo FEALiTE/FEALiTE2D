@@ -169,5 +169,72 @@ namespace FEALiTE2D.Structure
             element.TransformationMatrix.TransposeMultiply(ql, fg);
             return fg;
         }
+
+        /// <summary>
+        /// Get a displacement at discrete point of distance x from start node of an element at a given load case.
+        /// </summary>
+        /// <param name="element">an element to process</param>
+        /// <param name="loadCase">a load case to display displacement</param>
+        /// <param name="x">distance x from start node of the element</param>
+        /// <returns></returns>
+        public Displacement GetDisplacementAt(IElement element, LoadCase loadCase, double x)
+        {
+            Displacement d = new Displacement();
+
+            // check bounds of the element and the given distance
+            double l = element.Nodes[0].DistanceBetween(element.Nodes[1]);
+            if (x > l)
+            {
+                x = l;
+            }
+            else if (x < 0)
+            {
+                x = 0;
+            }
+
+            // get displacement of fist node and second node of the element
+            Displacement nd1 = this.GetNodeGlobalDisplacement(element.Nodes[0], loadCase);
+            Displacement nd2 = this.GetNodeGlobalDisplacement(element.Nodes[1], loadCase);
+
+            double[] dg = new double[] { nd1.Ux, nd1.Uy, nd1.Rz, nd2.Ux, nd2.Uy, nd2.Rz };
+            double[] dl = new double[dg.Length];
+            element.TransformationMatrix.Multiply(dg, dl); // dl = T*dg
+
+            var N = element.GetShapeFunctionAt(x);
+            double[] _d = new double[3];
+            N.Multiply(dl, _d);
+
+            return Displacement.FromVector(_d);
+        }
+
+        /// <summary>
+        /// Get a dictionary of displacements at discrete points of a given element at a given load case.
+        /// </summary>
+        /// <param name="element">an element to process</param>
+        /// <param name="loadCase">a load case to display displacement</param>
+        /// <returns>dictionary of displacements at discrete points of a given element at a given load case.</returns>
+        public Dictionary<double, Displacement> GetDisplacement(IElement element, LoadCase loadCase)
+        {
+            Dictionary<double, Displacement> d = new Dictionary<double, Displacement>(element.DiscreteLocations.Count);
+
+            // get displacement of fist node and second node of the element
+            Displacement nd1 = this.GetNodeGlobalDisplacement(element.Nodes[0], loadCase);
+            Displacement nd2 = this.GetNodeGlobalDisplacement(element.Nodes[1], loadCase);
+
+            double[] dg = new double[] { nd1.Ux, nd1.Uy, nd1.Rz, nd2.Ux, nd2.Uy, nd2.Rz };
+            double[] dl = new double[dg.Length];
+            element.TransformationMatrix.Multiply(dg, dl); // dl = T*dg
+
+            d.Clear();
+            foreach (double x in element.DiscreteLocations)
+            {
+                var N = element.GetShapeFunctionAt(x);
+                double[] _d = new double[3];
+                N.Multiply(dl, _d);
+                d.Add(x, Displacement.FromVector(_d));
+            }
+            return d;
+        }
+
     }
 }
