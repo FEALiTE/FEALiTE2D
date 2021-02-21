@@ -12,9 +12,8 @@ namespace FEALiTE2D.Tests.Meshing
 {
     public class LinearMesherTest
     {
-        // confirmed with robot
         [Test]
-        public void TestStructure()
+        public void TestLinearMesher()
         {
             FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
             IMaterial material = new GenericIsotropicMaterial() { E = 30E6, U = 0.2, Label = "Steel", Alpha = 0.000012, Gama = 39885, MaterialType = MaterialType.Steel };

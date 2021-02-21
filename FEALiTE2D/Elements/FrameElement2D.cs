@@ -133,8 +133,6 @@ namespace FEALiTE2D.Elements
         /// <inheritdoc/>
         public List<LoadCase> LoadCasesToIgnore { get; set; }
 
-        ///// <inheritdoc/>
-        //public FEALiTE2D.Meshing.ILinearMesher LinearMesher { get; set; }
         /// <inheritdoc/>
         public System.Collections.Generic.SortedSet<double> DiscreteLocations { get; set; }
 
