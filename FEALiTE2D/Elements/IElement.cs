@@ -40,6 +40,11 @@ namespace FEALiTE2D.Elements
         IFrame2DSection CrossSection { get; set; }
 
         /// <summary>
+        /// Length of the member.
+        /// </summary>
+        double Length { get; }
+
+        /// <summary>
         /// Gets or sets the parent structure that this element is part of it.
         /// </summary>
         Structure.Structure ParentStructure { get; set; }
@@ -107,5 +112,12 @@ namespace FEALiTE2D.Elements
         /// Evaluate the global fixed end forces of loads at given load case.
         /// </summary>
         void EvaluateGlobalFixedEndForces(LoadCase loadCase);
+
+        /// <summary>
+        /// Get The shape function at a point along the frame elements, including displacement and rotation.
+        /// </summary>
+        /// <param name="x">distance measured from start node</param>
+        CSparse.Double.DenseMatrix GetShapeFunctionAt(double x);
+
     }
 }

@@ -53,9 +53,9 @@
         /// Create force from a given vector.
         /// </summary>
         /// <param name="f">a Vector containing force</param>
-        public Force FromVector(double[] f)
+        public static Force FromVector(double[] f)
         {
-            if (f.Length != 3)
+            if (f.Length == 3)
             {
                 return new Force() { Fx = f[0], Fy = f[1], Mz = f[2] };
             }

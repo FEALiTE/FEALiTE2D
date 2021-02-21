@@ -53,9 +53,9 @@
         /// Create Displacement from a given vector.
         /// </summary>
         /// <param name="dis">a Vector containing displacement</param>
-        public Displacement FromVector(double[] dis)
+        public static Displacement FromVector(double[] dis)
         {
-            if (dis.Length != 3)
+            if (dis.Length == 3)
             {
                 return new Displacement() { Ux = dis[0], Uy = dis[1], Rz = dis[2] };
             }

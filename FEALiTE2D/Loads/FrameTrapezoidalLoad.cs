@@ -11,7 +11,15 @@ namespace FEALiTE2D.Loads
     {
         /// <summary>
         /// Creates a new instance of <see cref="FrameTrapezoidalLoad"/> class.
-        /// <para>The load is trapezoidally distributed along the span.</para>
+        /// <para>The load is trapezoidally distributed along part of the span.</para>
+        /// </summary>
+        public FrameTrapezoidalLoad()
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="FrameTrapezoidalLoad"/> class.
+        /// <para>The load is trapezoidally distributed along part of the span.</para>
         /// </summary>
         /// <param name="wx1">left load intensity in x direction.</param>
         /// <param name="wx2">right load intensity in x direction.</param>
@@ -132,6 +140,39 @@ namespace FEALiTE2D.Loads
             var fansewr = new double[6];
             element.TransformationMatrix.TransposeMultiply(fem, fansewr);
             return fansewr;
+        }
+
+        /// <inheritdoc/>
+        public ILoad GetLoadValueAt(Elements.IElement element, double x)
+        {
+            FrameTrapezoidalLoad load = null;
+            double l = element.Length;
+
+            if (x >= this.L1 && x <= l - this.L2)
+            {
+                load = new FrameTrapezoidalLoad();
+                load.LoadCase = this.LoadCase;
+                if (this.LoadDirection == LoadDirection.Global)
+                {
+                    // transform forces and moments from global to local.
+
+                    double[] F1 = new[] { this.Wx1, this.Wy1, 0 };
+                    double[] F2 = new[] { this.Wx2, this.Wy2, 0 };
+
+                    double[] Q1 = new double[3];
+                    double[] Q2 = new double[3];
+
+                    element.LocalCoordinateSystemMatrix.Multiply(F1, Q1);
+                    element.LocalCoordinateSystemMatrix.Multiply(F2, Q2);
+
+                    // assign the transformed values to the main new forces values.
+                    load.Wx1 = Q1[0]; load.Wy1 = Q1[1];
+                    load.Wx2 = Q2[0]; load.Wy2 = Q2[1];
+                    load.LoadDirection = LoadDirection.Local;
+                }
+            }
+
+            return load;
         }
     }
 }

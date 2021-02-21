@@ -1,11 +1,17 @@
-﻿
-namespace FEALiTE2D.Loads
+﻿namespace FEALiTE2D.Loads
 {
     /// <summary>
     /// Represents a class for <see cref="FramePointLoad"/>.
     /// </summary>
     public class FramePointLoad : ILoad
     {
+        /// <summary>
+        /// Creates a new instance of <see cref="FramePointLoad"/> class.
+        /// </summary>
+        public FramePointLoad()
+        {
+        }
+
         /// <summary>
         /// Creates a new instance of <see cref="FramePointLoad"/> class.
         /// </summary>
@@ -113,5 +119,31 @@ namespace FEALiTE2D.Loads
             return fansewr;
         }
 
+        /// <inheritdoc/>
+        public ILoad GetLoadValueAt(Elements.IElement element, double x)
+        {
+            FramePointLoad load = null;
+
+            if (x == this.L1 || (x - this.L1) <= 1e-8)
+            {
+                load = new FramePointLoad();
+                load.LoadCase = this.LoadCase;
+                if (this.LoadDirection == LoadDirection.Global)
+                {
+                    double[] F = new double[] { this.Fx, this.Fy, 0 };
+
+                    double[] Q = new double[3];
+                    element.LocalCoordinateSystemMatrix.Multiply(F, Q);
+
+                    // assign the transformed values to the main new forces values.
+                    load.Fx = Q[0];
+                    load.Fy = Q[1];
+                    load.Mz = this.Mz;
+                    load.LoadDirection = LoadDirection.Local;
+                }
+            }
+
+            return load;
+        }
     }
 }

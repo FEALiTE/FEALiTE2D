@@ -163,6 +163,33 @@ namespace FEALiTE2D.Loads
             element.TransformationMatrix.TransposeMultiply(fem, fansewr);
             return fansewr;
         }
+
+        /// <inheritdoc/>
+        public ILoad GetLoadValueAt(FEALiTE2D.Elements.IElement element, double x)
+        {
+            FrameUniformLoad load = null;
+            double l = element.Length;
+
+            if (x >= this.L1 && x <= l - this.L2)
+            {
+                load = new FrameUniformLoad();
+                load.LoadCase = this.LoadCase;
+                if (this.LoadDirection == LoadDirection.Global)
+                {
+                    double[] F = new double[] { this.Wx, this.Wy, 0 };
+
+                    double[] Q = new double[3];
+                    element.LocalCoordinateSystemMatrix.Multiply(F, Q);
+
+                    // assign the transformed values to the main new forces values.
+                    load.Wx = Q[0];
+                    load.Wy = Q[1];
+                    load.LoadDirection = LoadDirection.Local;
+                }
+            }
+
+            return load;
+        }
     }
 }
 
