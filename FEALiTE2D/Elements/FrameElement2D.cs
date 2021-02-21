@@ -24,6 +24,7 @@ namespace FEALiTE2D.Elements
             this.Loads = new List<ILoad>();
             this.EndRelease = Frame2DEndRelease.NoRelease;
             this.GlobalEndForcesForLoadCase = new Dictionary<LoadCase, double[]>();
+            this.DiscreteLocations = new SortedSet<double>();
             //this.LoadCasesToIgnore = new List<LoadCase>();
         }
 
@@ -131,6 +132,11 @@ namespace FEALiTE2D.Elements
 
         /// <inheritdoc/>
         public List<LoadCase> LoadCasesToIgnore { get; set; }
+
+        ///// <inheritdoc/>
+        //public FEALiTE2D.Meshing.ILinearMesher LinearMesher { get; set; }
+        /// <inheritdoc/>
+        public System.Collections.Generic.SortedSet<double> DiscreteLocations { get; set; }
 
         /// <summary>
         /// Get The shape function at a point along the frame elements, including displacement only.
@@ -502,5 +508,6 @@ namespace FEALiTE2D.Elements
             this.LocalStiffnessMatrix = GetLocalStiffnessMatrix();
             this.GlobalStiffnessMatrix = GetGlobalStiffnessMatrix();
         }
+
     }
 }

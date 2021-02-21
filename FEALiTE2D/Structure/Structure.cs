@@ -25,6 +25,7 @@ namespace FEALiTE2D.Structure
             this.LoadCasesToRun = new List<LoadCase>();
             this.FixedEndLoadsVectors = new Dictionary<LoadCase, double[]>();
             this.DisplacementVectors = new Dictionary<LoadCase, double[]>();
+            this.LinearMesher = new FEALiTE2D.Meshing.LinearMesher();
 
         }
 
@@ -77,6 +78,11 @@ namespace FEALiTE2D.Structure
         /// Get analysis results
         /// </summary>
         public PostProcessor Results { get; private set; }
+
+        /// <summary>
+        /// Get or set Linear mesher class for <see cref="IElement"/>.
+        /// </summary>
+        public FEALiTE2D.Meshing.ILinearMesher LinearMesher { get; set; }
 
         /// <summary>
         /// Adds a node to the structure, We check if the node is already added to avoid duplicate nodes.
@@ -154,6 +160,16 @@ namespace FEALiTE2D.Structure
                 }
             }
         }
+#if DEBUG
+        public void SetUpMeshingPoints()
+#else
+        private void SetUpMeshingPoints()
+#endif
+
+        {
+            // generate discretization points on the element.
+            this.Elements.ForEach((IElement element) => { LinearMesher.SetupDiscreteLocations(element); });
+        }
 
         /// <summary>
         ///  Order the nodes by number of dofs then renumber the node indexes according to that.
@@ -215,6 +231,8 @@ namespace FEALiTE2D.Structure
             }
 
             this.PrepareLoadsOnElements();
+
+            this.SetUpMeshingPoints();
 
             this.ReNumberNodes();
 

@@ -101,6 +101,11 @@ namespace FEALiTE2D.Elements
         CSparse.Double.DenseMatrix GlobalMassMatrix { get; }
 
         /// <summary>
+        /// A list of places of change in external forces and moments.
+        /// </summary>
+        System.Collections.Generic.SortedSet<double> DiscreteLocations { get; set; }
+
+        /// <summary>
         /// Initializes the <see cref="IElement"/> to calculate its matrices or other needed properties,
         /// so this will save time when we calculate all properties once and store them into variables instead of 
         /// recalculating them every time they are called.
