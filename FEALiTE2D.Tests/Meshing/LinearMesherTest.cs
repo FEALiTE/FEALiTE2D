@@ -27,14 +27,14 @@ namespace FEALiTE2D.Tests.Meshing
             structure.AddElement(e1, true);
 
             LoadCase loadCase = new LoadCase("live", LoadCaseType.Live);
-            e1.Loads.Add(new FramePointLoad(0, 0, 7.5, e1.Length / 2, loadCase, LoadDirection.Global));
+            e1.Loads.Add(new FramePointLoad(0, 0, 7.5, e1.Length / 2, LoadDirection.Global, loadCase));
             e1.Loads.Add(new FrameTrapezoidalLoad(0, 0, -15, -7, LoadDirection.Global, loadCase, 0.9, 5.3));
             e1.Loads.Add(new FrameUniformLoad(0, -12, LoadDirection.Local, loadCase, 6.3, 7));
-            e1.Loads.Add(new FramePointLoad(0, -5, 0, 6.5, loadCase, LoadDirection.Global));
+            e1.Loads.Add(new FramePointLoad(0, -5, 0, 6.5, LoadDirection.Global, loadCase));
 
             structure.SetUpMeshingPoints();
 
-            Assert.IsTrue(e1.DiscreteLocations.Count == 16);
+            Assert.IsTrue(e1.DiscreteLocations.Count == 20);
 
             Assert.IsTrue(e1.DiscreteLocations.Contains(0));
             Assert.IsTrue(e1.DiscreteLocations.Contains(0.9));

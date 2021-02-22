@@ -50,6 +50,8 @@ namespace FEALiTE2D.Meshing
                 {
                     var _load = load as FramePointLoad;
                     element.DiscreteLocations.Add(_load.L1);
+                    element.DiscreteLocations.Add(_load.L1 + 1e-8);
+                    element.DiscreteLocations.Add(_load.L1 - 1e-8);
                 }
                 else if (load is FrameUniformLoad)
                 {

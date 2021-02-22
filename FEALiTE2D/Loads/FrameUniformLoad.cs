@@ -1,5 +1,4 @@
 ﻿using MathNet.Numerics.Integration;
-using System;
 
 namespace FEALiTE2D.Loads
 {
@@ -185,6 +184,11 @@ namespace FEALiTE2D.Loads
                     load.Wx = Q[0];
                     load.Wy = Q[1];
                     load.LoadDirection = LoadDirection.Local;
+                }
+                else
+                {
+                    load.Wx = this.Wx;
+                    load.Wy = this.Wy;
                 }
             }
 

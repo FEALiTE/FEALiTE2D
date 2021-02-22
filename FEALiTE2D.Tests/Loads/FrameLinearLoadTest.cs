@@ -65,6 +65,19 @@ namespace FEALiTE2D.Tests.Loads
             {
                 Assert.AreEqual(f[i], fexpected[i], 1e-8);
             }
+
+            var pl_1 = pl.GetLoadValueAt(e1, 0);
+            Assert.IsNull(pl_1);
+            pl_1 = pl.GetLoadValueAt(e1, 1);
+            Assert.IsNull(pl_1);
+            pl_1 = pl.GetLoadValueAt(e1, 14);
+            Assert.IsNull(pl_1);
+            pl_1 = pl.GetLoadValueAt(e1, 13);
+            Assert.IsNull(pl_1);
+            pl_1 = pl.GetLoadValueAt(e1, 10);
+            Assert.IsNotNull(pl_1);
+            Assert.AreEqual((pl_1 as FrameUniformLoad).Wx, 11);
+            Assert.AreEqual((pl_1 as FrameUniformLoad).Wy, 7);
         }
 
         // confirmed with robot
@@ -83,14 +96,25 @@ namespace FEALiTE2D.Tests.Loads
             {
                 Assert.AreEqual(f[i], fexpected[i], 1e-8);
             }
+
+            var pl_1 = pl.GetLoadValueAt(e1, 0);
+            Assert.IsNull(pl_1);
+            pl_1 = pl.GetLoadValueAt(e1, 1);
+            Assert.IsNull(pl_1);
+            pl_1 = pl.GetLoadValueAt(e1, 14);
+            Assert.IsNull(pl_1);
+            pl_1 = pl.GetLoadValueAt(e1, 13);
+            Assert.IsNull(pl_1);
+            pl_1 = pl.GetLoadValueAt(e1, 10);
+            Assert.IsNotNull(pl_1);
+            Assert.AreEqual((pl_1 as FrameUniformLoad).Wx, 7 * Math.Cos(45 * Math.PI / 180) + 11 * Math.Cos(45 * Math.PI / 180), 1e-5);
+            Assert.AreEqual((pl_1 as FrameUniformLoad).Wy, 7 * Math.Sin(45 * Math.PI / 180) - 11 * Math.Sin(45 * Math.PI / 180), 1e-5);
         }
 
         // confirmed with robot
         [Test]
         public void FrameTrapezoidalLoadStraightTest()
         {
-            Console.WriteLine(e1.LocalCoordinateSystemMatrix.PrintDenseMatrix());
-
             var pl = new FEALiTE2D.Loads.FrameTrapezoidalLoad(0, 0, -10, -20, LoadDirection.Local, new LoadCase(), 2, 1.5);
             var f = pl.GetGlobalFixedEndForces(e1);
             var fexpected = new[] { 0, -40.7899375, -93.517395833, 0, -56.7100625, 113.5346875 };
@@ -99,6 +123,19 @@ namespace FEALiTE2D.Tests.Loads
             {
                 Assert.AreEqual(f[i], fexpected[i], 1e-8);
             }
+
+            var pl_1 = pl.GetLoadValueAt(e1, 0);
+            Assert.IsNull(pl_1);
+            pl_1 = pl.GetLoadValueAt(e1, 1);
+            Assert.IsNull(pl_1);
+            pl_1 = pl.GetLoadValueAt(e1, 1.5);
+            Assert.IsNull(pl_1);
+            pl_1 = pl.GetLoadValueAt(e1, 8.6);
+            Assert.IsNull(pl_1);
+            pl_1 = pl.GetLoadValueAt(e1, 5);
+            Assert.IsNotNull(pl_1);
+            Assert.AreEqual((pl_1 as FrameTrapezoidalLoad).Wx1, 0);
+            Assert.AreEqual((pl_1 as FrameTrapezoidalLoad).Wy1, -14.615384615384617, 1e-5);
         }
     }
 }

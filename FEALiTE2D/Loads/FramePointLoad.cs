@@ -19,9 +19,9 @@
         /// <param name="fy">force parallel to Y direction.</param>
         /// <param name="mz">Moment parallel to Z direction.</param>
         /// <param name="l1">distance from <see cref="FEALiTE2D.Elements. FrameElement2D.StartNode"/>.</param>
-        /// <param name="loadCase">load case.</param>
         /// <param name="direction">load direction.</param>
-        public FramePointLoad(double fx, double fy, double mz, double l1, LoadCase loadCase, LoadDirection direction)
+        /// <param name="loadCase">load case.</param>
+        public FramePointLoad(double fx, double fy, double mz, double l1, LoadDirection direction, LoadCase loadCase)
         {
             this.Fx = fx;
             this.Fy = fy;
@@ -124,7 +124,7 @@
         {
             FramePointLoad load = null;
 
-            if (x == this.L1 || (x - this.L1) <= 1e-8)
+            if (x == this.L1)
             {
                 load = new FramePointLoad();
                 load.LoadCase = this.LoadCase;
@@ -140,6 +140,12 @@
                     load.Fy = Q[1];
                     load.Mz = this.Mz;
                     load.LoadDirection = LoadDirection.Local;
+                }
+                else
+                {
+                    load.Fx = this.Fx;
+                    load.Fy = this.Fy;
+                    load.Mz = this.Mz;
                 }
             }
 

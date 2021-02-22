@@ -35,7 +35,7 @@ namespace FEALiTE2D.Tests.Loads
         [Test]
         public void FramePointLoadTestPointLoad()
         {
-            var pl = new FEALiTE2D.Loads.FramePointLoad(0, 90, 0, e1.Length / 2, new LoadCase("dead", LoadCaseType.Dead), LoadDirection.Global);
+            var pl = new FEALiTE2D.Loads.FramePointLoad(0, 90, 0, e1.Length / 2, LoadDirection.Global, new LoadCase("dead", LoadCaseType.Dead));
             var f = pl.GetGlobalFixedEndForces(e1);
             var fExpected = new double[] { 0, 45, 1350, 0, 45, -1350 };
 
@@ -44,8 +44,20 @@ namespace FEALiTE2D.Tests.Loads
                 Assert.AreEqual(f[i], fExpected[i], 1e-8);
             }
 
-
-            pl = new FEALiTE2D.Loads.FramePointLoad(90*Math.Sin(63.43494882*Math.PI/180), 90*Math.Cos(63.43494882 * Math.PI / 180), 0, e1.Length / 2, new LoadCase("dead", LoadCaseType.Dead), LoadDirection.Local);
+            var pl_1 = pl.GetLoadValueAt(e1, 0);
+            Assert.IsNull(pl_1);
+            pl_1 = pl.GetLoadValueAt(e1, e1.Length);
+            Assert.IsNull(pl_1);
+            pl_1 = pl.GetLoadValueAt(e1, e1.Length * 0.2);
+            Assert.IsNull(pl_1);
+            pl_1 = pl.GetLoadValueAt(e1, e1.Length * 0.6);
+            Assert.IsNull(pl_1);
+            pl_1 = pl.GetLoadValueAt(e1, e1.Length * 0.5);
+            Assert.IsNotNull(pl_1);
+            Assert.AreEqual((pl_1 as FramePointLoad).Fx, 90 * Math.Cos(26.56505118 * Math.PI / 180),1e-5);
+            Assert.AreEqual((pl_1 as FramePointLoad).Fy, 90 * Math.Sin(26.56505118 * Math.PI / 180),1e-5);
+            
+            pl = new FEALiTE2D.Loads.FramePointLoad(90 * Math.Sin(63.43494882 * Math.PI / 180), 90 * Math.Cos(63.43494882 * Math.PI / 180), 0, e1.Length / 2, LoadDirection.Local, new LoadCase("dead", LoadCaseType.Dead));
             f = pl.GetGlobalFixedEndForces(e1);
             fExpected = new double[] { 0, 45, 1350, 0, 45, -1350 };
 
@@ -53,6 +65,11 @@ namespace FEALiTE2D.Tests.Loads
             {
                 Assert.AreEqual(f[i], fExpected[i], 1e-6);
             }
+          
+            pl_1 = pl.GetLoadValueAt(e1, e1.Length * 0.5);
+            Assert.IsNotNull(pl_1);
+            Assert.AreEqual((pl_1 as FramePointLoad).Fx, 90 * Math.Cos(26.56505118 * Math.PI / 180), 1e-5);
+            Assert.AreEqual((pl_1 as FramePointLoad).Fy, 90 * Math.Sin(26.56505118 * Math.PI / 180), 1e-5);
         }
 
 
@@ -62,7 +79,7 @@ namespace FEALiTE2D.Tests.Loads
         {
             Console.WriteLine(e1.LocalCoordinateSystemMatrix.PrintDenseMatrix());
 
-            var pl = new FEALiTE2D.Loads.FramePointLoad(50, -90, 20, e1.Length / 2, new LoadCase("dead", LoadCaseType.Dead), LoadDirection.Global);
+            var pl = new FEALiTE2D.Loads.FramePointLoad(50, -90, 20, e1.Length / 2, LoadDirection.Global, new LoadCase("dead", LoadCaseType.Dead));
             var f = pl.GetGlobalFixedEndForces(e1);
             var fExpected = new double[] { 25.1, -45.05, -2855, 24.9, -44.95, 2845 };
 

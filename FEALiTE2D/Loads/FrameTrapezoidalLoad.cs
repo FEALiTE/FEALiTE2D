@@ -165,10 +165,20 @@ namespace FEALiTE2D.Loads
                     element.LocalCoordinateSystemMatrix.Multiply(F1, Q1);
                     element.LocalCoordinateSystemMatrix.Multiply(F2, Q2);
 
-                    // assign the transformed values to the main new forces values.
-                    load.Wx1 = Q1[0]; load.Wy1 = Q1[1];
-                    load.Wx2 = Q2[0]; load.Wy2 = Q2[1];
+                    // Trapezoidal Load is a linear equation of first degree
+                    LinearFunction wxFunc = new LinearFunction(L1, l - L2, Q1[0], Q2[0]);
+                    LinearFunction wyFunc = new LinearFunction(L1, l - L2, Q1[1], Q2[1]);
+
+                    load.Wx1 = load.Wx2 = wxFunc.GetValueAt(x);
+                    load.Wy1 = load.Wy2 = wyFunc.GetValueAt(x);
                     load.LoadDirection = LoadDirection.Local;
+                }
+                else
+                {
+                    LinearFunction wxFunc = new LinearFunction(L1, l - L2, this.Wx1, this.Wx2);
+                    LinearFunction wyFunc = new LinearFunction(L1, l - L2, this.Wy1, this.Wy2);
+                    load.Wx1 = load.Wx2 = wxFunc.GetValueAt(x);
+                    load.Wy1 = load.Wy2 = wyFunc.GetValueAt(x);
                 }
             }
 
