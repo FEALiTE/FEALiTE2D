@@ -160,15 +160,14 @@ namespace FEALiTE2D.Structure
                 }
             }
         }
-#if DEBUG
-        public void SetUpMeshingPoints()
-#else
-        private void SetUpMeshingPoints()
-#endif
 
+        /// <summary>
+        /// Set up mesh segments of the element.
+        /// </summary>
+        private void SetUpMeshingSegments()
         {
-            // generate discretization points on the element.
-            this.Elements.ForEach((IElement element) => { LinearMesher.SetupDiscreteLocations(element); });
+            // generate discretization segments on the element.
+            this.Elements.ForEach((IElement element) => { LinearMesher.SetupMeshSegments(element); });
         }
 
         /// <summary>
@@ -232,8 +231,6 @@ namespace FEALiTE2D.Structure
 
             this.PrepareLoadsOnElements();
 
-            this.SetUpMeshingPoints();
-
             this.ReNumberNodes();
 
             Assembler assembler = new Assembler(this);
@@ -279,6 +276,7 @@ namespace FEALiTE2D.Structure
             Console.WriteLine($" Analysis Took {sw.Elapsed.TotalSeconds} sec.");
 
             this.Results = new PostProcessor(this);
+            this.SetUpMeshingSegments();
         }
 
     }

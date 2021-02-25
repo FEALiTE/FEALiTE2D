@@ -101,9 +101,9 @@ namespace FEALiTE2D.Elements
         CSparse.Double.DenseMatrix GlobalMassMatrix { get; }
 
         /// <summary>
-        /// A list of places of change in external forces and moments.
+        /// A list of mesh segments of change in external forces and moments.
         /// </summary>
-        System.Collections.Generic.SortedSet<double> DiscreteLocations { get; set; }
+        System.Collections.Generic.List<FEALiTE2D.Meshing.LinearMeshSegment> MeshSegments { get; set; }
 
         /// <summary>
         /// Initializes the <see cref="IElement"/> to calculate its matrices or other needed properties,
