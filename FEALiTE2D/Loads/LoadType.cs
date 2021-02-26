@@ -17,7 +17,7 @@ namespace FEALiTE2D.Loads
         /// <summary>
         /// Loads that can only be applied to <see cref="FEALiTE2D.Elements.Node2D"/> elements when restrained.
         /// </summary>
-        SupportSettelement= 0,
+        SupportSettelement= 1,
 
         /// <summary>
         /// Loads that can only be applied to <see cref="FEALiTE2D.Elements.FrameElement2D"/> elements.
