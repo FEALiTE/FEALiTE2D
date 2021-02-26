@@ -171,6 +171,7 @@ namespace FEALiTE2D.Loads
 
                     load.Wx1 = load.Wx2 = wxFunc.GetValueAt(x);
                     load.Wy1 = load.Wy2 = wyFunc.GetValueAt(x);
+                    load.L1 = load.L2 = x;
                     load.LoadDirection = LoadDirection.Local;
                 }
                 else
@@ -179,6 +180,7 @@ namespace FEALiTE2D.Loads
                     LinearFunction wyFunc = new LinearFunction(L1, l - L2, this.Wy1, this.Wy2);
                     load.Wx1 = load.Wx2 = wxFunc.GetValueAt(x);
                     load.Wy1 = load.Wy2 = wyFunc.GetValueAt(x);
+                    load.L1 = load.L2 = x;
                 }
             }
 

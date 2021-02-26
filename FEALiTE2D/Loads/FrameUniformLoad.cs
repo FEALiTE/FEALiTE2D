@@ -183,12 +183,14 @@ namespace FEALiTE2D.Loads
                     // assign the transformed values to the main new forces values.
                     load.Wx = Q[0];
                     load.Wy = Q[1];
+                    load.L1 = load.L2 = x;
                     load.LoadDirection = LoadDirection.Local;
                 }
                 else
                 {
                     load.Wx = this.Wx;
                     load.Wy = this.Wy;
+                    load.L1 = load.L2 = x;
                 }
             }
 

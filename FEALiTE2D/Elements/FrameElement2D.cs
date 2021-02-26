@@ -24,7 +24,7 @@ namespace FEALiTE2D.Elements
             this.Loads = new List<ILoad>();
             this.EndRelease = Frame2DEndRelease.NoRelease;
             this.GlobalEndForcesForLoadCase = new Dictionary<LoadCase, double[]>();
-            this.DiscreteLocations = new SortedSet<double>();
+            this.MeshSegments = new List<Meshing.LinearMeshSegment>();
             //this.LoadCasesToIgnore = new List<LoadCase>();
         }
 
@@ -134,7 +134,7 @@ namespace FEALiTE2D.Elements
         public List<LoadCase> LoadCasesToIgnore { get; set; }
 
         /// <inheritdoc/>
-        public System.Collections.Generic.SortedSet<double> DiscreteLocations { get; set; }
+        public List<Meshing.LinearMeshSegment> MeshSegments { get; set; }
 
         /// <summary>
         /// Get The shape function at a point along the frame elements, including displacement only.
