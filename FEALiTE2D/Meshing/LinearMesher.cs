@@ -59,7 +59,6 @@ namespace FEALiTE2D.Meshing
                 }
                 else if (load is FrameTrapezoidalLoad load3)
                 {
-                    var _load = load as FrameTrapezoidalLoad;
                     discreteLocations.Add(load3.L1); // start location of the load
                     discreteLocations.Add(len - load3.L2); // end location of the load
                 }
@@ -76,7 +75,10 @@ namespace FEALiTE2D.Meshing
                 discreteLocations.Add(i * dx);
             }
 
+            // add last point
             discreteLocations.Add(len);
+            // clear mesh segments first
+            element.MeshSegments.Clear();
 
             // loop through each segment to find if there's load applied on it
             // for point loads, the load will be applied to start of the segment
@@ -88,13 +90,15 @@ namespace FEALiTE2D.Meshing
                 segment.x2 = discreteLocations.ElementAt(i + 1);
                 element.MeshSegments.Add(segment);
 
+                // loop through each load to see if this load is applied on the segment
                 foreach (ILoad load in element.Loads)
                 {
-                    if (load is FramePointLoad)
+                    if (load is FramePointLoad pL)
                     {
-                        if (((FramePointLoad)load).L1 == segment.x1)
+                        // point loads must be applied on start of the segment
+                        if (pL.L1 == segment.x1)
                         {
-                            if (load.GetLoadValueAt(element, segment.x1) is FramePointLoad pointLoad)
+                            if (pL.GetLoadValueAt(element, segment.x1) is FramePointLoad pointLoad)
                             {
                                 segment.fx += pointLoad.Fx;
                                 segment.fy += pointLoad.Fy;
@@ -104,26 +108,35 @@ namespace FEALiTE2D.Meshing
                     }
                     else if (load is FrameUniformLoad uniformLoad)
                     {
-                        FrameUniformLoad uL1 = uniformLoad.GetLoadValueAt(element, segment.x1) as FrameUniformLoad;
-                        FrameUniformLoad uL2 = uniformLoad.GetLoadValueAt(element, segment.x2) as FrameUniformLoad;
-
-                        if (uL1 != null && uL2 != null)
+                        // apply uniform load if the load's start touches the start of the segment and the load's end touches the end of the segment
+                        if (uniformLoad.L1 <= segment.x1 && len - uniformLoad.L2 >= segment.x2)
                         {
-                            segment.wx += uL1.Wx;
-                            segment.wy += uL1.Wy;
+                            FrameUniformLoad uL = uniformLoad.GetLoadValueAt(element, segment.x1) as FrameUniformLoad;
+
+                            if (uL != null)
+                            {
+                                segment.wx1 += uL.Wx;
+                                segment.wx2 += uL.Wx;
+                                segment.wy1 += uL.Wy;
+                                segment.wy2 += uL.Wy;
+                            }
                         }
                     }
                     else if (load is FrameTrapezoidalLoad trapezoidalLoad)
                     {
-                        FrameTrapezoidalLoad tL1 = trapezoidalLoad.GetLoadValueAt(element, segment.x1) as FrameTrapezoidalLoad;
-                        FrameTrapezoidalLoad tL2 = trapezoidalLoad.GetLoadValueAt(element, segment.x2) as FrameTrapezoidalLoad;
-
-                        if (tL1 != null && tL2 != null)
+                        // apply trapezoidal load if the load's start touches the start of the segment and the load's end touches the end of the segment
+                        if (trapezoidalLoad.L1 <= segment.x1 && len - trapezoidalLoad.L2 >= segment.x2)
                         {
-                            segment.wx1 += tL1.Wx1;
-                            segment.wx2 += tL1.Wx2;
-                            segment.wy1 += tL1.Wy1;
-                            segment.wy2 += tL1.Wy2;
+                            FrameTrapezoidalLoad tL1 = trapezoidalLoad.GetLoadValueAt(element, segment.x1) as FrameTrapezoidalLoad;
+                            FrameTrapezoidalLoad tL2 = trapezoidalLoad.GetLoadValueAt(element, segment.x2) as FrameTrapezoidalLoad;
+
+                            if (tL1 != null && tL2 != null)
+                            {
+                                segment.wx1 += tL1.Wx1;
+                                segment.wx2 += tL2.Wx1;
+                                segment.wy1 += tL1.Wy1;
+                                segment.wy2 += tL2.Wy1;
+                            }
                         }
                     }
                 }

@@ -29,12 +29,19 @@ namespace FEALiTE2D.Tests.Meshing
             LoadCase loadCase = new LoadCase("live", LoadCaseType.Live);
             e1.Loads.Add(new FramePointLoad(0, 0, 7.5, e1.Length / 2, LoadDirection.Global, loadCase));
             e1.Loads.Add(new FrameTrapezoidalLoad(0, 0, -15, -7, LoadDirection.Global, loadCase, 0.9, 5.3));
-            e1.Loads.Add(new FrameUniformLoad(0, -12, LoadDirection.Local, loadCase, 6.3, 7));
+            e1.Loads.Add(new FrameUniformLoad(0, -12, LoadDirection.Local, loadCase, 4, 2));
             e1.Loads.Add(new FramePointLoad(0, -5, 0, 6.5, LoadDirection.Global, loadCase));
 
             structure.Elements.ForEach((IElement element) => { structure.LinearMesher.SetupMeshSegments(element); });
-            Assert.IsTrue(e1.MeshSegments.Count == 14);
+            Assert.IsTrue(e1.MeshSegments.Count == 13);
 
+            Assert.AreEqual(e1.MeshSegments[0].x1, 0);
+            Assert.AreEqual(e1.MeshSegments[0].x2, 0.9);
+            Assert.AreEqual(e1.MeshSegments[7].mz, 7.5);
+            Assert.AreEqual(e1.MeshSegments[7].wy1, -12);
+            Assert.AreEqual(e1.MeshSegments[7].wy2, -12);
+            Assert.AreEqual(e1.MeshSegments[4].wx1, -10.578947368421053);
+            Assert.AreEqual(e1.MeshSegments[4].wx2, -8.4736842105263168);
         }
     }
 }
