@@ -107,7 +107,7 @@ namespace FEALiTE2D.Meshing
                         FrameUniformLoad uL1 = uniformLoad.GetLoadValueAt(element, segment.x1) as FrameUniformLoad;
                         FrameUniformLoad uL2 = uniformLoad.GetLoadValueAt(element, segment.x2) as FrameUniformLoad;
 
-                        if (uL1 != null || uL2 != null)
+                        if (uL1 != null && uL2 != null)
                         {
                             segment.wx += uL1.Wx;
                             segment.wy += uL1.Wy;
@@ -118,7 +118,7 @@ namespace FEALiTE2D.Meshing
                         FrameTrapezoidalLoad tL1 = trapezoidalLoad.GetLoadValueAt(element, segment.x1) as FrameTrapezoidalLoad;
                         FrameTrapezoidalLoad tL2 = trapezoidalLoad.GetLoadValueAt(element, segment.x2) as FrameTrapezoidalLoad;
 
-                        if (tL1 != null || tL2 != null)
+                        if (tL1 != null && tL2 != null)
                         {
                             segment.wx1 += tL1.Wx1;
                             segment.wx2 += tL1.Wx2;

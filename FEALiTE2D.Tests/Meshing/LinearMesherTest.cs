@@ -32,25 +32,8 @@ namespace FEALiTE2D.Tests.Meshing
             e1.Loads.Add(new FrameUniformLoad(0, -12, LoadDirection.Local, loadCase, 6.3, 7));
             e1.Loads.Add(new FramePointLoad(0, -5, 0, 6.5, LoadDirection.Global, loadCase));
 
-            structure.SetUpMeshingPoints();
-
-            Assert.IsTrue(e1.DiscreteLocations.Count == 20);
-
-            Assert.IsTrue(e1.DiscreteLocations.Contains(0));
-            Assert.IsTrue(e1.DiscreteLocations.Contains(0.9));
-            Assert.IsTrue(e1.DiscreteLocations.Contains(4.7));
-            Assert.IsTrue(e1.DiscreteLocations.Contains(6.3));
-            Assert.IsTrue(e1.DiscreteLocations.Contains(7));
-            Assert.IsTrue(e1.DiscreteLocations.Contains(6.5));
-            Assert.IsTrue(e1.DiscreteLocations.Contains(1));
-            Assert.IsTrue(e1.DiscreteLocations.Contains(2));
-            Assert.IsTrue(e1.DiscreteLocations.Contains(3));
-            Assert.IsTrue(e1.DiscreteLocations.Contains(4));
-            Assert.IsTrue(e1.DiscreteLocations.Contains(5));
-            Assert.IsTrue(e1.DiscreteLocations.Contains(6));
-            Assert.IsTrue(e1.DiscreteLocations.Contains(7));
-            Assert.IsTrue(e1.DiscreteLocations.Contains(8));
-            Assert.IsTrue(e1.DiscreteLocations.Contains(9));
+            structure.Elements.ForEach((IElement element) => { structure.LinearMesher.SetupMeshSegments(element); });
+            Assert.IsTrue(e1.MeshSegments.Count == 14);
 
         }
     }

@@ -215,7 +215,7 @@ namespace FEALiTE2D.Structure
         /// <returns>dictionary of displacements at discrete points of a given element at a given load case.</returns>
         public Dictionary<double, Displacement> GetDisplacement(IElement element, LoadCase loadCase)
         {
-            Dictionary<double, Displacement> d = new Dictionary<double, Displacement>(element.DiscreteLocations.Count);
+            Dictionary<double, Displacement> d = new Dictionary<double, Displacement>(element.MeshSegments.Count);
 
             // get displacement of fist node and second node of the element
             Displacement nd1 = this.GetNodeGlobalDisplacement(element.Nodes[0], loadCase);
@@ -225,14 +225,17 @@ namespace FEALiTE2D.Structure
             double[] dl = new double[dg.Length];
             element.TransformationMatrix.Multiply(dg, dl); // dl = T*dg
 
-            d.Clear();
-            foreach (double x in element.DiscreteLocations)
+            for (int i = 0; i < element.MeshSegments.Count; i++)
             {
-                var N = element.GetShapeFunctionAt(x);
+                double x1 = element.MeshSegments[i].x1;
+                var N = element.GetShapeFunctionAt(x1);
                 double[] _d = new double[3];
                 N.Multiply(dl, _d);
-                d.Add(x, Displacement.FromVector(_d));
+                d.Add(x1, Displacement.FromVector(_d));
             }
+
+            // add last point
+            d.Add(element.Length, Displacement.FromVector(new[] { dl[3], dl[4], dl[5] }));
             return d;
         }
 
