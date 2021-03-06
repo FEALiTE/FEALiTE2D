@@ -76,6 +76,11 @@ namespace FEALiTE2D.Structure
                 }
             }
 
+            // get rid of redundant values which are very small such as 1e-15
+            if (node.IsRestrained(NodalDegreeOfFreedom.UX) != true) R.Fx = 0;
+            if (node.IsRestrained(NodalDegreeOfFreedom.UY) != true) R.Fy = 0;
+            if (node.IsRestrained(NodalDegreeOfFreedom.RZ) != true) R.Mz = 0;
+
             return R;
         }
 
@@ -90,32 +95,27 @@ namespace FEALiTE2D.Structure
 
             if (structure.AnalysisStatus == AnalysisStatus.Successful)
             {
-                if (node.IsFree == false)
+                foreach (var load in node.SupportDisplacementLoad)
                 {
-                    foreach (var load in node.SupportDisplacementLoad)
+                    if (load.LoadCase == loadCase)
                     {
-                        if (load.LoadCase == loadCase)
-                        {
-                            nd.Ux += load.Ux;
-                            nd.Uy += load.Uy;
-                            nd.Rz += load.Rz;
-                        }
+                        nd.Ux += load.Ux;
+                        nd.Uy += load.Uy;
+                        nd.Rz += load.Rz;
                     }
                 }
-                else
-                {
-                    // get displacement from displacement vector if this node is free
-                    double[] dVector = structure.DisplacementVectors[loadCase];
 
-                    if (node.CoordNumbers[0] < dVector.Length)
-                        nd.Ux = dVector[node.CoordNumbers[0]];
+                // get displacement from displacement vector if this node is free
+                double[] dVector = structure.DisplacementVectors[loadCase];
 
-                    if (node.CoordNumbers[1] < dVector.Length)
-                        nd.Uy = dVector[node.CoordNumbers[1]];
+                if (node.CoordNumbers[0] < dVector.Length)
+                    nd.Ux = dVector[node.CoordNumbers[0]];
 
-                    if (node.CoordNumbers[2] < dVector.Length)
-                        nd.Rz = dVector[node.CoordNumbers[2]];
-                }
+                if (node.CoordNumbers[1] < dVector.Length)
+                    nd.Uy = dVector[node.CoordNumbers[1]];
+
+                if (node.CoordNumbers[2] < dVector.Length)
+                    nd.Rz = dVector[node.CoordNumbers[2]];
             }
             return nd;
         }
@@ -238,6 +238,7 @@ namespace FEALiTE2D.Structure
             d.Add(element.Length, Displacement.FromVector(new[] { dl[3], dl[4], dl[5] }));
             return d;
         }
+
 
     }
 }

@@ -57,7 +57,7 @@ namespace FEALiTE2D.Meshing
         public double AxialAt(double x)
         {
             return this.Internalforces1.Fx +
-                wx1 * x + x * x * (wx2 - wx1) / (x2 - x1) / 2; // uniform trap load.
+                wx1 * x + x * x * (wx2 - wx1) / (x2 - x1) / 2; // uniform and trap load.
         }
 
         /// <summary>
