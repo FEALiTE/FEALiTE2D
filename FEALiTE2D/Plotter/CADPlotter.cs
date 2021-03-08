@@ -27,8 +27,6 @@ namespace FEALiTE2D.Plotter
 
         public static void DrawInternalForces(FEALiTE2D.Structure.Structure structure, FEALiTE2D.Loads.LoadCase loadCase, double Scalefactor = 1)
         {
-            structure.Elements.ForEach((IElement e) => { structure.Results.GetInternalForcesAt(e, loadCase); });
-
             using (System.IO.StreamWriter NFDwriter = new System.IO.StreamWriter("NFD.txt"))
             using (System.IO.StreamWriter SFDwriter = new System.IO.StreamWriter("SFD.txt"))
             using (System.IO.StreamWriter BMDwriter = new System.IO.StreamWriter("BMD.txt"))
@@ -43,11 +41,11 @@ namespace FEALiTE2D.Plotter
 
                         Point2D p2NFD = Point2D.PointPerpendicularToLine(e, segment.x1, segment.Internalforces1.Fx * Scalefactor);
                         Point2D p2SFD = Point2D.PointPerpendicularToLine(e, segment.x1, segment.Internalforces1.Fy * Scalefactor);
-                        Point2D p2BMD = Point2D.PointPerpendicularToLine(e, segment.x1, segment.Internalforces1.Mz * Scalefactor);
+                        Point2D p2BMD = Point2D.PointPerpendicularToLine(e, segment.x1, segment.Internalforces1.Mz * -Scalefactor);
 
                         Point2D p3NFD = Point2D.PointPerpendicularToLine(e, segment.x2, segment.Internalforces2.Fx * Scalefactor);
                         Point2D p3SFD = Point2D.PointPerpendicularToLine(e, segment.x2, segment.Internalforces2.Fy * Scalefactor);
-                        Point2D p3BMD = Point2D.PointPerpendicularToLine(e, segment.x2, segment.Internalforces2.Mz * Scalefactor);
+                        Point2D p3BMD = Point2D.PointPerpendicularToLine(e, segment.x2, segment.Internalforces2.Mz * -Scalefactor);
 
                         Point2D p4 = Point2D.PointLocationOnLine(e, segment.x2);
 
