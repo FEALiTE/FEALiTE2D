@@ -127,7 +127,16 @@ namespace FEALiTE2D.Elements
             }
         }
 
+        /// <summary>
+        /// Gets or Sets the rigid support of the node.
+        /// </summary>
+        public NodalRigidSupport RigidSupport { get; set; }
 
+        /// <summary>
+        /// Gets or sets the spring support of the node.
+        /// </summary>
+        public NodalSpringSupport SpringSupport { get; set; }
+        
         /// <summary>
         /// Restrains the specified dof.
         /// </summary>
@@ -147,27 +156,6 @@ namespace FEALiTE2D.Elements
             foreach (NodalDegreeOfFreedom dof in dofs)
                 if (!this.Restrains.Contains(dof))
                     this.Restrains.Add(dof);
-        }
-
-        /// <summary>
-        /// Unrestrains the specified dof.
-        /// </summary>
-        /// <param name="dof">The <see cref="NodalDegreeOfFreedom"/>.</param>
-        public void Unrestrain(NodalDegreeOfFreedom dof)
-        {
-            if (this.Restrains.Contains(dof))
-                this.Restrains.Remove(dof);
-        }
-
-        /// <summary>
-        /// Unrestrains the specified dofs.
-        /// </summary>
-        /// <param name="dofs">The <see cref="NodalDegreeOfFreedom"/>.</param>
-        public void Unrestrain(params NodalDegreeOfFreedom[] dofs)
-        {
-            foreach (NodalDegreeOfFreedom dof in dofs)
-                if (this.Restrains.Contains(dof))
-                    this.Restrains.Remove(dof);
         }
 
         /// <summary>
