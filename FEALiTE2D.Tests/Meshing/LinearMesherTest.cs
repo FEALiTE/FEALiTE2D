@@ -37,11 +37,14 @@ namespace FEALiTE2D.Tests.Meshing
 
             Assert.AreEqual(e1.MeshSegments[0].x1, 0);
             Assert.AreEqual(e1.MeshSegments[0].x2, 0.9);
-            Assert.AreEqual(e1.MeshSegments[7].mz, 7.5);
-            Assert.AreEqual(e1.MeshSegments[7].wy1, -12);
-            Assert.AreEqual(e1.MeshSegments[7].wy2, -12);
-            Assert.AreEqual(e1.MeshSegments[4].wx1, -10.578947368421053);
-            Assert.AreEqual(e1.MeshSegments[4].wx2, -8.4736842105263168);
+            Assert.AreEqual(e1.MeshSegments[1].x1, 0.9);
+            Assert.AreEqual(e1.MeshSegments[1].x2, 1);
+            Assert.AreEqual(e1.MeshSegments[2].x1, 1);
+            Assert.AreEqual(e1.MeshSegments[2].x2, 2);
+            Assert.AreEqual(e1.MeshSegments[3].x1, 2);
+            Assert.AreEqual(e1.MeshSegments[3].x2, 3);
+            Assert.AreEqual(e1.MeshSegments[8].x1, 6);
+            Assert.AreEqual(e1.MeshSegments[8].x2, 6.5);
         }
     }
 }

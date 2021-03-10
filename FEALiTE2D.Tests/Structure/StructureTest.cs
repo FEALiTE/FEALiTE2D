@@ -48,7 +48,7 @@ namespace FEALiTE2D.Tests.Structure
             n5.NodalLoads.Add(new NodalLoad(40, 0, 0, LoadDirection.Global, loadCase));
             n1.NodalLoads.Add(new NodalLoad(40, 0, 0, LoadDirection.Global, loadCase));
 
-            structure.LinearMesher.NumberSegements = 20;
+            structure.LinearMesher.NumberSegements = 35;
             structure.Solve();
 
             var nd1 = structure.Results.GetNodeGlobalDisplacement(n1, loadCase);
@@ -116,6 +116,9 @@ namespace FEALiTE2D.Tests.Structure
             structure.LinearMesher.NumberSegements = 20;
             structure.Solve();
 
+            var R1 = structure.Results.GetSupportReaction(n1, loadCase);
+            var R2 = structure.Results.GetSupportReaction(n2, loadCase);
+            var R3 = structure.Results.GetSupportReaction(n3, loadCase);
             var nd1 = structure.Results.GetNodeGlobalDisplacement(n1, loadCase);
             var nd2 = structure.Results.GetNodeGlobalDisplacement(n2, loadCase);
             var nd3 = structure.Results.GetNodeGlobalDisplacement(n3, loadCase);
@@ -323,7 +326,7 @@ namespace FEALiTE2D.Tests.Structure
 
 
         [Test]
-        public void TestContinousBeam2()
+        public void TestInternalForces()
         {
             // units are kN, m
             FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
@@ -345,40 +348,33 @@ namespace FEALiTE2D.Tests.Structure
 
             LoadCase loadCase = new LoadCase("live", LoadCaseType.Live);
             structure.LoadCasesToRun.Add(loadCase);
-            e2.Loads.Add(new FrameUniformLoad(0, -7.5, LoadDirection.Global, loadCase));
+            //e2.Loads.Add(new FrameUniformLoad(0, -7.5, LoadDirection.Global, loadCase));
+            e1.Loads.Add(new FrameTrapezoidalLoad(100, 0, -13.5, -5.5, LoadDirection.Global, loadCase, 1.35));
 
-            structure.LinearMesher.NumberSegements = 35;
+            structure.LinearMesher.NumberSegements = 10;
             structure.Solve();
 
             FEALiTE2D.Plotter.CADPlotter.DrawStructure(structure, 1);
             FEALiTE2D.Plotter.CADPlotter.DrawInternalForces(structure, loadCase, 0.01);
 
-            var R1 = structure.Results.GetSupportReaction(n1, loadCase);
-            var R2 = structure.Results.GetSupportReaction(n2, loadCase);
-            var R3 = structure.Results.GetSupportReaction(n3, loadCase);
-            var nd1 = structure.Results.GetNodeGlobalDisplacement(n1, loadCase);
-            var nd2 = structure.Results.GetNodeGlobalDisplacement(n2, loadCase);
-            var nd3 = structure.Results.GetNodeGlobalDisplacement(n3, loadCase);
-
-            Assert.AreEqual(nd1.Ux, 0);
-            Assert.AreEqual(nd1.Uy, 0);
-            Assert.AreEqual(nd1.Rz, -0.00051851851851851842);
-            Assert.AreEqual(nd2.Ux, 0);
-            Assert.AreEqual(nd2.Uy, -0.0018518518518518513);
-            Assert.AreEqual(nd2.Rz, -7.4074074074074073E-05);
-            Assert.AreEqual(nd3.Ux, 0);
-            Assert.AreEqual(nd3.Uy, 0);
-            Assert.AreEqual(nd3.Rz, 0.00066666666666666654);
-
-            Assert.AreEqual(R1.Fx, 0);
-            Assert.AreEqual(R1.Fy, 9.375, 1e-8);
-            Assert.AreEqual(R1.Mz, 0);
-            Assert.AreEqual(R2.Fx, 0);
-            Assert.AreEqual(R2.Fy, 0);
-            Assert.AreEqual(R2.Mz, 0);
-            Assert.AreEqual(R3.Fx, 0);
-            Assert.AreEqual(R3.Fy, 28.125, 1e-8);
-            Assert.AreEqual(R3.Mz, 0);
+            Assert.AreEqual(e1.MeshSegments[0].Internalforces1.Fy, 24.553854166666675);
+            Assert.AreEqual(e1.MeshSegments[0].Internalforces2.Fy, 24.553854166666675);
+            Assert.AreEqual(e1.MeshSegments[3].Internalforces2.Fy, 22.553511700913251);
+            Assert.AreEqual(e1.MeshSegments[4].Internalforces1.Fy, 22.553511700913251);
+            Assert.AreEqual(e1.MeshSegments[4].Internalforces2.Fy, 16.241867865296811);
+            Assert.AreEqual(e1.MeshSegments[5].Internalforces1.Fy, 16.241867865296811);
+            Assert.AreEqual(e1.MeshSegments[5].Internalforces2.Fy, 10.478169235159823);
+            Assert.AreEqual(e1.MeshSegments[6].Internalforces1.Fy, 10.478169235159823);
+            Assert.AreEqual(e1.MeshSegments[6].Internalforces2.Fy, 5.2624158105022882);
+            Assert.AreEqual(e1.MeshSegments[0].Internalforces1.Mz, 0,1e-8);
+            Assert.AreEqual(e1.MeshSegments[0].Internalforces2.Mz, -12.276927083333323);
+            Assert.AreEqual(e1.MeshSegments[3].Internalforces2.Mz, -36.680139126712334);
+            Assert.AreEqual(e1.MeshSegments[4].Internalforces1.Mz, -36.680139126712326);
+            Assert.AreEqual(e1.MeshSegments[4].Internalforces2.Mz, -46.356152968036533);
+            Assert.AreEqual(e1.MeshSegments[5].Internalforces1.Mz, -46.356152968036533);
+            Assert.AreEqual(e1.MeshSegments[5].Internalforces2.Mz, -53.013331192922386);
+            Assert.AreEqual(e1.MeshSegments[6].Internalforces1.Mz, -53.013331192922372);
+            Assert.AreEqual(e1.MeshSegments[6].Internalforces2.Mz, -56.925646404109592);
 
         }
     }
