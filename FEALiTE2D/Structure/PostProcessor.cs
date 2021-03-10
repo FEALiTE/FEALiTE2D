@@ -239,6 +239,118 @@ namespace FEALiTE2D.Structure
             return d;
         }
 
+        /// <summary>
+        /// Get internal forces of an element. note that segments length and count are based on the <see cref="FEALiTE2D.Meshing.ILinearMesher"/>
+        /// </summary>
+        /// <param name="element">and element to get its internal forces</param>
+        /// <param name="loadCase">a load case to get the internal forces in an element</param>
+        /// <returns>List of segments containing internal forces of an element.</returns>
+        public List<FEALiTE2D.Meshing.LinearMeshSegment> GetInternalForcesAt(IElement element, LoadCase loadCase)
+        {
+            double len = element.Length;
 
+            // get local end forces after the structure is solved
+            double[] fl = this.GetElementLocalFixedEndForeces(element, loadCase);
+
+            //loop through each segment
+            for (int i = 0; i < element.MeshSegments.Count; i++)
+            {
+                var segment = element.MeshSegments[i];
+                double x = segment.x1;
+
+                // force 0 values for start and end uniform and Trap. loads.
+                segment.wx1 = 0; segment.wx2 = 0;
+                segment.wy1 = 0; segment.wy2 = 0;
+
+                // assign local end forces at start of each segment 
+                segment.Internalforces1.Fx = fl[0];
+                segment.Internalforces1.Fy = fl[1];
+                segment.Internalforces1.Mz = fl[2] - fl[1] * x;
+
+                // add effect of point load, uniform and trap. load to start of each segment if this load is before the segment
+                IEnumerable<ILoad> loads = element.Loads.Where(o => o.LoadCase == loadCase);
+                foreach (ILoad load in loads)
+                {
+                    if (load is FramePointLoad pL)
+                    {
+                        if (pL.L1 <= x)
+                        {
+                            // get point load in lcs.
+                            var p = pL.GetLoadValueAt(element, pL.L1) as FramePointLoad;
+                            segment.Internalforces1.Fx += p.Fx;
+                            segment.Internalforces1.Fy += p.Fy;
+                            segment.Internalforces1.Mz += p.Mz - p.Fy * (x - pL.L1);
+                        }
+                    }
+                    else if (load is FrameUniformLoad uL)
+                    {
+                        // check the load is before or just before the segment
+                        if (uL.L1 <= x)
+                        {
+                            // get uniform load in lcs.
+                            FrameUniformLoad uniformLoad = uL.GetLoadValueAt(element, x) as FrameUniformLoad;
+                            double wx = uniformLoad.Wx,
+                                   wy = uniformLoad.Wy,
+                                   x1 = uL.L1,
+                                   x2 = len - uL.L2; // make x2 measured from start of the element
+
+                            // check if the load stops at start  of the segment 
+                            if (x2 > x)
+                            {
+                                segment.wx1 += wx;
+                                segment.wx2 += wx;
+                                segment.wy1 += wy;
+                                segment.wy2 += wy;
+                                x2 = x;
+                            }
+
+                            segment.Internalforces1.Fx += wx * (x2 - x1);
+                            segment.Internalforces1.Fy += wy * (x2 - x1);
+                            segment.Internalforces1.Mz -= wy * (x2 - x1) * (x - 0.5 * x2 - 0.5 * x1);
+                        }
+                    }
+                    else if (load is FrameTrapezoidalLoad tL)
+                    {
+                        // check the load is before or just before the segment
+                        if (tL.L1 <= x)
+                        {
+                            // get trap load in lcs.
+                            FrameTrapezoidalLoad tl1 = tL.GetLoadValueAt(element, tL.L1) as FrameTrapezoidalLoad;
+                            FrameTrapezoidalLoad tl2 = tL.GetLoadValueAt(element, len - tL.L2) as FrameTrapezoidalLoad;
+                            double wx1 = tl1.Wx1,
+                                   wx2 = tl2.Wx1,
+                                   wy1 = tl1.Wy1,
+                                   wy2 = tl2.Wy1,
+                                   x1 = tl1.L1,
+                                   x2 = len - tL.L2; // make x2 of the load measured from start of the element
+
+                            //check if the load stops at start  of the segment
+                            if (x2 > x)
+                            {
+                                // add load to the segment.
+                                segment.wx1 += ((wx2 - wx1) / (x2 - x1)) * (x - x1) + wx1;
+                                segment.wx2 += ((wx2 - wx1) / (x2 - x1)) * (segment.x2 - x1) + wx1;
+                                segment.wy1 += ((wy2 - wy1) / (x2 - x1)) * (x - x1) + wy1;
+                                segment.wy2 += ((wy2 - wy1) / (x2 - x1)) * (segment.x2 - x1) + wy1;
+                                
+                                //measure the load at start of the segment if it passes the start of the segment
+                                wx2 = ((wx2 - wx1) / (x2 - x1)) * (x - x1) + wx1;
+                                wy2 = ((wy2 - wy1) / (x2 - x1)) * (x - x1) + wy1;
+                                x2 = x;
+                            }
+
+                            segment.Internalforces1.Fx += 0.5 * (wx1 + wx2) * (x2 - x1);
+                            segment.Internalforces1.Fy += 0.5 * (wy1 + wy2) * (x2 - x1);
+                            segment.Internalforces1.Mz += (2 * wy1 * x1 - 3 * wy1 * x + wy1 * x2 + wy2 * x1 - 3 * wy2 * x + 2 * wy2 * x2) * (x2 - x1) / 6;
+                        }
+                    }
+                }
+
+                // set internal forces at the end
+                segment.Internalforces2 = segment.GetInternalForceAt(segment.x2 - segment.x1);
+            }
+
+            return element.MeshSegments;
+        }
     }
 }

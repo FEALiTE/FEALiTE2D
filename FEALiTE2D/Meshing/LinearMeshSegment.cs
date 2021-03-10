@@ -36,7 +36,7 @@ namespace FEALiTE2D.Meshing
         public double ShearAt(double x)
         {
             return this.Internalforces1.Fy
-               + wy1 * x + x * x * (wy2 - wy1) / (x2 - x1) / 2; // uniform and trap load.
+               + wy1 * x + 0.5 * x * x * (wy2 - wy1) / (x2 - x1); // uniform and trap load.
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace FEALiTE2D.Meshing
         {
             return this.Internalforces1.Mz
                - Internalforces1.Fy * x
-               - 0.5 * wy1 * x * x - x * x * x * (wy2 - wy1) / (x2 - x1) / 6; // uniform and trap load.
+               - 0.5 * wy1 * x * x - x * x * x * ((wy2 - wy1) / (x2 - x1)) / 6; // uniform and trap load.
         }
 
         /// <summary>
