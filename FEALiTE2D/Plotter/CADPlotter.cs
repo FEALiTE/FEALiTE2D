@@ -39,12 +39,12 @@ namespace FEALiTE2D.Plotter
                     {
                         Point2D p1 = Point2D.PointLocationOnLine(e, segment.x1);
 
-                        Point2D p2NFD = Point2D.PointPerpendicularToLine(e, segment.x1, segment.Internalforces1.Fx * Scalefactor);
-                        Point2D p2SFD = Point2D.PointPerpendicularToLine(e, segment.x1, segment.Internalforces1.Fy * Scalefactor);
+                        Point2D p2NFD = Point2D.PointPerpendicularToLine(e, segment.x1, segment.Internalforces1.Fx * -Scalefactor);
+                        Point2D p2SFD = Point2D.PointPerpendicularToLine(e, segment.x1, segment.Internalforces1.Fy * -Scalefactor);
                         Point2D p2BMD = Point2D.PointPerpendicularToLine(e, segment.x1, segment.Internalforces1.Mz * -Scalefactor);
 
-                        Point2D p3NFD = Point2D.PointPerpendicularToLine(e, segment.x2, segment.Internalforces2.Fx * Scalefactor);
-                        Point2D p3SFD = Point2D.PointPerpendicularToLine(e, segment.x2, segment.Internalforces2.Fy * Scalefactor);
+                        Point2D p3NFD = Point2D.PointPerpendicularToLine(e, segment.x2, segment.Internalforces2.Fx * -Scalefactor);
+                        Point2D p3SFD = Point2D.PointPerpendicularToLine(e, segment.x2, segment.Internalforces2.Fy * -Scalefactor);
                         Point2D p3BMD = Point2D.PointPerpendicularToLine(e, segment.x2, segment.Internalforces2.Mz * -Scalefactor);
 
                         Point2D p4 = Point2D.PointLocationOnLine(e, segment.x2);
