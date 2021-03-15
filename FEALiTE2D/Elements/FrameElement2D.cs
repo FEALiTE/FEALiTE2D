@@ -443,12 +443,6 @@ namespace FEALiTE2D.Elements
         }
 
         /// <inheritdoc/>
-        public DenseMatrix LocalMassMatrix => throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public DenseMatrix GlobalMassMatrix => throw new NotImplementedException();
-
-        /// <inheritdoc/>
         public void EvaluateGlobalFixedEndForces(LoadCase loadCase)
         {
             double[] f = new double[6];

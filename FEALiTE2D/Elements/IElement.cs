@@ -91,16 +91,6 @@ namespace FEALiTE2D.Elements
         CSparse.Double.DenseMatrix GlobalStiffnessMatrix { get; }
 
         /// <summary>
-        /// Gets the local mass matrix.
-        /// </summary>
-        CSparse.Double.DenseMatrix LocalMassMatrix { get; }
-
-        /// <summary>
-        /// Gets the global mass matrix.
-        /// </summary>
-        CSparse.Double.DenseMatrix GlobalMassMatrix { get; }
-
-        /// <summary>
         /// A list of mesh segments of change in external forces and moments.
         /// </summary>
         System.Collections.Generic.List<FEALiTE2D.Meshing.LinearMeshSegment> MeshSegments { get; set; }
