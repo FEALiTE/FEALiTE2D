@@ -20,12 +20,9 @@ A finite element analysis library for 2D frame, beam and truss elements using C#
 * [x] Linear mesher for better analysis results.
 
  
-## Sign convention for loads in local coordinate system. 
-![Loads - Local](https://user-images.githubusercontent.com/21183259/110693723-69acd280-81f0-11eb-87d5-8278dce86012.png)
+## Sign convention for loads in global and local coordinate system.
+![Loads - Global Local](https://user-images.githubusercontent.com/21183259/110838377-0d5ab900-82ab-11eb-838c-655865ae767b.png)
 
-
-## Sign convention for loads in global coordinate system. 
-![Loads - Global](https://user-images.githubusercontent.com/21183259/110690077-281a2880-81ec-11eb-900c-8b2cc9c64b67.png)
 
 ## Example
 Here is a 2D framed strcture subjected to various loading conditions
