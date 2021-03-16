@@ -47,7 +47,7 @@ namespace FEALiTE2D.Structure
             }
 
             //add external loads on nodes
-            foreach (NodalLoad load in node.NodalLoads)
+            foreach (NodalLoad load in node.NodalLoads.Where(ii => ii.LoadCase == loadCase))
             {
                 R.Fx -= load.Fx;
                 R.Fy -= load.Fy;
