@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FEALiTE2D.Elements
+﻿namespace FEALiTE2D.Elements
 {
     /// <summary>
     /// Frame end releases and partial releases.

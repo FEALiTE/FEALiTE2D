@@ -179,8 +179,6 @@ namespace FEALiTE2D.Structure
         /// <returns></returns>
         public Displacement GetDisplacementAt(IElement element, LoadCase loadCase, double x)
         {
-            Displacement d = new Displacement();
-
             // check bounds of the element and the given distance
             double l = element.Nodes[0].DistanceBetween(element.Nodes[1]);
             if (x > l)
