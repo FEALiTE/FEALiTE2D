@@ -70,5 +70,24 @@
                 $"Uy = {Uy} \r\n" +
                 $"Rz = {Rz} \r\n";
         }
+
+        /// <inheritdoc/>
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+
+            if (obj.GetType() != typeof(Displacement))
+                return false;
+
+            Displacement d = obj as Displacement;
+            if (System.Math.Abs(d.Ux - this.Ux) > 1e-8 ||
+                System.Math.Abs(d.Uy - this.Uy) > 1e-8 ||
+                    System.Math.Abs(d.Rz - this.Rz) > 1e-8)
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }

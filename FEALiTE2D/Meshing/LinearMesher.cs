@@ -65,14 +65,17 @@ namespace FEALiTE2D.Meshing
             }
 
             // 2- add locations based on number of segments and length of the segment.
-            int n1 = (int)Math.Floor(len / this.MinDistance);
-            int n2 = this.NumberSegements;
-            int n = Math.Max(n1, n2);
-            double dx = len / n;
-
-            for (int i = 0; i < n; i++)
+            if (element.GetType() != typeof(SpringElement2D))
             {
-                discreteLocations.Add(i * dx);
+                int n1 = (int)Math.Floor(len / this.MinDistance);
+                int n2 = this.NumberSegements;
+                int n = Math.Max(n1, n2);
+                double dx = len / n;
+
+                for (int i = 0; i < n; i++)
+                {
+                    discreteLocations.Add(i * dx);
+                }
             }
 
             // add last point

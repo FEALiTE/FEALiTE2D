@@ -11,6 +11,7 @@ namespace FEALiTE2D.Plotter
         /// <summary>
         /// Draw The Structure as AutoCAD Command line.
         /// </summary>
+        /// <param name="structure">a structure to draw</param>
         /// <param name="Scalefactor">scale factor</param>
         public static void DrawStructure(FEALiTE2D.Structure.Structure structure, double Scalefactor = 1)
         {
@@ -25,6 +26,12 @@ namespace FEALiTE2D.Plotter
             }
         }
 
+        /// <summary>
+        /// Draw internal forces as AutoCAD Command line.
+        /// </summary>
+        /// <param name="structure">a structure to draw</param>
+        /// <param name="loadCase">load case to get internal forces</param>
+        /// <param name="Scalefactor">scale factor</param>
         public static void DrawInternalForces(FEALiTE2D.Structure.Structure structure, FEALiTE2D.Loads.LoadCase loadCase, double Scalefactor = 1)
         {
             using (System.IO.StreamWriter NFDwriter = new System.IO.StreamWriter("NFD.txt"))
