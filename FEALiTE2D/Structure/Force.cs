@@ -70,5 +70,24 @@
                 $"Fy = {Fy} \r\n" +
                 $"Mz = {Mz} \r\n";
         }
+
+        /// <inheritdoc/>
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+
+            if (obj.GetType() != typeof(Force))
+                return false;
+
+            Force f = obj as Force;
+            if (System.Math.Abs(f.Fx - this.Fx) > 1e-8 ||
+                System.Math.Abs(f.Fy - this.Fy) > 1e-8 ||
+                    System.Math.Abs(f.Mz - this.Mz) > 1e-8)
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }
