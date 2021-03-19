@@ -1,11 +1,8 @@
 ﻿using CSparse.Double;
 using FEALiTE2D.CrossSections;
 using FEALiTE2D.Loads;
-using FEALiTE2D.Helper;
-using System;
 using System.Collections.Generic;
 using static System.Math;
-using FEALiTE2D.Structure;
 
 namespace FEALiTE2D.Elements
 {
@@ -17,15 +14,22 @@ namespace FEALiTE2D.Elements
         /// <summary>
         /// Creates a new instance of <see cref="FrameElement2D"/> Class
         /// </summary>
-        /// <param name="label">name of the frame element</param>
-        public FrameElement2D(string label)
+        public FrameElement2D()
         {
-            this.Label = label;
             this.Loads = new List<ILoad>();
             this.EndRelease = Frame2DEndRelease.NoRelease;
             this.GlobalEndForcesForLoadCase = new Dictionary<LoadCase, double[]>();
             this.MeshSegments = new List<Meshing.LinearMeshSegment>();
-            //this.LoadCasesToIgnore = new List<LoadCase>();
+            this.LoadCasesToIgnore = new List<LoadCase>();
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="FrameElement2D"/> Class
+        /// </summary>
+        /// <param name="label">name of the frame element</param>
+        public FrameElement2D(string label) : this()
+        {
+            this.Label = label;
         }
 
         /// <summary>
@@ -57,9 +61,7 @@ namespace FEALiTE2D.Elements
         /// </summary>
         public IFrame2DSection CrossSection { get; set; }
 
-        /// <summary>
-        /// Length of the member.
-        /// </summary>
+        /// <inheritdoc/>
         public double Length => Sqrt(Pow(EndNode.X - StartNode.X, 2) + Pow(EndNode.Y - StartNode.Y, 2));
 
         /// <inheritdoc/>
@@ -81,22 +83,6 @@ namespace FEALiTE2D.Elements
                 coords.AddRange(StartNode.CoordNumbers);
                 coords.AddRange(EndNode.CoordNumbers);
 
-                // Removes the released coords of the connecting nodes.
-
-                if (this.EndRelease == Frame2DEndRelease.StartRelease)
-                {
-                    numbersToBeRemoved.Add(coords[2]);
-                }
-                if (this.EndRelease == Frame2DEndRelease.EndRelease)
-                {
-                    numbersToBeRemoved.Add(coords[5]);
-                }
-                if (this.EndRelease == Frame2DEndRelease.FullRlease)
-                {
-                    numbersToBeRemoved.Add(coords[2]);
-                    numbersToBeRemoved.Add(coords[5]);
-                }
-
                 foreach (int item in numbersToBeRemoved)
                     coords.Remove(item);
 
@@ -116,9 +102,7 @@ namespace FEALiTE2D.Elements
         /// </summary>
         public IList<ILoad> Loads { get; set; }
 
-        /// <summary>
-        /// Gets or sets the parent structure that this element is part of it.
-        /// </summary>
+        /// <inheritdoc/>
         public Structure.Structure ParentStructure { get; set; }
 
         /// <inheritdoc/>
