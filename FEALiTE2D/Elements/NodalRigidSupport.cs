@@ -41,5 +41,19 @@
         /// </summary>
         public bool Rz { get; set; }
 
+        /// <summary>
+        /// Get number of restrained degrees of freedom
+        /// </summary>
+        public int RestraintCount
+        {
+            get
+            {
+                int i = 0;
+                if (this.Ux == true) i++;
+                if (this.Uy == true) i++;
+                if (this.Rz == true) i++;
+                return i;
+            }
+        }
     }
 }

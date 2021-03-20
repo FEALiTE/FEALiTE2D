@@ -18,7 +18,6 @@ namespace FEALiTE2D.Elements
         public Node2D()
         {
             // initialize default values
-            this.Restrains = new List<NodalDegreeOfFreedom>();
             this.NodalLoads = new List<NodalLoad>();
             this.SupportDisplacementLoad = new List<SupportDisplacementLoad>();
             this.CoordNumbers = new List<int>();
@@ -30,7 +29,7 @@ namespace FEALiTE2D.Elements
         /// <param name="x">X-coordinate of the <see cref="Node2D"/> Element.</param>
         /// <param name="y">Y-coordinate of the <see cref="Node2D"/> Element.</param>
         /// <param name="label">name of the <see cref="Node2D"/> element</param>
-        public Node2D(double x, double y, string label) :this()
+        public Node2D(double x, double y, string label) : this()
         {
             // assign variable
             this.X = x;
@@ -66,12 +65,15 @@ namespace FEALiTE2D.Elements
         /// <summary>
         /// Gets number of degrees of freedom of the node.
         /// </summary>
-        public int DOF { get { return 3 - Restrains.Count; } }
-
-        /// <summary>
-        /// Gets or sets the Degrees of freedom of the <see cref="Node2D"/>.
-        /// </summary>
-        public IList<NodalDegreeOfFreedom> Restrains { get; set; }
+        public int DOF
+        {
+            get
+            {
+                if (this.RigidSupport != null)
+                    return 3 - this.RigidSupport.RestraintCount;
+                return 3;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the nodal displacement.
@@ -121,7 +123,7 @@ namespace FEALiTE2D.Elements
         {
             get
             {
-                if (this.Restrains.Count == 0)
+                if (this.RigidSupport == null)
                     return true;
                 return false;
             }
@@ -136,27 +138,6 @@ namespace FEALiTE2D.Elements
         /// Gets or sets the spring support of the node.
         /// </summary>
         public NodalSpringSupport SpringSupport { get; set; }
-        
-        /// <summary>
-        /// Restrains the specified dof.
-        /// </summary>
-        /// <param name="dof">The <see cref="NodalDegreeOfFreedom"/>.</param>
-        public void Restrain(NodalDegreeOfFreedom dof)
-        {
-            if (!this.Restrains.Contains(dof))
-                this.Restrains.Add(dof);
-        }
-
-        /// <summary>
-        /// Restrains the specified dofs.
-        /// </summary>
-        /// <param name="dofs">The <see cref="NodalDegreeOfFreedom"/>.</param>
-        public void Restrain(params NodalDegreeOfFreedom[] dofs)
-        {
-            foreach (NodalDegreeOfFreedom dof in dofs)
-                if (!this.Restrains.Contains(dof))
-                    this.Restrains.Add(dof);
-        }
 
         /// <summary>
         /// Determines whether the specified dof is a restraint.
@@ -165,8 +146,21 @@ namespace FEALiTE2D.Elements
         /// <returns><c>true</c> if the specified dof is a restraint; otherwise, <c>false</c>.</returns>
         public bool IsRestrained(NodalDegreeOfFreedom dof)
         {
-            if (this.Restrains.Contains(dof))
-                return true;
+            if (this.RigidSupport != null)
+            {
+                if (dof == NodalDegreeOfFreedom.UX)
+                {
+                    return this.RigidSupport.Ux;
+                }
+                else if (dof == NodalDegreeOfFreedom.UY)
+                {
+                    return this.RigidSupport.Uy;
+                }
+                else if (dof == NodalDegreeOfFreedom.RZ)
+                {
+                    return this.RigidSupport.Rz;
+                }
+            }
             return false;
         }
 

@@ -25,8 +25,8 @@ namespace FEALiTE2D.Tests.Structure
             Node2D n3 = new Node2D(0, 6, "n3");
             Node2D n4 = new Node2D(9, 6, "n4");
             Node2D n5 = new Node2D(0, 12, "n5");
-            n1.Restrain(NodalDegreeOfFreedom.UX, NodalDegreeOfFreedom.UY, NodalDegreeOfFreedom.RZ); //fully restrained
-            n2.Restrain(NodalDegreeOfFreedom.UX, NodalDegreeOfFreedom.UY, NodalDegreeOfFreedom.RZ); //fully restrained
+            n1.RigidSupport = new NodalRigidSupport(true, true, true); //fully restrained
+            n2.RigidSupport = new NodalRigidSupport(true, true, true); //fully restrained
 
             structure.AddNode(n1, n2, n3, n4, n5);
             IMaterial material = new GenericIsotropicMaterial() { E = 30E6, U = 0.2, Label = "Steel", Alpha = 0.000012, Gama = 39885, MaterialType = MaterialType.Steel };
@@ -98,8 +98,8 @@ namespace FEALiTE2D.Tests.Structure
             Node2D n1 = new Node2D(0, 0, "n1");
             Node2D n2 = new Node2D(120, 240, "n2");
             Node2D n3 = new Node2D(360, 240, "n3");
-            n1.Restrain(NodalDegreeOfFreedom.UX, NodalDegreeOfFreedom.UY, NodalDegreeOfFreedom.RZ); //fully restrained
-            n3.Restrain(NodalDegreeOfFreedom.UX, NodalDegreeOfFreedom.UY, NodalDegreeOfFreedom.RZ); //fully restrained
+            n1.RigidSupport = new NodalRigidSupport(true, true, true); //fully restrained
+            n3.RigidSupport = new NodalRigidSupport(true, true, true); //fully restrained
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 29E3, U = 0.2, Label = "Concrete", Alpha = 0.000012, Gama = 24.53, MaterialType = MaterialType.Concrete };
@@ -179,8 +179,8 @@ namespace FEALiTE2D.Tests.Structure
             Node2D n1 = new Node2D(0, 0, "n1");
             Node2D n2 = new Node2D(120, 240, "n2");
             Node2D n3 = new Node2D(360, 240, "n3");
-            n1.Restrain(NodalDegreeOfFreedom.UX, NodalDegreeOfFreedom.UY, NodalDegreeOfFreedom.RZ); //fully restrained
-            n3.Restrain(NodalDegreeOfFreedom.UX, NodalDegreeOfFreedom.UY, NodalDegreeOfFreedom.RZ); //fully restrained
+            n1.RigidSupport = new NodalRigidSupport(true, true, true); //fully restrained
+            n3.RigidSupport = new NodalRigidSupport(true, true, true); //fully restrained
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 29E3, U = 0.2, Label = "Concrete", Alpha = 0.000012, Gama = 24.53, MaterialType = MaterialType.Concrete };
@@ -259,9 +259,9 @@ namespace FEALiTE2D.Tests.Structure
             Node2D n3 = new Node2D(10, 0, "n3");
             Node2D n4 = new Node2D(20, 0, "n4");
 
-            n1.Restrain(NodalDegreeOfFreedom.UX, NodalDegreeOfFreedom.UY, NodalDegreeOfFreedom.RZ); //Fixed
-            n3.Restrain(NodalDegreeOfFreedom.UY); //Roller
-            n4.Restrain(NodalDegreeOfFreedom.UY); //Roller
+            n1.RigidSupport = new NodalRigidSupport(true, true, true); //fully restrained
+            n3.RigidSupport = new NodalRigidSupport(false, true, false); //roller support
+            n4.RigidSupport = new NodalRigidSupport(false, true, false); //roller support
 
             structure.AddNode(n1, n2, n3, n4);
             IMaterial material = new GenericIsotropicMaterial() { E = 28E6, U = 0.2, MaterialType = MaterialType.Concrete };
@@ -336,8 +336,8 @@ namespace FEALiTE2D.Tests.Structure
             Node2D n2 = new Node2D(5, 0, "n2");
             Node2D n3 = new Node2D(10, 0, "n3");
 
-            n1.Restrain(NodalDegreeOfFreedom.UX, NodalDegreeOfFreedom.UY); //Fixed
-            n3.Restrain(NodalDegreeOfFreedom.UX, NodalDegreeOfFreedom.UY); //Fixed
+            n1.RigidSupport = new NodalRigidSupport(true, true, false); //hinged restrained
+            n3.RigidSupport = new NodalRigidSupport(true, true, false); //hinged restrained
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };
@@ -390,10 +390,10 @@ namespace FEALiTE2D.Tests.Structure
             Node2D n3 = new Node2D(0, 5, "n3");
             Node2D n4 = new Node2D(5, 0, "n3");
 
-            n1.Restrain(NodalDegreeOfFreedom.UX, NodalDegreeOfFreedom.UY, NodalDegreeOfFreedom.RZ);
-            n2.Restrain(NodalDegreeOfFreedom.UX, NodalDegreeOfFreedom.UY, NodalDegreeOfFreedom.RZ);
-            n3.Restrain(NodalDegreeOfFreedom.UX, NodalDegreeOfFreedom.UY, NodalDegreeOfFreedom.RZ);
-            n4.Restrain(NodalDegreeOfFreedom.RZ);
+            n1.RigidSupport = new NodalRigidSupport(true, true, true);
+            n2.RigidSupport = new NodalRigidSupport(true, true, true);
+            n3.RigidSupport = new NodalRigidSupport(true, true, true);
+            n4.RigidSupport = new NodalRigidSupport(false, false, true);
 
             structure.AddNode(n1, n2, n3, n4);
 
@@ -435,11 +435,11 @@ namespace FEALiTE2D.Tests.Structure
             Node2D n4 = new Node2D(3, 0, "n4");
             Node2D n5 = new Node2D(4, 0, "n5");
 
-            n1.Restrain(NodalDegreeOfFreedom.UX, NodalDegreeOfFreedom.UY, NodalDegreeOfFreedom.RZ);
-            n2.Restrain(NodalDegreeOfFreedom.UY, NodalDegreeOfFreedom.RZ);
-            n3.Restrain(NodalDegreeOfFreedom.UY, NodalDegreeOfFreedom.RZ);
-            n4.Restrain(NodalDegreeOfFreedom.UY, NodalDegreeOfFreedom.RZ);
-            n5.Restrain(NodalDegreeOfFreedom.UX, NodalDegreeOfFreedom.UY, NodalDegreeOfFreedom.RZ);
+            n1.RigidSupport = new NodalRigidSupport(true, true, true);
+            n2.RigidSupport = new NodalRigidSupport(false, true, true);
+            n3.RigidSupport = new NodalRigidSupport(false, true, true);
+            n4.RigidSupport = new NodalRigidSupport(false, true, true);
+            n5.RigidSupport = new NodalRigidSupport(true, true, true);
 
             structure.AddNode(n1, n2, n3, n4, n5);
 
@@ -482,9 +482,9 @@ namespace FEALiTE2D.Tests.Structure
             Node2D n2 = new Node2D(3, 0, "n2");
             Node2D n3 = new Node2D(7, 0, "n3");
 
-            n1.Restrain(NodalDegreeOfFreedom.UX, NodalDegreeOfFreedom.UY); //hinged
-            n2.Restrain(NodalDegreeOfFreedom.UX, NodalDegreeOfFreedom.UY); //hinged
-            n3.Restrain(NodalDegreeOfFreedom.UX, NodalDegreeOfFreedom.UY); //hinged
+            n1.RigidSupport = new NodalRigidSupport(true, true, false); //hinged
+            n2.RigidSupport = new NodalRigidSupport(true, true, false); //hinged
+            n3.RigidSupport = new NodalRigidSupport(true, true, false); //hinged
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };

@@ -74,10 +74,7 @@
         /// <inheritdoc/>
         public override bool Equals(object obj)
         {
-            if (obj == null)
-                return false;
-
-            if (obj.GetType() != typeof(Displacement))
+            if (obj == null || !(obj is Displacement))
                 return false;
 
             Displacement d = obj as Displacement;

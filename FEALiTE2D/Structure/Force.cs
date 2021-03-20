@@ -74,10 +74,7 @@
         /// <inheritdoc/>
         public override bool Equals(object obj)
         {
-            if (obj == null)
-                return false;
-
-            if (obj.GetType() != typeof(Force))
+            if (obj == null || !(obj is Force))
                 return false;
 
             Force f = obj as Force;
