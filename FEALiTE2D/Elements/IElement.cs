@@ -56,21 +56,6 @@ namespace FEALiTE2D.Elements
         Dictionary<LoadCase, double[]> GlobalEndForcesForLoadCase { get; }
 
         /// <summary>
-        /// Indicates that the <see cref="FrameElement2D"/> is active in the current load case or not.
-        /// </summary>
-        bool IsActive { get; set; }
-
-        /// <summary>
-        /// /Indicates that this element can only subject to Tension Loads like cables.
-        /// </summary>
-        bool TensionOnly { get; set; }
-
-        /// <summary>
-        /// A list of <see cref="LoadCase"/> in which.. this frame element is not active.
-        /// </summary>
-        List<LoadCase> LoadCasesToIgnore { get; set; }
-
-        /// <summary>
         /// Gets the local coordinate system, This should be called after <see cref="Initialize"/>
         /// </summary>
         CSparse.Double.DenseMatrix LocalCoordinateSystemMatrix { get; }

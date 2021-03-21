@@ -21,7 +21,6 @@ namespace FEALiTE2D.Elements
             this.Loads = new List<ILoad>();
             this.GlobalEndForcesForLoadCase = new Dictionary<LoadCase, double[]>();
             this.MeshSegments = new List<Meshing.LinearMeshSegment>();
-            this.LoadCasesToIgnore = new List<LoadCase>();
         }
 
         /// <summary>
@@ -97,15 +96,6 @@ namespace FEALiTE2D.Elements
 
         /// <inheritdoc/>
         public Dictionary<LoadCase, double[]> GlobalEndForcesForLoadCase { get; private set; }
-
-        /// <inheritdoc/>
-        public bool IsActive { get; set; }
-
-        /// <inheritdoc/>
-        public bool TensionOnly { get; set; }
-
-        /// <inheritdoc/>
-        public List<LoadCase> LoadCasesToIgnore { get; set; }
 
         /// <inheritdoc/>
         public DenseMatrix LocalCoordinateSystemMatrix { get; private set; }

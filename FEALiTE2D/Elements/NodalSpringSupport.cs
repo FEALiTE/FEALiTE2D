@@ -1,12 +1,10 @@
-﻿using FEALiTE2D.Loads;
-using System.Collections.Generic;
-
-namespace FEALiTE2D.Elements
+﻿namespace FEALiTE2D.Elements
 {
     /// <summary>
     /// A Class that Represents a nodal spring support that have three values of spring constants. 
     /// </summary>
-    public class NodalSpringSupport
+    [System.Obsolete("Not yet implemented")]
+    public class NodalSpringSupport : NodalRigidSupport
     {
 
         /// <summary>
@@ -43,20 +41,6 @@ namespace FEALiTE2D.Elements
         /// Spring constant for rotation about Z-Direction
         /// </summary>
         public double Cz { get; set; }
-
-        /// Indicates that the <see cref="FrameElement2D"/> is active in the current load case or not.
-        /// </summary>
-        public bool IsActive { get; set; }
-
-        /// <summary>
-        /// /Indicates that this element can only subject to Tension Loads like cables.
-        /// </summary>
-        public bool TensionOnly { get; set; }
-
-        /// <summary>
-        /// A list of <see cref="LoadCase"/> in which.. this frame element is not active.
-        /// </summary>
-        public List<LoadCase> LoadCasesToIgnore { get; set; }
 
         /// <summary>
         /// Gets the global stiffness matrix, This should be called after <see cref="Initialize"/>

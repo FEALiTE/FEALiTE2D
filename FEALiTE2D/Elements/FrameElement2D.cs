@@ -20,7 +20,6 @@ namespace FEALiTE2D.Elements
             this.EndRelease = Frame2DEndRelease.NoRelease;
             this.GlobalEndForcesForLoadCase = new Dictionary<LoadCase, double[]>();
             this.MeshSegments = new List<Meshing.LinearMeshSegment>();
-            this.LoadCasesToIgnore = new List<LoadCase>();
         }
 
         /// <summary>
@@ -79,12 +78,8 @@ namespace FEALiTE2D.Elements
             get
             {
                 List<int> coords = new List<int>();
-                List<int> numbersToBeRemoved = new List<int>();
                 coords.AddRange(StartNode.CoordNumbers);
                 coords.AddRange(EndNode.CoordNumbers);
-
-                foreach (int item in numbersToBeRemoved)
-                    coords.Remove(item);
 
                 this.DOF = coords.Count;
 
@@ -107,15 +102,6 @@ namespace FEALiTE2D.Elements
 
         /// <inheritdoc/>
         public Dictionary<LoadCase, double[]> GlobalEndForcesForLoadCase { get; private set; }
-
-        /// <inheritdoc/>
-        public bool IsActive { get; set; }
-
-        /// <inheritdoc/>
-        public bool TensionOnly { get; set; }
-
-        /// <inheritdoc/>
-        public List<LoadCase> LoadCasesToIgnore { get; set; }
 
         /// <inheritdoc/>
         public List<Meshing.LinearMeshSegment> MeshSegments { get; set; }
