@@ -53,7 +53,7 @@ namespace FEALiTE2D.Elements
         public string Label { get; set; }
 
         /// <summary>
-        /// A list of ndof numbers that is set by the program.
+        /// A list of dof numbers that is set by the program.
         /// </summary>
         public List<int> CoordNumbers { get; internal set; }
 
@@ -69,8 +69,8 @@ namespace FEALiTE2D.Elements
         {
             get
             {
-                if (this.RigidSupport != null)
-                    return 3 - this.RigidSupport.RestraintCount;
+                if (this.Support != null)
+                    return 3 - this.Support.RestraintCount;
                 return 3;
             }
         }
@@ -123,7 +123,7 @@ namespace FEALiTE2D.Elements
         {
             get
             {
-                if (this.RigidSupport == null)
+                if (this.Support == null)
                     return true;
                 return false;
             }
@@ -132,12 +132,7 @@ namespace FEALiTE2D.Elements
         /// <summary>
         /// Gets or Sets the rigid support of the node.
         /// </summary>
-        public NodalRigidSupport RigidSupport { get; set; }
-
-        /// <summary>
-        /// Gets or sets the spring support of the node.
-        /// </summary>
-        public NodalSpringSupport SpringSupport { get; set; }
+        public NodalSupport Support { get; set; }
 
         /// <summary>
         /// Determines whether the specified dof is a restraint.
@@ -146,19 +141,19 @@ namespace FEALiTE2D.Elements
         /// <returns><c>true</c> if the specified dof is a restraint; otherwise, <c>false</c>.</returns>
         public bool IsRestrained(NodalDegreeOfFreedom dof)
         {
-            if (this.RigidSupport != null)
+            if (this.Support != null)
             {
                 if (dof == NodalDegreeOfFreedom.UX)
                 {
-                    return this.RigidSupport.Ux;
+                    return this.Support.Ux;
                 }
                 else if (dof == NodalDegreeOfFreedom.UY)
                 {
-                    return this.RigidSupport.Uy;
+                    return this.Support.Uy;
                 }
                 else if (dof == NodalDegreeOfFreedom.RZ)
                 {
-                    return this.RigidSupport.Rz;
+                    return this.Support.Rz;
                 }
             }
             return false;

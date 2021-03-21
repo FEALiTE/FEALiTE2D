@@ -4,7 +4,7 @@
     /// A Class that Represents a nodal spring support that have three values of spring constants. 
     /// </summary>
     [System.Obsolete("Not yet implemented")]
-    public class NodalSpringSupport : NodalRigidSupport
+    public class NodalSpringSupport : NodalSupport
     {
 
         /// <summary>

@@ -3,23 +3,23 @@
     /// <summary>
     /// A Class that Represents a nodal rigid support that prevents motion or rotation in XY plan. 
     /// </summary>
-    public class NodalRigidSupport
+    public class NodalSupport
     {
 
         /// <summary>
-        /// Create a new instance of <see cref="NodalRigidSupport"/> class.
+        /// Create a new instance of <see cref="NodalSupport"/> class.
         /// </summary>
-        public NodalRigidSupport()
+        public NodalSupport()
         {
         }
 
         /// <summary>
-        /// Create a new instance of <see cref="NodalRigidSupport"/> class.
+        /// Create a new instance of <see cref="NodalSupport"/> class.
         /// </summary>
         /// <param name="ux">translation in X-Direction</param>
         /// <param name="uy">translation in Y-Direction</param>
         /// <param name="rz">rotation about Z-Direction</param>
-        public NodalRigidSupport(bool ux, bool uy, bool rz)
+        public NodalSupport(bool ux, bool uy, bool rz)
         {
             this.Ux = ux;
             this.Uy = uy;
