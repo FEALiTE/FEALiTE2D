@@ -71,6 +71,31 @@ namespace FEALiTE2D.Structure
                 }
             }
 
+            // assemble elastic supports data
+            IEnumerable<Node2D> elasticNodes = structure.Nodes.Where(o => o.Support is NodalSpringSupport);
+            foreach (Node2D node in elasticNodes)
+            {
+                int dofNode = node.DOF; //number of dof for the node.
+                double kij;
+                int i, ii;
+
+                DenseMatrix node_kg = ((NodalSpringSupport)node.Support).GlobalStiffnessMatrix;
+                List<int> elemCoord = node.CoordNumbers; // node's coordinates vector.
+
+                for (i = 0; i < dofNode; i++)
+                {
+                    ii = elemCoord[i];
+                    if (ii < nDOF)
+                    {
+                        kij = node_kg[i, i];
+                        if (kij != 0)
+                        {
+                            Kg[ii, ii] += kij;
+                        }
+                    }
+                }
+            }
+
             return SparseMatrix.OfMatrix(Kg) as SparseMatrix;
 
         }

@@ -70,7 +70,14 @@ namespace FEALiTE2D.Elements
             get
             {
                 if (this.Support != null)
-                    return 3 - this.Support.RestraintCount;
+                    if (this.Support is NodalSpringSupport)
+                    {
+                        return 3;
+                    }
+                    else
+                    {
+                        return 3 - this.Support.RestraintCount;
+                    }
                 return 3;
             }
         }
