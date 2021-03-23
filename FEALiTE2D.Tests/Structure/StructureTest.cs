@@ -13,6 +13,7 @@ namespace FEALiTE2D.Tests.Structure
 {
     public class StructureTest
     {
+
         // confirmed with robot
         [Test]
         public void TestStructure()
@@ -25,8 +26,8 @@ namespace FEALiTE2D.Tests.Structure
             Node2D n3 = new Node2D(0, 6, "n3");
             Node2D n4 = new Node2D(9, 6, "n4");
             Node2D n5 = new Node2D(0, 12, "n5");
-            n1.RigidSupport = new NodalRigidSupport(true, true, true); //fully restrained
-            n2.RigidSupport = new NodalRigidSupport(true, true, true); //fully restrained
+            n1.Support = new NodalSupport(true, true, true); //fully restrained
+            n2.Support = new NodalSupport(true, true, true); //fully restrained
 
             structure.AddNode(n1, n2, n3, n4, n5);
             IMaterial material = new GenericIsotropicMaterial() { E = 30E6, U = 0.2, Label = "Steel", Alpha = 0.000012, Gama = 39885, MaterialType = MaterialType.Steel };
@@ -98,8 +99,8 @@ namespace FEALiTE2D.Tests.Structure
             Node2D n1 = new Node2D(0, 0, "n1");
             Node2D n2 = new Node2D(120, 240, "n2");
             Node2D n3 = new Node2D(360, 240, "n3");
-            n1.RigidSupport = new NodalRigidSupport(true, true, true); //fully restrained
-            n3.RigidSupport = new NodalRigidSupport(true, true, true); //fully restrained
+            n1.Support = new NodalSupport(true, true, true); //fully restrained
+            n3.Support = new NodalSupport(true, true, true); //fully restrained
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 29E3, U = 0.2, Label = "Concrete", Alpha = 0.000012, Gama = 24.53, MaterialType = MaterialType.Concrete };
@@ -117,9 +118,10 @@ namespace FEALiTE2D.Tests.Structure
             structure.LinearMesher.NumberSegements = 20;
             structure.Solve();
 
-            var R1 = structure.Results.GetSupportReaction(n1, loadCase);
-            var R2 = structure.Results.GetSupportReaction(n2, loadCase);
-            var R3 = structure.Results.GetSupportReaction(n3, loadCase);
+            Assert.AreEqual(structure.Results.GetSupportReaction(n1, loadCase), Force.FromVector(new double[] { 30.37225194999335, 102.08675797670341, 1215.9664523968904 }));
+            Assert.AreEqual(structure.Results.GetSupportReaction(n2, loadCase), Force.FromVector(new double[] { 0, 0, 0 }));
+            Assert.AreEqual(structure.Results.GetSupportReaction(n3, loadCase), Force.FromVector(new double[] { -30.37225194999336, 17.913242023296597, -854.0740487820697 }));
+
             var nd1 = structure.Results.GetNodeGlobalDisplacement(n1, loadCase);
             var nd2 = structure.Results.GetNodeGlobalDisplacement(n2, loadCase);
             var nd3 = structure.Results.GetNodeGlobalDisplacement(n3, loadCase);
@@ -179,8 +181,8 @@ namespace FEALiTE2D.Tests.Structure
             Node2D n1 = new Node2D(0, 0, "n1");
             Node2D n2 = new Node2D(120, 240, "n2");
             Node2D n3 = new Node2D(360, 240, "n3");
-            n1.RigidSupport = new NodalRigidSupport(true, true, true); //fully restrained
-            n3.RigidSupport = new NodalRigidSupport(true, true, true); //fully restrained
+            n1.Support = new NodalSupport(true, true, true); //fully restrained
+            n3.Support = new NodalSupport(true, true, true); //fully restrained
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 29E3, U = 0.2, Label = "Concrete", Alpha = 0.000012, Gama = 24.53, MaterialType = MaterialType.Concrete };
@@ -259,9 +261,9 @@ namespace FEALiTE2D.Tests.Structure
             Node2D n3 = new Node2D(10, 0, "n3");
             Node2D n4 = new Node2D(20, 0, "n4");
 
-            n1.RigidSupport = new NodalRigidSupport(true, true, true); //fully restrained
-            n3.RigidSupport = new NodalRigidSupport(false, true, false); //roller support
-            n4.RigidSupport = new NodalRigidSupport(false, true, false); //roller support
+            n1.Support = new NodalSupport(true, true, true); //fully restrained
+            n3.Support = new NodalSupport(false, true, false); //roller support
+            n4.Support = new NodalSupport(false, true, false); //roller support
 
             structure.AddNode(n1, n2, n3, n4);
             IMaterial material = new GenericIsotropicMaterial() { E = 28E6, U = 0.2, MaterialType = MaterialType.Concrete };
@@ -336,8 +338,8 @@ namespace FEALiTE2D.Tests.Structure
             Node2D n2 = new Node2D(5, 0, "n2");
             Node2D n3 = new Node2D(10, 0, "n3");
 
-            n1.RigidSupport = new NodalRigidSupport(true, true, false); //hinged restrained
-            n3.RigidSupport = new NodalRigidSupport(true, true, false); //hinged restrained
+            n1.Support = new NodalSupport(true, true, false); //hinged restrained
+            n3.Support = new NodalSupport(true, true, false); //hinged restrained
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };
@@ -376,7 +378,6 @@ namespace FEALiTE2D.Tests.Structure
             Assert.AreEqual(e1.MeshSegments[5].Internalforces2.Mz, -53.013331192922386);
             Assert.AreEqual(e1.MeshSegments[6].Internalforces1.Mz, -53.013331192922372);
             Assert.AreEqual(e1.MeshSegments[6].Internalforces2.Mz, -56.925646404109592);
-
         }
 
         [Test]
@@ -390,10 +391,10 @@ namespace FEALiTE2D.Tests.Structure
             Node2D n3 = new Node2D(0, 5, "n3");
             Node2D n4 = new Node2D(5, 0, "n3");
 
-            n1.RigidSupport = new NodalRigidSupport(true, true, true);
-            n2.RigidSupport = new NodalRigidSupport(true, true, true);
-            n3.RigidSupport = new NodalRigidSupport(true, true, true);
-            n4.RigidSupport = new NodalRigidSupport(false, false, true);
+            n1.Support = new NodalSupport(true, true, true);
+            n2.Support = new NodalSupport(true, true, true);
+            n3.Support = new NodalSupport(true, true, true);
+            n4.Support = new NodalSupport(false, false, true);
 
             structure.AddNode(n1, n2, n3, n4);
 
@@ -435,11 +436,11 @@ namespace FEALiTE2D.Tests.Structure
             Node2D n4 = new Node2D(3, 0, "n4");
             Node2D n5 = new Node2D(4, 0, "n5");
 
-            n1.RigidSupport = new NodalRigidSupport(true, true, true);
-            n2.RigidSupport = new NodalRigidSupport(false, true, true);
-            n3.RigidSupport = new NodalRigidSupport(false, true, true);
-            n4.RigidSupport = new NodalRigidSupport(false, true, true);
-            n5.RigidSupport = new NodalRigidSupport(true, true, true);
+            n1.Support = new NodalSupport(true, true, true);
+            n2.Support = new NodalSupport(false, true, true);
+            n3.Support = new NodalSupport(false, true, true);
+            n4.Support = new NodalSupport(false, true, true);
+            n5.Support = new NodalSupport(true, true, true);
 
             structure.AddNode(n1, n2, n3, n4, n5);
 
@@ -482,9 +483,9 @@ namespace FEALiTE2D.Tests.Structure
             Node2D n2 = new Node2D(3, 0, "n2");
             Node2D n3 = new Node2D(7, 0, "n3");
 
-            n1.RigidSupport = new NodalRigidSupport(true, true, false); //hinged
-            n2.RigidSupport = new NodalRigidSupport(true, true, false); //hinged
-            n3.RigidSupport = new NodalRigidSupport(true, true, false); //hinged
+            n1.Support = new NodalSupport(true, true, false); //hinged
+            n2.Support = new NodalSupport(true, true, false); //hinged
+            n3.Support = new NodalSupport(true, true, false); //hinged
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };
@@ -516,8 +517,138 @@ namespace FEALiTE2D.Tests.Structure
             Assert.AreEqual(nd1.Rz, -1.49333333333e-5, 1e-5);
             Assert.AreEqual(nd2.Rz, 1.49333333333e-5, 1e-5);
             Assert.AreEqual(nd3.Rz, 2.27555555557e-5, 1e-5);
+        }
+
+        [Test]
+        public void TestTrussWithSpringElementAsSupport()
+        {
+            Node2D n1 = new Node2D(0, 0, "n1");
+            Node2D n2 = new Node2D(-3.5355339059327376220042218105242, 3.5355339059327376220042218105242, "n2");
+            Node2D n3 = new Node2D(-10, 0, "n3");
+            Node2D n4 = new Node2D(0, -1, "n4");
+
+            n1.Support = new NodalSupport(false, false, true);
+            n2.Support = new NodalSupport(true, true, true);
+            n3.Support = new NodalSupport(true, true, true);
+            n4.Support = new NodalSupport(true, true, true);
+
+            LoadCase loadCase = new LoadCase("ll", LoadCaseType.Live);
+            n1.NodalLoads.Add(new NodalLoad(0, -50, 0, LoadDirection.Global, loadCase));
+
+            FEALiTE2D.Structure.Structure system = new FEALiTE2D.Structure.Structure();
+            system.AddNode(n1, n2, n3, n4);
+            system.LoadCasesToRun.Add(loadCase);
+
+            FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { EndRelease = Frame2DEndRelease.FullRlease };
+            FrameElement2D e2 = new FrameElement2D(n1, n3, "e2") { EndRelease = Frame2DEndRelease.FullRlease };
+            SpringElement2D e3 = new SpringElement2D(n1, n4, "e3") { K = 2000 };
+
+            e1.CrossSection = e2.CrossSection = new FEALiTE2D.CrossSections.Generic2DSection(5.0e-4, 5.0e-4, 5.0e-4, 0.1, 0.1, 0.1, 0.1, 0.1, new GenericIsotropicMaterial() { E = 210000000, U = 0.2 });
+
+            system.AddElement(new IElement[] { e1, e2, e3 }, false);
+            system.Solve();
+
+            Assert.AreEqual(system.Results.GetSupportReaction(n2, loadCase), new Force() { Fx = -36.20689655172414, Fy = 36.20689655172414, Mz = 0 });
+            Assert.AreEqual(system.Results.GetSupportReaction(n3, loadCase), new Force() { Fx = 36.206896551724135, Fy = 0, Mz = 0 });
+            Assert.AreEqual(system.Results.GetSupportReaction(n4, loadCase), new Force() { Fx = 0, Fy = 13.793103448275861, Mz = 0 });
+
+            var d1 = system.Results.GetNodeGlobalDisplacement(n1, loadCase);
+            Assert.AreEqual(d1.Ux, -0.00344827586206897, 1e-5);
+            Assert.AreEqual(d1.Uy, -0.00689655172413793, 1e-5);
+            FEALiTE2D.Plotter.CADPlotter.DrawStructure(system, 1);
+            FEALiTE2D.Plotter.CADPlotter.DrawInternalForces(system, loadCase, 0.1);
 
         }
 
+
+        [Test]
+        public void TestBeamWihEndReleaseAndSupportsAsSprings()
+        {
+            // units are kN, m
+            FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
+
+            Node2D n1 = new Node2D(0, 0, "n1");
+            Node2D n2 = new Node2D(3, 0, "n2");
+            Node2D n3 = new Node2D(7, 0, "n3");
+            Node2D n1_ = new Node2D(0, -1, "n4");
+            Node2D n2_ = new Node2D(3, -1, "n5");
+            Node2D n3_ = new Node2D(7, -1, "n6");
+
+            n1_.Support = new NodalSupport(true, true, true);
+            n2_.Support = new NodalSupport(true, true, true);
+            n3_.Support = new NodalSupport(true, true, true);
+
+            structure.AddNode(n1, n2, n3, n1_, n2_, n3_);
+            IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };
+            IFrame2DSection section1 = new RectangularSection(0.25, 0.75, material);
+
+            FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
+            FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1, EndRelease = Frame2DEndRelease.StartRelease };
+            SpringElement2D s1 = new SpringElement2D(n1, n1_, "s1") { K = 1e15 };
+            SpringElement2D s2 = new SpringElement2D(n2, n2_, "s2") { K = 1e15 };
+            SpringElement2D s3 = new SpringElement2D(n3, n3_, "s3") { K = 1e15 };
+            structure.AddElement(new IElement[] { e1, e2, s1, s2, s3 });
+
+            LoadCase loadCase = new LoadCase("live", LoadCaseType.Live);
+            structure.LoadCasesToRun.Add(loadCase);
+            e1.Loads.Add(new FrameUniformLoad(0, -3.5, LoadDirection.Global, loadCase));
+            e2.Loads.Add(new FramePointLoad(0, -6, 0, 2, LoadDirection.Global, loadCase));
+
+            structure.Solve();
+
+            var nd1 = structure.Results.GetNodeGlobalDisplacement(n1, loadCase);
+            var nd2 = structure.Results.GetNodeGlobalDisplacement(n2, loadCase);
+            var nd3 = structure.Results.GetNodeGlobalDisplacement(n3, loadCase);
+
+            Assert.AreEqual(structure.Results.GetSupportReaction(n1_, loadCase), new Force() { Fx = 0, Fy = 5.25, Mz = 0 });
+            Assert.AreEqual(structure.Results.GetSupportReaction(n2_, loadCase), new Force() { Fx = 0, Fy = 8.25, Mz = 0 });
+            Assert.AreEqual(structure.Results.GetSupportReaction(n3_, loadCase), new Force() { Fx = 0, Fy = 3.0, Mz = 0 });
+
+            Assert.AreEqual(nd1.Rz, -1.49333333333e-5, 1e-5);
+            Assert.AreEqual(nd2.Rz, 1.49333333333e-5, 1e-5);
+            Assert.AreEqual(nd3.Rz, 2.27555555557e-5, 1e-5);
+        }
+
+        [Test]
+        public void TestBeamWihEndReleaseAndSpringsSupports()
+        {
+            // units are kN, m
+            FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
+
+            Node2D n1 = new Node2D(0, 0, "n1");
+            Node2D n2 = new Node2D(3, 0, "n2");
+            Node2D n3 = new Node2D(7, 0, "n3");
+
+            n1.Support = new NodalSpringSupport(1e15, 1e15, 0);
+            n2.Support = new NodalSpringSupport(1e15, 1e15, 0);
+            n3.Support = new NodalSpringSupport(1e15, 1e15, 0);
+
+            structure.AddNode(n1, n2, n3);
+            IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };
+            IFrame2DSection section1 = new RectangularSection(0.25, 0.75, material);
+
+            FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
+            FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1, EndRelease = Frame2DEndRelease.StartRelease };
+            structure.AddElement(new IElement[] { e1, e2});
+
+            LoadCase loadCase = new LoadCase("live", LoadCaseType.Live);
+            structure.LoadCasesToRun.Add(loadCase);
+            e1.Loads.Add(new FrameUniformLoad(0, -3.5, LoadDirection.Global, loadCase));
+            e2.Loads.Add(new FramePointLoad(0, -6, 0, 2, LoadDirection.Global, loadCase));
+
+            structure.Solve();
+
+            var nd1 = structure.Results.GetNodeGlobalDisplacement(n1, loadCase);
+            var nd2 = structure.Results.GetNodeGlobalDisplacement(n2, loadCase);
+            var nd3 = structure.Results.GetNodeGlobalDisplacement(n3, loadCase);
+
+            Assert.AreEqual(structure.Results.GetSupportReaction(n1, loadCase), new Force() { Fx = 0, Fy = 5.25, Mz = 0 });
+            Assert.AreEqual(structure.Results.GetSupportReaction(n2, loadCase), new Force() { Fx = 0, Fy = 8.25, Mz = 0 });
+            Assert.AreEqual(structure.Results.GetSupportReaction(n3, loadCase), new Force() { Fx = 0, Fy = 3.0, Mz = 0 });
+
+            Assert.AreEqual(nd1.Rz, -1.49333333333e-5, 1e-5);
+            Assert.AreEqual(nd2.Rz, 1.49333333333e-5, 1e-5);
+            Assert.AreEqual(nd3.Rz, 2.27555555557e-5, 1e-5);
+        }
     }
 }
