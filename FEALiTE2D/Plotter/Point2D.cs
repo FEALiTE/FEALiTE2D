@@ -45,7 +45,6 @@ namespace FEALiTE2D.Plotter
         /// <param name="element">an element</param>
         /// <param name="x">distance measured from start node of the <see cref="Elements.IElement"/></param>
         /// <param name="perDistance">the perpendicular distance on the element.</param>
-        /// <returns></returns>
         public static Point2D PointPerpendicularToLine(Elements.IElement element, double x, double perDistance)
         {
             double x1 = element.Nodes[0].X;
@@ -61,6 +60,19 @@ namespace FEALiTE2D.Plotter
             double m2 = -1 / m1;
             double theta = Math.Atan(m2);
             return new Point2D() { x = startPerPoint.x + perDistance * Math.Cos(theta), y = startPerPoint.y + perDistance * Math.Sin(theta) };
+        }
+
+        /// <summary>
+        /// Get deformed point location along an element
+        /// </summary>
+        /// <param name="element">an element</param>
+        /// <param name="x">distance measured from start node of the <see cref="Elements.IElement"/></param>
+        /// <param name="dx">displacement in x-direction</param>
+        /// <param name="dy">displacement in y-direction</param>
+        public static Point2D PointForDeflection(Elements.IElement element, double x, double dx, double dy)
+        {
+            // find location of required point along the frame after adding dx
+            return PointPerpendicularToLine(element, x + dx, -dy);
         }
     }
 }

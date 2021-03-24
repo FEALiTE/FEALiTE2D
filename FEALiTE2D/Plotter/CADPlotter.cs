@@ -40,7 +40,7 @@ namespace FEALiTE2D.Plotter
             {
                 foreach (IElement e in structure.Elements)
                 {
-                    var segs = structure.Results.GetInternalForcesAt(e, loadCase);
+                    var segs = structure.Results.GetElementInternalForces(e, loadCase);
 
                     foreach (var segment in segs)
                     {
@@ -75,5 +75,33 @@ namespace FEALiTE2D.Plotter
             }
         }
 
+        /// <summary>
+        /// Draw deformed shape as AutoCAD Command line.
+        /// </summary>
+        /// <param name="structure">a structure to draw</param>
+        /// <param name="loadCase">load case to get internal forces</param>
+        /// <param name="Scalefactor">scale factor</param>
+        public static void DrawDefelectionShape(FEALiTE2D.Structure.Structure structure, FEALiTE2D.Loads.LoadCase loadCase, double Scalefactor = 1)
+        {
+            using (System.IO.StreamWriter writer = new System.IO.StreamWriter("Deflection.txt"))
+            {
+                foreach (IElement e in structure.Elements)
+                {
+                    var segs = structure.Results.GetElementLocalDisplacement(e, loadCase);
+
+                    foreach (var segment in segs)
+                    {
+                        Point2D p1 = Point2D.PointLocationOnLine(e, segment.x1);
+                        Point2D p2def = Point2D.PointForDeflection(e, segment.x1, segment.Displacement1.Ux * Scalefactor, segment.Displacement1.Uy * Scalefactor);
+                        Point2D p3def = Point2D.PointForDeflection(e, segment.x2, segment.Displacement2.Ux * Scalefactor, segment.Displacement2.Uy * Scalefactor);
+                        Point2D p4 = Point2D.PointLocationOnLine(e, segment.x2);
+
+                        writer.WriteLine($"line\r\n{p1.x},{p1.y} {p2def.x},{p2def.y}\r\n\r\n");
+                        writer.WriteLine($"line\r\n{p2def.x},{p2def.y} {p3def.x},{p3def.y}\r\n\r\n");
+                        writer.WriteLine($"line\r\n{p3def.x},{p3def.y} {p4.x},{p4.y}\r\n\r\n");
+                    }
+                }
+            }
+        }
     }
 }
