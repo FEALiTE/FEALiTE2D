@@ -201,49 +201,6 @@ namespace FEALiTE2D.Structure
         }
 
         /// <summary>
-        /// Get set of segments containing displacements at a given load case.
-        /// </summary>
-        /// <param name="element">an element to process</param>
-        /// <param name="loadCase">a load case to display displacement</param>
-        public List<FEALiTE2D.Meshing.LinearMeshSegment> GetElementLocalDisplacement(IElement element, LoadCase loadCase)
-        {
-            // retrieve mesh segments that have loads and internal forces set
-            // so we can calculate displacement components.
-            List<FEALiTE2D.Meshing.LinearMeshSegment> meshSegments = this.GetElementInternalForces(element, loadCase);
-            double[] dl = this.GetElementLocalEndDisplacement(element, loadCase);
-            /*double[] fr = this.GetElementLocalFixedEndForeces(element, loadCase);
-            double[] fl = element.GlobalEndForcesForLoadCase[loadCase];*/
-
-            for (int i = 0; i < meshSegments.Count; i++)
-            {
-                FEALiTE2D.Meshing.LinearMeshSegment segment = meshSegments[i];
-                double l = segment.x2 - segment.x1;
-
-
-
-
-
-                //set first segment
-                if (i == 0)
-                {
-                    segment.Displacement1.Ux = dl[0];
-                    segment.Displacement1.Uy = dl[1];
-                    segment.Displacement1.Rz = dl[2];  /*(1 / 3) * ((fl[2] - fr[2]) * l / (segment.E * segment.Iy) - (fl[5] - fr[5] * l * 0.5 * (segment.E * segment.Iy) + 3.0 * (dl[4] - dl[1]) / l));*/
-                    //1/3*((m1z - fem1z)*L/(E*Iz) - (m2z - fem2z)*L/(2*E*Iz) + 3*(delta2y - delta1y)/L)
-                }
-                else // set other segment
-                {
-                    FEALiTE2D.Meshing.LinearMeshSegment Psegment = meshSegments[i - 1];
-                    segment.Displacement1 = Psegment.GetDisplacementAt(Psegment.x2 - Psegment.x1);
-                }
-
-                //segment.EndDisplacement = segment.GetDisplacementAt(segment.x2 - segment.x1);
-            }
-
-            return meshSegments;
-        }
-
-        /// <summary>
         /// Get internal forces of an element. note that segments length and count are based on the <see cref="FEALiTE2D.Meshing.ILinearMesher"/>
         /// </summary>
         /// <param name="element">an element to get its internal forces</param>
