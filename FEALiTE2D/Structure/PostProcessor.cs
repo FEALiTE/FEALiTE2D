@@ -201,11 +201,11 @@ namespace FEALiTE2D.Structure
         }
 
         /// <summary>
-        /// Get internal forces of an element. note that segments length and count are based on the <see cref="FEALiTE2D.Meshing.ILinearMesher"/>
+        /// Get internal forces and local displacements of an element. note that segments length and count are based on the <see cref="FEALiTE2D.Meshing.ILinearMesher"/>
         /// </summary>
         /// <param name="element">an element to get its internal forces</param>
         /// <param name="loadCase">a load case to get the internal forces in an element</param>
-        /// <returns>List of segments containing internal forces of an element.</returns>
+        /// <returns>List of segments containing internal forces and displacements of an element.</returns>
         public List<FEALiTE2D.Meshing.LinearMeshSegment> GetElementInternalForces(IElement element, LoadCase loadCase)
         {
             double len = element.Length;

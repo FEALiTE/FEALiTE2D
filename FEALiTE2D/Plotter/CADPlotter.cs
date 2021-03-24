@@ -87,7 +87,7 @@ namespace FEALiTE2D.Plotter
             {
                 foreach (IElement e in structure.Elements)
                 {
-                    var segs = structure.Results.GetElementLocalDisplacement(e, loadCase);
+                    var segs = structure.Results.GetElementInternalForces(e, loadCase);
 
                     foreach (var segment in segs)
                     {
