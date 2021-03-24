@@ -91,6 +91,14 @@ namespace FEALiTE2D.Meshing
                 LinearMeshSegment segment = new LinearMeshSegment();
                 segment.x1 = discreteLocations.ElementAt(i);
                 segment.x2 = discreteLocations.ElementAt(i + 1);
+                // set geometric properties.
+                if (!(element is SpringElement2D))
+                {
+                    segment.E = element.CrossSection.Material.E;
+                    segment.Ix = element.CrossSection.Ix;
+                    segment.A = element.CrossSection.A;
+                }
+
                 element.MeshSegments.Add(segment);
             }
         }

@@ -1,4 +1,5 @@
 ﻿using FEALiTE2D.Elements;
+using FEALiTE2D.Helper;
 using FEALiTE2D.Loads;
 using System;
 using System.Collections.Generic;
@@ -44,6 +45,22 @@ namespace FEALiTE2D.Structure
             if (node.IsFree == true)
             {
                 return R; // 0 reactions.
+            }
+
+            // check if this node have an elastic support
+            if (node.Support is NodalSpringSupport)
+            {
+                // F= K * D
+                // get node displacement
+                Displacement d = this.GetNodeGlobalDisplacement(node, loadCase);
+                double[] f = new double[3];
+                ((NodalSpringSupport)node.Support).GlobalStiffnessMatrix.Multiply(d.ToVector(), f);
+
+                R.Fx -= f[0];
+                R.Fy -= f[1];
+                R.Mz -= f[2];
+
+                return R;
             }
 
             //add external loads on nodes
@@ -131,13 +148,8 @@ namespace FEALiTE2D.Structure
             double[] q = new double[6];
 
             // Q = k*u+qf
-            Displacement d1g = this.GetNodeGlobalDisplacement(element.Nodes[0], loadCase);
-            Displacement d2g = this.GetNodeGlobalDisplacement(element.Nodes[1], loadCase);
-            double[] dg = new double[] { d1g.Ux, d1g.Uy, d1g.Rz, d2g.Ux, d2g.Uy, d2g.Rz };
-            double[] dl = new double[dg.Length];
+            double[] dl = this.GetElementLocalEndDisplacement(element, loadCase);
 
-            // dl = T*dg
-            element.TransformationMatrix.Multiply(dg, dl);
             //ql = kl*dl
             element.LocalStiffnessMatrix.Multiply(dl, q);
 
@@ -171,25 +183,12 @@ namespace FEALiTE2D.Structure
         }
 
         /// <summary>
-        /// Get a displacement at discrete point of distance x from start node of an element at a given load case.
+        /// Get a local end displacement of an element at a given load case.
         /// </summary>
         /// <param name="element">an element to process</param>
         /// <param name="loadCase">a load case to display displacement</param>
-        /// <param name="x">distance x from start node of the element</param>
-        /// <returns></returns>
-        public Displacement GetDisplacementAt(IElement element, LoadCase loadCase, double x)
+        public double[] GetElementLocalEndDisplacement(IElement element, LoadCase loadCase)
         {
-            // check bounds of the element and the given distance
-            double l = element.Nodes[0].DistanceBetween(element.Nodes[1]);
-            if (x > l)
-            {
-                x = l;
-            }
-            else if (x < 0)
-            {
-                x = 0;
-            }
-
             // get displacement of fist node and second node of the element
             Displacement nd1 = this.GetNodeGlobalDisplacement(element.Nodes[0], loadCase);
             Displacement nd2 = this.GetNodeGlobalDisplacement(element.Nodes[1], loadCase);
@@ -198,57 +197,65 @@ namespace FEALiTE2D.Structure
             double[] dl = new double[dg.Length];
             element.TransformationMatrix.Multiply(dg, dl); // dl = T*dg
 
-            var N = element.GetShapeFunctionAt(x);
-            double[] _d = new double[3];
-            N.Multiply(dl, _d);
-
-            return Displacement.FromVector(_d);
+            return dl;
         }
 
         /// <summary>
-        /// Get a dictionary of displacements at discrete points of a given element at a given load case.
+        /// Get set of segments containing displacements at a given load case.
         /// </summary>
         /// <param name="element">an element to process</param>
         /// <param name="loadCase">a load case to display displacement</param>
-        /// <returns>dictionary of displacements at discrete points of a given element at a given load case.</returns>
-        public Dictionary<double, Displacement> GetDisplacement(IElement element, LoadCase loadCase)
+        public List<FEALiTE2D.Meshing.LinearMeshSegment> GetElementLocalDisplacement(IElement element, LoadCase loadCase)
         {
-            Dictionary<double, Displacement> d = new Dictionary<double, Displacement>(element.MeshSegments.Count);
+            // retrieve mesh segments that have loads and internal forces set
+            // so we can calculate displacement components.
+            List<FEALiTE2D.Meshing.LinearMeshSegment> meshSegments = this.GetElementInternalForces(element, loadCase);
+            double[] dl = this.GetElementLocalEndDisplacement(element, loadCase);
+            /*double[] fr = this.GetElementLocalFixedEndForeces(element, loadCase);
+            double[] fl = element.GlobalEndForcesForLoadCase[loadCase];*/
 
-            // get displacement of fist node and second node of the element
-            Displacement nd1 = this.GetNodeGlobalDisplacement(element.Nodes[0], loadCase);
-            Displacement nd2 = this.GetNodeGlobalDisplacement(element.Nodes[1], loadCase);
-
-            double[] dg = new double[] { nd1.Ux, nd1.Uy, nd1.Rz, nd2.Ux, nd2.Uy, nd2.Rz };
-            double[] dl = new double[dg.Length];
-            element.TransformationMatrix.Multiply(dg, dl); // dl = T*dg
-
-            for (int i = 0; i < element.MeshSegments.Count; i++)
+            for (int i = 0; i < meshSegments.Count; i++)
             {
-                double x1 = element.MeshSegments[i].x1;
-                var N = element.GetShapeFunctionAt(x1);
-                double[] _d = new double[3];
-                N.Multiply(dl, _d);
-                d.Add(x1, Displacement.FromVector(_d));
+                FEALiTE2D.Meshing.LinearMeshSegment segment = meshSegments[i];
+                double l = segment.x2 - segment.x1;
+
+
+
+
+
+                //set first segment
+                if (i == 0)
+                {
+                    segment.Displacement1.Ux = dl[0];
+                    segment.Displacement1.Uy = dl[1];
+                    segment.Displacement1.Rz = dl[2];  /*(1 / 3) * ((fl[2] - fr[2]) * l / (segment.E * segment.Iy) - (fl[5] - fr[5] * l * 0.5 * (segment.E * segment.Iy) + 3.0 * (dl[4] - dl[1]) / l));*/
+                    //1/3*((m1z - fem1z)*L/(E*Iz) - (m2z - fem2z)*L/(2*E*Iz) + 3*(delta2y - delta1y)/L)
+                }
+                else // set other segment
+                {
+                    FEALiTE2D.Meshing.LinearMeshSegment Psegment = meshSegments[i - 1];
+                    segment.Displacement1 = Psegment.GetDisplacementAt(Psegment.x2 - Psegment.x1);
+                }
+
+                //segment.EndDisplacement = segment.GetDisplacementAt(segment.x2 - segment.x1);
             }
 
-            // add last point
-            d.Add(element.Length, Displacement.FromVector(new[] { dl[3], dl[4], dl[5] }));
-            return d;
+            return meshSegments;
         }
 
         /// <summary>
         /// Get internal forces of an element. note that segments length and count are based on the <see cref="FEALiTE2D.Meshing.ILinearMesher"/>
         /// </summary>
-        /// <param name="element">and element to get its internal forces</param>
+        /// <param name="element">an element to get its internal forces</param>
         /// <param name="loadCase">a load case to get the internal forces in an element</param>
         /// <returns>List of segments containing internal forces of an element.</returns>
-        public List<FEALiTE2D.Meshing.LinearMeshSegment> GetInternalForcesAt(IElement element, LoadCase loadCase)
+        public List<FEALiTE2D.Meshing.LinearMeshSegment> GetElementInternalForces(IElement element, LoadCase loadCase)
         {
             double len = element.Length;
 
             // get local end forces after the structure is solved
             double[] fl = this.GetElementLocalFixedEndForeces(element, loadCase);
+            double[] dl = this.GetElementLocalEndDisplacement(element, loadCase);
 
             //loop through each segment
             for (int i = 0; i < element.MeshSegments.Count; i++)
@@ -259,6 +266,26 @@ namespace FEALiTE2D.Structure
                 // force 0 values for start and end uniform and Trap. loads.
                 segment.wx1 = 0; segment.wx2 = 0;
                 segment.wy1 = 0; segment.wy2 = 0;
+
+                //assign local end displacements and rotations to start segment
+                if (i == 0)
+                {
+                    double ls = segment.x2 - segment.x1;
+                    segment.Displacement1 = new Displacement()
+                    {
+                        Ux = dl[0],
+                        Uy = dl[1],
+                        Rz = dl[2]
+                    };
+                }
+                else
+                {
+                    // get a reference to previous segment
+                    FEALiTE2D.Meshing.LinearMeshSegment pS = element.MeshSegments[i - 1];
+                    segment.Displacement1.Ux = pS.AxialDisplacementAt(pS.x2 - pS.x1);
+                    segment.Displacement1.Uy = pS.VerticalDisplacementAt(pS.x2 - pS.x1);
+                    segment.Displacement1.Rz = pS.SlopeAngleAt(pS.x2 - pS.x1);
+                }
 
                 // assign local end forces at start of each segment 
                 segment.Internalforces1.Fx = fl[0];
@@ -330,7 +357,7 @@ namespace FEALiTE2D.Structure
                                 segment.wx2 += ((wx2 - wx1) / (x2 - x1)) * (segment.x2 - x1) + wx1;
                                 segment.wy1 += ((wy2 - wy1) / (x2 - x1)) * (x - x1) + wy1;
                                 segment.wy2 += ((wy2 - wy1) / (x2 - x1)) * (segment.x2 - x1) + wy1;
-                                
+
                                 //measure the load at start of the segment if it passes the start of the segment
                                 wx2 = ((wx2 - wx1) / (x2 - x1)) * (x - x1) + wx1;
                                 wy2 = ((wy2 - wy1) / (x2 - x1)) * (x - x1) + wy1;
@@ -346,9 +373,33 @@ namespace FEALiTE2D.Structure
 
                 // set internal forces at the end
                 segment.Internalforces2 = segment.GetInternalForceAt(segment.x2 - segment.x1);
+                segment.Displacement2 = segment.GetDisplacementAt(segment.x2 - segment.x1);
             }
 
             return element.MeshSegments;
         }
+
+        /// <summary>
+        /// Get internal forces of an element at a distance measured from start node.
+        /// </summary>
+        /// <param name="element">an element to get its internal forces</param>
+        /// <param name="loadCase">a load case to get the internal forces in an element</param>
+        /// <param name="x">distance measured from start node.</param>
+        /// <returns>internal forces of an element at a distance.</returns>
+        public Force GetElementInternalForcesAt(IElement element, LoadCase loadCase, double x)
+        {
+            double len = element.Length;
+            // get a list of meshed segments of the element
+            List<Meshing.LinearMeshSegment> segments = this.GetElementInternalForces(element, loadCase);
+
+            // loop through the segments to find which segment this distance is bounded to.
+            foreach (var segment in segments)
+                if (x >= segment.x1 && x <= segment.x2)
+                    return segment.GetInternalForceAt(x - segment.x1);
+
+            return null;
+
+        }
+
     }
 }
