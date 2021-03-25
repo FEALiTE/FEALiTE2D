@@ -60,11 +60,6 @@ namespace FEALiTE2D.Loads
         public LoadDirection LoadDirection { get; set; }
 
         /// <summary>
-        /// Load type.
-        /// </summary>
-        public LoadType LoadType => LoadType.FrameLinerLoad;
-
-        /// <summary>
         /// the load case.
         /// </summary>
         public LoadCase LoadCase { get; set; }

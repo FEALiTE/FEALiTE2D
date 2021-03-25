@@ -11,6 +11,7 @@
         public LoadCase()
         {
             this.IsLinearCase = true;
+            LoadCaseDuration = LoadCaseDuration.Permanent;
         }
 
 
@@ -35,6 +36,11 @@
         /// Type of the <see cref="LoadCase"/>.
         /// </summary>
         public LoadCaseType LoadCaseType { get; set; }
+
+        /// <summary>
+        /// Duration of the <see cref="LoadCase"/>.
+        /// </summary>
+        public LoadCaseDuration LoadCaseDuration { get; set; }
 
         /// <summary>
         /// Gets whether it's a linear load case or not.
@@ -95,5 +101,31 @@
             return result;
         }
 
+    }
+
+    /// <summary>
+    /// Represents load case type.
+    /// </summary>
+    public enum LoadCaseType
+    {
+        SelfWeight = 0,
+        Dead,
+        Live,
+        Wind,
+        Seismic,
+        Accidental,
+        Shrinkage,
+    }
+
+    /// <summary>
+    /// Represents Load Duration Classes.
+    /// </summary>
+    public enum LoadCaseDuration
+    {
+        Permanent,
+        LongTerm,
+        MediumTerm,
+        ShortTerm,
+        Instantaneous
     }
 }

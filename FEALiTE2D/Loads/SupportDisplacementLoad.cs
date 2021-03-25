@@ -50,9 +50,6 @@ namespace FEALiTE2D.Loads
         public LoadDirection LoadDirection { get; set; }
 
         /// <inheritdoc/>
-        public LoadType LoadType => LoadType.SupportSettelement;
-
-        /// <inheritdoc/>
         public LoadCase LoadCase { get; set; }
 
         /// <inheritdoc/>

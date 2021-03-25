@@ -55,9 +55,6 @@
         public LoadDirection LoadDirection { get; set; }
 
         /// <inheritdoc/>
-        public LoadType LoadType => LoadType.FramePointLoad;
-
-        /// <inheritdoc/>
         public LoadCase LoadCase { get; set; }
 
         /// <inheritdoc/>

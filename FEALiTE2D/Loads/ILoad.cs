@@ -13,11 +13,6 @@ namespace FEALiTE2D.Loads
         LoadDirection LoadDirection { get; set; }
 
         /// <summary>
-        /// Load type.
-        /// </summary>
-        LoadType LoadType { get; }
-
-        /// <summary>
         /// the load case.
         /// </summary>
         LoadCase LoadCase { get; set; }
