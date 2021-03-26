@@ -1,6 +1,7 @@
 ﻿using CSparse.Double;
 using FEALiTE2D.CrossSections;
 using FEALiTE2D.Loads;
+using System.Linq;
 using System.Collections.Generic;
 using static System.Math;
 
@@ -417,7 +418,9 @@ namespace FEALiTE2D.Elements
         {
             double[] f = new double[6];
 
-            foreach (ILoad load in this.Loads)
+            // get loads that are in current load case
+            IEnumerable<ILoad> loads = this.Loads.Where(xx => xx.LoadCase == loadCase);
+            foreach (ILoad load in loads)
             {
                 double[] fg = load.GetGlobalFixedEndForces(this);
                 f[0] -= fg[0];
