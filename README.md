@@ -10,12 +10,12 @@ A finite element analysis library for 2D frame, beam and truss elements using C#
   * [x] Frame trapezoidal load.
   * [x] Nodal point load.
   * [x] Support displacement.
-* [x] Loads can be set in local and global coordinate system.
+* [x] Loads can be set in global and element's local coordinate system.
 * [x] Nodes can have local and global coordinate system.
-* [x] Node Supports have 3 degrees of freedom.
-* [ ] Elastic supports using translational and rotational springs *[under development]*.
-* [ ] Set members behaviour to be in tension only or compression only during analysis *[under development]*.
-* [ ] Deactivate elements during analysis *[under development]*.
+* [x] Loads can be assigned in variant load cases of different natures.
+* [x] Loads can be combined in a load combination with load magnification factors.
+* [x] Rigid Supports of 3 degrees of freedom.
+* [x] Elastic supports using translational and rotational springs.
 * [x] Variety of predefined cross-sections.
 * [x] Linear mesher for better analysis results.
 
@@ -30,7 +30,7 @@ Here is a 2D framed strcture subjected to various loading conditions
 
 ```C#
 
-public void TestStructure()
+        public void TestStructure()
         {
             // units are kN, m
             FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
@@ -68,3 +68,12 @@ public void TestStructure()
             structure.Solve();
         }
 ```
+
+### Bending moment diagram 
+
+![bmd](https://user-images.githubusercontent.com/21183259/112727780-c5839500-8f2c-11eb-879d-3e076da3cecd.png)
+
+### Deformed shape
+
+![def](https://user-images.githubusercontent.com/21183259/112727782-c6b4c200-8f2c-11eb-9567-cd56f03c7b90.png)
+
