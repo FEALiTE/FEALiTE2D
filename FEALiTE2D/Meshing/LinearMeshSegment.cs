@@ -110,7 +110,7 @@ namespace FEALiTE2D.Meshing
                          this.Internalforces1.Mz * x * x / 2.0
                          - Internalforces1.Fy * x * x * x / 6.0
                          - wy1 * x * x * x * x / 24.0
-                         - x * x * x * x * x * ((wy2 - wy1) / (x2 - x1)) / 120 // uniform and trap load.
+                         - x * x * x * x * x * ((wy2 - wy1) / (x2 - x1)) / 120.0 // uniform and trap load.
                     ) / (E * Ix)
                 );
         }
