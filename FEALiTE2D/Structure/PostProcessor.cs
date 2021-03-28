@@ -256,6 +256,20 @@ namespace FEALiTE2D.Structure
                     segment.Displacement1.Ux = pS.AxialDisplacementAt(pS.x2 - pS.x1);
                     segment.Displacement1.Uy = pS.VerticalDisplacementAt(pS.x2 - pS.x1);
                     segment.Displacement1.Rz = pS.SlopeAngleAt(pS.x2 - pS.x1);
+                   
+                    // use shape function for elements with end releases.
+                    if(element is FrameElement2D ee)
+                    {
+                        if(ee.EndRelease != Frame2DEndRelease.NoRelease)
+                        {
+                            // get shape function at start of the segment
+                            var N = ee.GetShapeFunctionAt(segment.x1);
+                            double[] u = new double[3];
+                            N.Multiply(dl, u);
+                            segment.Displacement1 = Displacement.FromVector(u);
+                        }
+                    }
+
                 }
 
                 // assign local end forces at start of each segment 
@@ -345,6 +359,20 @@ namespace FEALiTE2D.Structure
                 // set internal forces at the end
                 segment.Internalforces2 = segment.GetInternalForceAt(segment.x2 - segment.x1);
                 segment.Displacement2 = segment.GetDisplacementAt(segment.x2 - segment.x1);
+                
+                // use shape function for elements with end releases.
+                if (element is FrameElement2D eee)
+                {
+                    if (eee.EndRelease != Frame2DEndRelease.NoRelease)
+                    {
+                        // get shape function at start of the segment
+                        var N = eee.GetShapeFunctionAt(segment.x2);
+                        double[] u = new double[3];
+                        N.Multiply(dl, u);
+                        segment.Displacement2 = Displacement.FromVector(u);
+                    }
+                }
+
             }
 
             return element.MeshSegments;
