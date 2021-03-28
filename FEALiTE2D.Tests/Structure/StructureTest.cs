@@ -87,7 +87,7 @@ namespace FEALiTE2D.Tests.Structure
 
             FEALiTE2D.Plotter.CADPlotter.DrawStructure(structure, 1);
             FEALiTE2D.Plotter.CADPlotter.DrawInternalForces(structure, loadCase, 0.005);
-            FEALiTE2D.Plotter.CADPlotter.DrawDefelectionShape(structure, loadCase, 10);
+            FEALiTE2D.Plotter.CADPlotter.DrawDefelectionShape(structure, loadCase, 5);
         }
 
         // confirmed with robot
@@ -635,7 +635,7 @@ namespace FEALiTE2D.Tests.Structure
 
             FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
             FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1, EndRelease = Frame2DEndRelease.StartRelease };
-            structure.AddElement(new IElement[] { e1, e2});
+            structure.AddElement(new IElement[] { e1, e2 });
 
             LoadCase loadCase = new LoadCase("live", LoadCaseType.Live);
             structure.LoadCasesToRun.Add(loadCase);
@@ -655,6 +655,92 @@ namespace FEALiTE2D.Tests.Structure
             Assert.AreEqual(nd1.Rz, -1.49333333333e-5, 1e-5);
             Assert.AreEqual(nd2.Rz, 1.49333333333e-5, 1e-5);
             Assert.AreEqual(nd3.Rz, 2.27555555557e-5, 1e-5);
+        }
+
+
+        // confirmed with robot
+        [Test]
+        public void TestStructureWithLoadCombination()
+        {
+            // units are kN, m
+            FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
+
+            Node2D n1 = new Node2D(1, 0, "n1");
+            Node2D n2 = new Node2D(1, 2, "n2");
+            Node2D n3 = new Node2D(1, 4, "n3");
+            Node2D n4 = new Node2D(4, 0, "n4");
+            Node2D n5 = new Node2D(4, 2, "n5");
+            Node2D n6 = new Node2D(4, 4, "n6");
+            Node2D n7 = new Node2D(0, 4, "n7");
+            Node2D n8 = new Node2D(5, 4, "n8");
+            //n1.Support = new NodalSpringSupport(10e5, 10e5, 10e5); //fully restrained
+            //n4.Support = new NodalSpringSupport(10e5, 10e5, 10e5); //fully restrained
+            n1.Support = new NodalSupport(true, true, true); //fully restrained
+            n4.Support = new NodalSupport(true, true, true); //fully restrained
+
+            structure.AddNode(n1, n2, n3, n4, n5, n6, n7, n8);
+            IMaterial material = new GenericIsotropicMaterial() { E = 30E6, U = 0.2, Label = "Steel", Alpha = 0.000012, Gama = 39885, MaterialType = MaterialType.Steel };
+            IFrame2DSection Columns_Section = new CirclularSection(0.4, material);
+            IFrame2DSection Beam_Section = new RectangularSection(0.4, 0.4, material);
+
+            // columns
+            FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = Columns_Section };
+            FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = Columns_Section };
+            FrameElement2D e3 = new FrameElement2D(n4, n5, "e3") { CrossSection = Columns_Section };
+            FrameElement2D e4 = new FrameElement2D(n5, n6, "e4") { CrossSection = Columns_Section };
+
+            // beams
+            FrameElement2D e5 = new FrameElement2D(n7, n3, "e5") { CrossSection = Beam_Section };
+            FrameElement2D e6 = new FrameElement2D(n3, n6, "e6") { CrossSection = Beam_Section };
+            FrameElement2D e7 = new FrameElement2D(n6, n8, "e7") { CrossSection = Beam_Section };
+            FrameElement2D e8 = new FrameElement2D(n2, n5, "e8") { CrossSection = Beam_Section, EndRelease = Frame2DEndRelease.FullRlease };
+            structure.AddElement(new[] { e1, e2, e3, e4, e5, e6, e7, e8 });
+
+            LoadCase LiveLoadCase = new LoadCase("Live", LoadCaseType.Live);
+            LoadCase DeadLoadCase = new LoadCase("Dead", LoadCaseType.Dead);
+            structure.LoadCasesToRun.AddRange(new[] { LiveLoadCase, DeadLoadCase });
+
+            e5.Loads.Add(new FrameTrapezoidalLoad(0, 0, 0, -15, LoadDirection.Local, LiveLoadCase));
+            e6.Loads.Add(new FrameUniformLoad(0, -15, LoadDirection.Local, LiveLoadCase));
+            e7.Loads.Add(new FrameTrapezoidalLoad(0, 0, -15, 0, LoadDirection.Local, LiveLoadCase));
+
+            n2.NodalLoads.Add(new NodalLoad(20, 0, 0, LoadDirection.Global, DeadLoadCase));
+
+            structure.LinearMesher.NumberSegements = 30;
+            structure.Solve();
+            FEALiTE2D.Plotter.CADPlotter.DrawStructure(structure, 1);
+
+            LoadCombination loadCombo = new LoadCombination("uls");
+            loadCombo.Add(DeadLoadCase, 1.35);
+            loadCombo.Add(LiveLoadCase, 1.5);
+
+            var R1ll = structure.Results.GetSupportReaction(n1, LiveLoadCase);
+            var R4ll = structure.Results.GetSupportReaction(n4, LiveLoadCase);
+            var R1dl = structure.Results.GetSupportReaction(n1, DeadLoadCase);
+            var R4dl = structure.Results.GetSupportReaction(n4, DeadLoadCase);
+            var R1c = structure.Results.GetSupportReaction(n1, loadCombo);
+            var R4c = structure.Results.GetSupportReaction(n4, loadCombo);
+
+            Assert.AreEqual(R1ll.Fx, -1.0545205, 1e-5);
+            Assert.AreEqual(R1ll.Fy, 30, 1e-5);
+            Assert.AreEqual(R1ll.Mz, 0.67707616, 1e-5);
+            Assert.AreEqual(R4ll.Fx, 1.0545205, 1e-5);
+            Assert.AreEqual(R4ll.Fy, 30, 1e-5);
+            Assert.AreEqual(R4ll.Mz, -0.6770761, 1e-5);
+
+            Assert.AreEqual(R1dl.Fx, -10.149307, 1e-5);
+            Assert.AreEqual(R1dl.Fy, -3.0919293, 1e-5);
+            Assert.AreEqual(R1dl.Mz, 15.5190549, 1e-5);
+            Assert.AreEqual(R4dl.Fx, -9.8506923, 1e-5);
+            Assert.AreEqual(R4dl.Fy, 3.09192933, 1e-5);
+            Assert.AreEqual(R4dl.Mz, 15.2051570, 1e-5);
+
+            Assert.AreEqual(R1c.Fx, -1.0545205 * 1.5 + 1.35 * -10.149307, 1e-5);
+            Assert.AreEqual(R1c.Fy, 30 * 1.5 + 1.35 * -3.0919293, 1e-5);
+            Assert.AreEqual(R1c.Mz, 0.67707616 * 1.5 + 1.35 * 15.5190549, 1e-5);
+            Assert.AreEqual(R4c.Fx, 1.0545205 * 1.5 + 1.35 * -9.8506923, 1e-5);
+            Assert.AreEqual(R4c.Fy, 30 * 1.5 + 1.35 * 3.09192933, 1e-5);
+            Assert.AreEqual(R4c.Mz, -0.6770761 * 1.5 + 1.35 * 15.2051570, 1e-5);
         }
     }
 }
