@@ -109,57 +109,6 @@ namespace FEALiTE2D.Elements
         public List<Meshing.LinearMeshSegment> MeshSegments { get; set; }
 
         /// <summary>
-        /// Get The shape function at a point along the frame elements, including displacement only.
-        /// </summary>
-        /// <param name="x">distance measured from start node</param>
-        public DenseMatrix GetShapeFunctionNuAt(double x)
-        {
-            double l = this.Length;
-            double xsi = x / l;
-            double xsi2 = xsi * xsi;
-            double xsi3 = xsi * xsi * xsi;
-
-            double N1 = 1.0 - xsi,
-                   N2 = xsi,
-                   N3 = 1.0 - 3 * xsi2 + 2 * xsi3,
-                   N4 = l * (xsi - 2 * xsi2 + xsi3),
-                   N5 = 3 * xsi2 - 2 * xsi3,
-                   N6 = l * (-xsi2 + xsi3);
-
-            double[,] nu = new double[,]
-            {
-                {N1 , 0 , 0 , N2, 0 ,  0 },
-                { 0 , N3, N4, 0 , N5, N6 }
-            };
-
-            return DenseMatrix.OfArray(nu) as DenseMatrix;
-        }
-
-        /// <summary>
-        /// Get The shape function at a point along the frame elements, including rotation only.
-        /// </summary>
-        /// <param name="x">distance measured from start node</param>
-        public DenseMatrix GetShapeFunctionN0At(double x)
-        {
-            double l = this.Length;
-            double xsi = x / l;
-            double xsi2 = xsi * xsi;
-
-            double N7 = 6.0 * (-xsi + xsi2) / l,
-                   N8 = 1 - 4 * xsi - 3 * xsi2,
-                   N9 = 6.0 * (xsi - xsi2) / l,
-                   N10 = -2 * xsi + 3.0 * xsi2;
-
-            double[,] nu = new double[,]
-            {
-                { 0 , 0 , 0 , 0 , 0 ,  0 },
-                { 0 , N7, N8, 0 , N9, N10}
-            };
-
-            return DenseMatrix.OfArray(nu) as DenseMatrix;
-        }
-
-        /// <summary>
         /// Get The shape function at a point along the frame elements, including displacement and rotation.
         /// </summary>
         /// <param name="x">distance measured from start node</param>

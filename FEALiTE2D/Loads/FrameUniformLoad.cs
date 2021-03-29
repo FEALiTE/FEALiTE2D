@@ -100,7 +100,7 @@ namespace FEALiTE2D.Loads
 
             for (int i = 0; i < nn; i++)
             {
-                var n = element.GetShapeFunctionNuAt(xi[i]);
+                var n = element.GetShapeFunctionAt(xi[i]);
                 fem[0] += n[0, 0] * wx * weights[i];
                 fem[1] += n[1, 1] * wy * weights[i];
                 fem[2] += n[1, 2] * wy * weights[i];
