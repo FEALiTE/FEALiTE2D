@@ -42,17 +42,17 @@ namespace FEALiTE2D.Structure
 
             if (node.IsFree == true)
             {
-                return R; // 0 reactions.
+                return null;
             }
 
             // check if this node have an elastic support
-            if (node.Support is NodalSpringSupport)
+            if (node.Support is NodalSpringSupport ns)
             {
                 // F= K * D
                 // get node displacement
                 Displacement d = this.GetNodeGlobalDisplacement(node, loadCase);
                 double[] f = new double[3];
-                ((NodalSpringSupport)node.Support).GlobalStiffnessMatrix.Multiply(d.ToVector(), f);
+                ns.GlobalStiffnessMatrix.Multiply(d.ToVector(), f);
 
                 R.Fx -= f[0];
                 R.Fy -= f[1];

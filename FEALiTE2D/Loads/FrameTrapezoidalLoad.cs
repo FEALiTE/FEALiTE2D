@@ -7,6 +7,7 @@ namespace FEALiTE2D.Loads
     /// <summary>
     /// Represents a trapezoidal loads on frame elements.
     /// </summary>
+    [System.Serializable]
     public class FrameTrapezoidalLoad : ILoad
     {
         /// <summary>

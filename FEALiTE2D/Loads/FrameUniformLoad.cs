@@ -5,6 +5,7 @@ namespace FEALiTE2D.Loads
     /// <summary>
     /// Represents a uniform liner loads on<see cref="FrameElement"/>.
     /// </summary>
+    [System.Serializable]
     public class FrameUniformLoad : ILoad
     {
         /// <summary>

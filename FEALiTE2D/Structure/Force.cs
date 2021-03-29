@@ -3,6 +3,7 @@
     /// <summary>
     /// Defines a force of 3 components (Fx, Fy, Mz)
     /// </summary>
+    [System.Serializable]
     public class Force
     {
         /// <summary>
@@ -85,6 +86,15 @@
                 return false;
             }
             return true;
+        }
+
+        /// <inheritdoc/>
+        public override int GetHashCode()
+        {
+            return
+                $"Fx = {System.Math.Round(Fx, 8)} \r\n".GetHashCode() +
+                $"Fy = {System.Math.Round(Fy, 8)} \r\n".GetHashCode() +
+                $"Mz = {System.Math.Round(Mz, 8)} \r\n".GetHashCode();
         }
     }
 }

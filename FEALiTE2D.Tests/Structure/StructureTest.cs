@@ -120,7 +120,7 @@ namespace FEALiTE2D.Tests.Structure
             structure.Solve();
 
             Assert.AreEqual(structure.Results.GetSupportReaction(n1, loadCase), Force.FromVector(new double[] { 30.37225194999335, 102.08675797670341, 1215.9664523968904 }));
-            Assert.AreEqual(structure.Results.GetSupportReaction(n2, loadCase), Force.FromVector(new double[] { 0, 0, 0 }));
+            Assert.AreEqual(structure.Results.GetSupportReaction(n2, loadCase), null);
             Assert.AreEqual(structure.Results.GetSupportReaction(n3, loadCase), Force.FromVector(new double[] { -30.37225194999336, 17.913242023296597, -854.0740487820697 }));
 
             var nd1 = structure.Results.GetNodeGlobalDisplacement(n1, loadCase);
@@ -316,9 +316,7 @@ namespace FEALiTE2D.Tests.Structure
             Assert.AreEqual(R1.Fx, 0);
             Assert.AreEqual(R1.Fy, 146.32690995907231);
             Assert.AreEqual(R1.Mz, 281.18656207366985);
-            Assert.AreEqual(R2.Fx, 0);
-            Assert.AreEqual(R2.Fy, 0);
-            Assert.AreEqual(R2.Mz, 0);
+            Assert.AreEqual(R2, null);
             Assert.AreEqual(R3.Fx, 0);
             Assert.AreEqual(R3.Fy, 243.46483628922235);
             Assert.AreEqual(R3.Mz, 0);

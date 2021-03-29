@@ -7,6 +7,7 @@ namespace FEALiTE2D.CrossSections
     /// Represent an European I beams section.
     /// </summary>
     /// <seealso cref="FEALiTE2D.CrossSections.IFrame2DSection" />
+    [System.Serializable]
     public class IPESection : IFrame2DSection
     {
         /// <summary>

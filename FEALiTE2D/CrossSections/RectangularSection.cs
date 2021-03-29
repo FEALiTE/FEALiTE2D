@@ -6,6 +6,7 @@ namespace FEALiTE2D.CrossSections
     /// <summary>
     /// Represents a Solid Rectangular Cross-Section.
     /// </summary>
+    [System.Serializable]
     public class RectangularSection : IFrame2DSection
     {
         /// <summary>

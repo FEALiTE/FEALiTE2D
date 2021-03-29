@@ -1,7 +1,6 @@
 ﻿using CSparse;
 using FEALiTE2D.Elements;
 using FEALiTE2D.Loads;
-using FEALiTE2D.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +12,7 @@ namespace FEALiTE2D.Structure
     /// These elements are subjected to external actions.
     /// To solve a structural model, the model must have at least one degree of freedom.
     /// </summary>
+    [System.Serializable]
     public class Structure
     {
         /// <summary>

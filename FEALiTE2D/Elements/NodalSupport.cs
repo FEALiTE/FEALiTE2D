@@ -3,6 +3,7 @@
     /// <summary>
     /// A Class that Represents a nodal rigid support that prevents motion or rotation in XY plan. 
     /// </summary>
+    [System.Serializable]
     public class NodalSupport
     {
 

@@ -10,6 +10,7 @@ namespace FEALiTE2D.Elements
     /// <summary>
     /// Represents a class for frame elements, each frame element has 3 dof at each node.
     /// </summary>
+    [System.Serializable]
     public class FrameElement2D : IElement
     {
         /// <summary>

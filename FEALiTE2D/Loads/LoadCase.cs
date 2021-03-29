@@ -3,6 +3,7 @@
     /// <summary>
     /// Represent a class for load cases.
     /// </summary>
+    [System.Serializable]
     public class LoadCase
     {
         /// <summary>

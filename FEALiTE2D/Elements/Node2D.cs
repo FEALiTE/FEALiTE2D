@@ -10,6 +10,7 @@ namespace FEALiTE2D.Elements
     /// Each node has 3 degrees of freedom (DOF) one displacement in x-direction, one displacement in y-direction and one rotation about z-direction (perpendicular to the plan)
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("label:{Label}, x:{X}, y:{Y}")]
+    [System.Serializable]
     public class Node2D
     {
         /// <summary>

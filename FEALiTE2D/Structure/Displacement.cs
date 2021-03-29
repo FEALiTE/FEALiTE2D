@@ -3,6 +3,7 @@
     /// <summary>
     /// Defines a displacement of 3 components (Ux, Uy, Rz)
     /// </summary>
+    [System.Serializable]
     public class Displacement
     {
         /// <summary>
@@ -85,6 +86,15 @@
                 return false;
             }
             return true;
+        }
+
+        /// <inheritdoc/>
+        public override int GetHashCode()
+        {
+            return
+                $"Ux = {System.Math.Round(Ux, 8)} \r\n".GetHashCode() +
+                $"Uy = {System.Math.Round(Uy, 8)} \r\n".GetHashCode() +
+                $"Rz = {System.Math.Round(Rz, 8)} \r\n".GetHashCode();
         }
     }
 }

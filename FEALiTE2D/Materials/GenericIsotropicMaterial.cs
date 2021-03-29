@@ -1,10 +1,9 @@
-﻿using System;
-
-namespace FEALiTE2D.Materials
+﻿namespace FEALiTE2D.Materials
 {
     /// <summary>
     /// Represents an interface for <see cref="GenericIsotropicMaterial"/> class
     /// </summary>
+    [System.Serializable]
     public class GenericIsotropicMaterial : IMaterial
     {
         /// <summary>

@@ -6,6 +6,7 @@ namespace FEALiTE2D.Loads
     /// <summary>
     /// Represent a class for support displacement displacements in Global Coordinates system.
     /// </summary>
+    [System.Serializable]
     public class SupportDisplacementLoad
     {
         /// <summary>

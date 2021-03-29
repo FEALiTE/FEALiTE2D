@@ -3,6 +3,7 @@
     /// <summary>
     /// Represents a class for <see cref="FramePointLoad"/>.
     /// </summary>
+    [System.Serializable]
     public class FramePointLoad : ILoad
     {
         /// <summary>

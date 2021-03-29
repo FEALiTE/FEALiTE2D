@@ -5,6 +5,7 @@ namespace FEALiTE2D.Loads
     /// <summary>
     /// Represent a class for Nodal loads in Global or local coordinates system.
     /// </summary>
+    [System.Serializable]
     public class NodalLoad
     {
         /// <summary>

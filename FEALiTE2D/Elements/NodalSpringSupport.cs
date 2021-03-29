@@ -3,6 +3,7 @@
     /// <summary>
     /// A Class that Represents a nodal spring support that have three values of spring constants. 
     /// </summary>
+    [System.Serializable]
     public class NodalSpringSupport : NodalSupport
     {
 

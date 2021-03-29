@@ -5,6 +5,7 @@ namespace FEALiTE2D.Meshing
     /// <summary>
     /// This class represents a small linear segment of an element that is bounded by two distances from start node of the element.
     /// </summary>
+    [System.Serializable]
     public class LinearMeshSegment
     {
         public double

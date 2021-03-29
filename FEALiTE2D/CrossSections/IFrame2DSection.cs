@@ -1,15 +1,11 @@
-﻿using CSparse.Double;
-using FEALiTE2D.Elements;
-using FEALiTE2D.Materials;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using FEALiTE2D.Materials;
 
 namespace FEALiTE2D.CrossSections
 {
     /// <summary>
     /// Represents a class for <see cref="IFrame2DSection"/>.
     /// </summary>
+    [System.Serializable]
     public abstract class IFrame2DSection
     {
         /// <summary>

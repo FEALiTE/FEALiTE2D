@@ -6,6 +6,7 @@ namespace FEALiTE2D.Loads
     /// A class for load combination results when more than one load case acts on the structure.
     /// These two "factored loads" are combined (added) to determine the resultant loads.
     /// </summary>
+    [System.Serializable]
     public class LoadCombination : Dictionary<LoadCase, double>
     {
 

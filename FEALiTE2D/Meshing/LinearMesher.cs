@@ -9,6 +9,7 @@ namespace FEALiTE2D.Meshing
     /// <summary>
     /// This class represents a mesher for 1D elements.
     /// </summary>
+    [System.Serializable]
     public class LinearMesher : FEALiTE2D.Meshing.ILinearMesher
     {
         /// <summary>

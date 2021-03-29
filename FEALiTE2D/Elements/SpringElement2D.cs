@@ -9,8 +9,9 @@ using static System.Math;
 namespace FEALiTE2D.Elements
 {
     /// <summary>
-    /// Represents a spring element/Fictitious bar in 2d space that has a spring stiffness and has 2 dof at each node. Spring may be longitudinal or rotational
+    /// Represents a spring element/Fictitious bar in 2d space that has a spring stiffness and has 2 dof at each node. Spring may be longitudinal or rotational.
     /// </summary>
+    [System.Serializable]
     public class SpringElement2D : IElement
     {
         /// <summary>

@@ -7,6 +7,7 @@ namespace FEALiTE2D.CrossSections
     /// Represents a Solid Circular Cross-Section.
     /// </summary>
     /// <seealso cref="FEALiTE2D.CrossSections.IFrame2DSection" />
+    [System.Serializable]
     public class CirclularSection : IFrame2DSection
     {
         /// <summary>
@@ -40,6 +41,6 @@ namespace FEALiTE2D.CrossSections
             this.Iy = this.Ix = PI * d * d * d * d / 64.0;
             this.J = 0.5 * this.Iy;
             base.MaxWidth = base.MaxHeight = d;
-        }        
+        }
     }
 }
