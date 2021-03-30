@@ -48,7 +48,7 @@
         public double Mz { get; set; }
 
         /// <summary>
-        /// Distance of the <see cref="FramePointLoad"/> from the <see cref="FrameElement.StartNode"/>.
+        /// Distance of the <see cref="FramePointLoad"/> from the start node.
         /// </summary>
         public double L1 { get; set; }
 

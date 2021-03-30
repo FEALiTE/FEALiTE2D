@@ -118,7 +118,8 @@ namespace FEALiTE2D.Structure
         /// <summary>
         /// Get Node's global displacement due to applied load in a load case.
         /// </summary>
-        /// <param name="loadcase">load case</param>
+        /// <param name="node">node which is has a free dof.</param>
+        /// <param name="loadCase">load case</param>
         /// <returns>Nodal Displacement</returns>
         public Displacement GetNodeGlobalDisplacement(Node2D node, LoadCase loadCase)
         {
@@ -505,44 +506,5 @@ namespace FEALiTE2D.Structure
             return null;
         }
 
-
-        public List<FEALiTE2D.Meshing.LinearMeshSegment> GetF(IElement element, LoadCase lc)
-        {
-            var segments = new List<FEALiTE2D.Meshing.LinearMeshSegment>();
-            for (int i = 0; i < element.MeshSegments.Count; i++)
-            {
-                segments.Add(new Meshing.LinearMeshSegment()
-                {
-                    x1 = element.MeshSegments[i].x1,
-                    x2 = element.MeshSegments[i].x2,
-                });
-            }
-
-            //SortedSet<double> xs = new SortedSet<double>();
-            //foreach (var item in element.MeshSegments)
-            //{
-            //    xs.Add(item.x1);
-            //}
-            //xs.Add(element.MeshSegments.Last().x2);
-
-            double[] dl = this.GetElementLocalEndDisplacement(element, lc);
-
-            for (int i = 0; i < segments.Count; i++)
-            {
-                var N = element.GetShapeFunctionAt(segments[i].x1);
-                double[] u = new double[3];
-                 N.Multiply(dl, u);
-                segments[i].Displacement1 = Displacement.FromVector(u);
-
-                u = new double[3];
-                N = element.GetShapeFunctionAt(segments[i].x2);
-                N.Multiply(dl, u);
-                segments[i].Displacement2 = Displacement.FromVector(u);
-
-            }
-
-
-            return segments;
-        }
     }
 }

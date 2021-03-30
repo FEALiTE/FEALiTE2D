@@ -9,12 +9,12 @@ namespace FEALiTE2D.CrossSections
     public abstract class IFrame2DSection
     {
         /// <summary>
-        /// Material of the <see cref="ISection"/>.
+        /// Material of the <see cref="IFrame2DSection"/>.
         /// </summary>
         public IMaterial Material { get; set; }
 
         /// <summary>
-        /// Label of <see cref="ISection"/>.
+        /// Label of <see cref="IFrame2DSection"/>.
         /// </summary>
         public string Label { get; set; }
         /// <summary>

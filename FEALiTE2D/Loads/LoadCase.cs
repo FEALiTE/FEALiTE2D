@@ -49,12 +49,12 @@
         public bool IsLinearCase { get; }
 
         /// <inheritdoc/>
-        public override string ToString() => $"{Label}, {LoadCaseType.ToString()}";
+        public override string ToString() => $"{Label}, {LoadCaseType}";
 
         /// <inheritdoc/>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(this, null) || ReferenceEquals(obj, null))
+            if (this is null || obj is null)
             {
                 return false;
             }
@@ -76,7 +76,7 @@
         /// <inheritdoc/>
         public static bool operator ==(LoadCase lc1, LoadCase lc2)
         {
-            if (ReferenceEquals(lc1, null))
+            if (lc1 is null)
             {
                 return false;
             }
@@ -86,7 +86,7 @@
         /// <inheritdoc/>
         public static bool operator !=(LoadCase lc1, LoadCase lc2)
         {
-            if (ReferenceEquals(lc1, null))
+            if (lc1 is null)
             {
                 return false;
             }
@@ -109,12 +109,34 @@
     /// </summary>
     public enum LoadCaseType
     {
+        /// <summary>
+        /// Self Weight Load Case
+        /// </summary>
         SelfWeight = 0,
+
+        /// <summary>
+        /// Dead Load Case
+        /// </summary>
         Dead,
+
+        /// <summary>
+        /// Live Load Case
+        /// </summary>
         Live,
-        Wind,
+
+        /// <summary>
+        /// Seismic Load Case
+        /// </summary> Wind,
         Seismic,
+
+        /// <summary>
+        /// Accidental Load Case
+        /// </summary>
         Accidental,
+
+        /// <summary>
+        /// Shrinkage Load Case
+        /// </summary>
         Shrinkage,
     }
 
@@ -123,10 +145,29 @@
     /// </summary>
     public enum LoadCaseDuration
     {
+        /// <summary>
+        /// load duration is more than 10 years.
+        /// </summary>
         Permanent,
+
+        /// <summary>
+        /// load duration is 6 months - 10 years.
+        /// </summary>
         LongTerm,
+
+        /// <summary>
+        /// load duration is 1 week - 6 months.
+        /// </summary>
         MediumTerm,
+
+        /// <summary>
+        /// load duration is less than one week.
+        /// </summary>
         ShortTerm,
+
+        /// <summary>
+        /// load duration is Instantaneous.
+        /// </summary>
         Instantaneous
     }
 }

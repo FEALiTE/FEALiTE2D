@@ -30,7 +30,6 @@ namespace FEALiTE2D.Elements
         /// <param name="startNode">Start node</param>
         /// <param name="endNode">End node</param>
         /// <param name="label">name of the spring</param>
-        /// <param name="orientation">orientation of the sprig</param>
         public SpringElement2D(Node2D startNode, Node2D endNode, string label) : this()
         {
             this.StartNode = startNode;
@@ -84,8 +83,10 @@ namespace FEALiTE2D.Elements
             }
         }
 
+        /// <inheritdoc/>
         public IList<ILoad> Loads { get; set; }
 
+        /// <inheritdoc/>
         [Obsolete("spring element doesn't have cross section properties.", true)]
         public IFrame2DSection CrossSection { get; set; }
 

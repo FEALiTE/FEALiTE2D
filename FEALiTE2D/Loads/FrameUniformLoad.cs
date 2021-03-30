@@ -3,7 +3,7 @@
 namespace FEALiTE2D.Loads
 {
     /// <summary>
-    /// Represents a uniform liner loads on<see cref="FrameElement"/>.
+    /// Represents a uniform loads on frame elements.
     /// </summary>
     [System.Serializable]
     public class FrameUniformLoad : ILoad

@@ -18,9 +18,9 @@ namespace FEALiTE2D.Loads
         /// <summary>
         /// Creates a new class of <see cref="NodalLoad"/>
         /// </summary>
-        /// <param name="Fx">force parallel to Global X direction.</param>
-        /// <param name="Fy">force parallel to Global Y direction.</param>
-        /// <param name="Mz">Moment parallel to Global Z direction.</param>
+        /// <param name="fx">force parallel to Global X direction.</param>
+        /// <param name="fy">force parallel to Global Y direction.</param>
+        /// <param name="mz">Moment parallel to Global Z direction.</param>
         /// <param name="direction">load direction.</param>
         /// <param name="loadCase">load case.</param>
         public NodalLoad(double fx, double fy, double mz, LoadDirection direction, LoadCase loadCase) : this()
@@ -71,6 +71,7 @@ namespace FEALiTE2D.Loads
             return F;
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             if (obj is null)
@@ -89,6 +90,7 @@ namespace FEALiTE2D.Loads
             return true;
         }
 
+        /// <inheritdoc/>
         public static bool operator ==(NodalLoad nl1, NodalLoad nl2)
         {
             if (nl1 is null)
@@ -98,6 +100,7 @@ namespace FEALiTE2D.Loads
             return nl1.Equals(nl2);
         }
 
+        /// <inheritdoc/>
         public static bool operator !=(NodalLoad nl1, NodalLoad nl2)
         {
             if (ReferenceEquals(nl1, null))
@@ -107,6 +110,7 @@ namespace FEALiTE2D.Loads
             return !nl1.Equals(nl2);
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             int result = 0;

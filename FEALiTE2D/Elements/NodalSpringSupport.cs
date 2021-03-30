@@ -43,7 +43,7 @@
         public double Cz { get; set; }
 
         /// <summary>
-        /// Gets the global stiffness matrix, This should be called after <see cref="Initialize"/>
+        /// Gets the global stiffness matrix, This should be called after <see cref="IElement.Initialize"/>
         /// </summary>
         public CSparse.Double.DenseMatrix GlobalStiffnessMatrix
         {

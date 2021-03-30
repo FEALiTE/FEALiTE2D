@@ -1,12 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
+		<Authors>Mohamed Salah Ibrahim</Authors>
+		<Copyright>Copyright © 2021 Mohamed Salah Ibrahim Civilms@outlook.com</Copyright>
+		<Description>A finite element analysis library for 2D frame, beams and truss elements using C#</Description>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/FEALiTE/FEALiTE2D</RepositoryUrl>
+		<PackageTags>Civil Structural Engineering Beam Frame Truss Analysis</PackageTags>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<EnableNETAnalyzers>false</EnableNETAnalyzers>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CSparse" Version="3.5.0" />
-    <PackageReference Include="MathNet.Numerics" Version="4.15.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="CSparse" Version="3.5.0" />
+		<PackageReference Include="MathNet.Numerics" Version="4.15.0" />
+	</ItemGroup>
 
 </Project>

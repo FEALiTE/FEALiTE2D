@@ -10,7 +10,7 @@ namespace FEALiTE2D.CrossSections
     public class Generic2DSection : IFrame2DSection
     {
         /// <summary>
-        /// Creates a new instance of the <see cref="GenericSection"/>
+        /// Creates a new instance of the <see cref="Generic2DSection"/>
         /// </summary>
         /// <param name="A">Cross section area.</param>
         /// <param name="Ax">Shear area in x-x direction.</param>

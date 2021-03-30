@@ -1,5 +1,4 @@
 ﻿using FEALiTE2D.Elements;
-using System;
 
 namespace FEALiTE2D.Loads
 {
@@ -10,14 +9,14 @@ namespace FEALiTE2D.Loads
     public class SupportDisplacementLoad
     {
         /// <summary>
-        /// Creates a new class of <see cref="NodalDisplacement"/>.
+        /// Creates a new class of <see cref="SupportDisplacementLoad"/>.
         /// </summary>
         public SupportDisplacementLoad()
         {
         }
 
         /// <summary>
-        /// Creates a new class of <see cref="NodalDisplacement"/>
+        /// Creates a new class of <see cref="SupportDisplacementLoad"/>
         /// </summary>
         /// <param name="ux">global displacement in X-Direction.</param>
         /// <param name="uy">global displacement in Y-Direction.</param>
@@ -70,6 +69,7 @@ namespace FEALiTE2D.Loads
             return F;
         }
 
+        /// <inheritdoc/>
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(obj, null))
@@ -88,6 +88,7 @@ namespace FEALiTE2D.Loads
             return true;
         }
 
+        /// <inheritdoc/>
         public static bool operator ==(SupportDisplacementLoad nl1, SupportDisplacementLoad nl2)
         {
             if (ReferenceEquals(nl1, null))
@@ -97,6 +98,7 @@ namespace FEALiTE2D.Loads
             return nl1.Equals(nl2);
         }
 
+        /// <inheritdoc/>
         public static bool operator !=(SupportDisplacementLoad nl1, SupportDisplacementLoad nl2)
         {
             if (ReferenceEquals(nl1, null))
@@ -106,6 +108,7 @@ namespace FEALiTE2D.Loads
             return !nl1.Equals(nl2);
         }
 
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             int result = 0;

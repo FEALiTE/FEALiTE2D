@@ -9,6 +9,7 @@ namespace FEALiTE2D.Meshing
     public class LinearMeshSegment
     {
         public double
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
                x1, // start distance of the segment measured from start node.
                x2, // end distance of the segment measured from start node.
                wx1, // uniform and trapezoidal load value in local x direction at x1
@@ -25,6 +26,7 @@ namespace FEALiTE2D.Meshing
         public double E, // modulus of elasticity of material of the cross-section at this segment.
                       A, // area of the cross-section at the segment.
                       Ix; // second moment of inertial of the cross-section at the segment.
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 
 
         /// <summary>

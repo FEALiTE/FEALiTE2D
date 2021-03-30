@@ -63,12 +63,12 @@ namespace FEALiTE2D.Loads
         public double Wy2 { get; set; }
 
         /// <summary>
-        /// Distance from start.
+        /// Distance from start node.
         /// </summary>
         public double L1 { get; set; }
 
         /// <summary>
-        /// Distance from the end.
+        /// Distance from the end node.
         /// </summary>
         public double L2 { get; set; }
 

@@ -139,6 +139,9 @@ namespace FEALiTE2D.Elements
             return DenseMatrix.OfArray(nu) as DenseMatrix;
         }
 
+        /// <summary>
+        /// Get Constitutive matrix.
+        /// </summary>
         public DenseMatrix GetConstitutiveMatrix()
         {
             DenseMatrix D = new DenseMatrix(3, 3);
@@ -148,6 +151,10 @@ namespace FEALiTE2D.Elements
             return D;
         }
 
+        /// <summary>
+        /// Get strain gradient matrix.
+        /// </summary>
+        /// <param name="x">distance from start of the element</param>
         public DenseMatrix GetBmatrixAt(double x)
         {
             double l = this.Length;
@@ -209,19 +216,19 @@ namespace FEALiTE2D.Elements
                 default:
                 case Frame2DEndRelease.NoRelease:
                     {
-                        return kl1_1();
+                        return Kl1_1();
                     }
                 case Frame2DEndRelease.StartRelease:
                     {
-                        return kl0_1();
+                        return Kl0_1();
                     }
                 case Frame2DEndRelease.EndRelease:
                     {
-                        return kl1_0();
+                        return Kl1_0();
                     }
                 case Frame2DEndRelease.FullRlease:
                     {
-                        return kl0_0();
+                        return Kl0_0();
                     }
             }
         }
@@ -229,7 +236,7 @@ namespace FEALiTE2D.Elements
         /// <summary>
         /// calculate local stiffness matrix when the frame has no releases
         /// </summary>
-        private DenseMatrix kl1_1()
+        private DenseMatrix Kl1_1()
         {
             double l = this.Length;
             double l2 = l * l;
@@ -271,7 +278,7 @@ namespace FEALiTE2D.Elements
         /// <summary>
         /// calculate local stiffness matrix when there is a release at it's start
         /// </summary>
-        private DenseMatrix kl0_1()
+        private DenseMatrix Kl0_1()
         {
             double l = this.Length;
             double l2 = l * l;
@@ -305,7 +312,7 @@ namespace FEALiTE2D.Elements
         /// <summary>
         /// calculate local stiffness matrix when there is a release at it's end
         /// </summary>
-        private DenseMatrix kl1_0()
+        private DenseMatrix Kl1_0()
         {
             double l = this.Length;
             double l2 = l * l;
@@ -339,7 +346,7 @@ namespace FEALiTE2D.Elements
         /// <summary>
         /// calculate local stiffness matrix when it's fully released.
         /// </summary>
-        private DenseMatrix kl0_0()
+        private DenseMatrix Kl0_0()
         {
             double l = this.Length;
             double EAL = this.CrossSection.Material.E * this.CrossSection.A / l;
