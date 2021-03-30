@@ -125,6 +125,11 @@
         Live,
 
         /// <summary>
+        /// Wind Load Case
+        /// </summary>
+        Wind,
+
+        /// <summary>
         /// Seismic Load Case
         /// </summary> Wind,
         Seismic,
