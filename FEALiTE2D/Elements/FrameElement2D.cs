@@ -226,7 +226,7 @@ namespace FEALiTE2D.Elements
                     {
                         return Kl1_0();
                     }
-                case Frame2DEndRelease.FullRlease:
+                case Frame2DEndRelease.FullRelease:
                     {
                         return Kl0_0();
                     }
@@ -410,7 +410,7 @@ namespace FEALiTE2D.Elements
                         f[5] = 0;
                         break;
                     }
-                case Frame2DEndRelease.FullRlease:
+                case Frame2DEndRelease.FullRelease:
                     {
                         f[1] -= (f[2] + f[5]) / l;
                         f[4] += (f[2] + f[5]) / l;
@@ -457,6 +457,6 @@ namespace FEALiTE2D.Elements
         /// <summary>
         /// there is at both start and end of the element.
         /// </summary>
-        FullRlease
+        FullRelease
     }
 }
