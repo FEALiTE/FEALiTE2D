@@ -30,7 +30,7 @@ namespace FEALiTE2D.Structure
         }
 
         /// <summary>
-        /// Represents a list of Nodes that connects fem elements together.
+        /// Represents a list of Nodes that connect fem elements together.
         /// </summary>
         public List<Node2D> Nodes { get; set; }
 

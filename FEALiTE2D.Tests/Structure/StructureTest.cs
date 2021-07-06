@@ -542,8 +542,8 @@ namespace FEALiTE2D.Tests.Structure
             system.AddNode(n1, n2, n3, n4);
             system.LoadCasesToRun.Add(loadCase);
 
-            FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { EndRelease = Frame2DEndRelease.FullRlease };
-            FrameElement2D e2 = new FrameElement2D(n1, n3, "e2") { EndRelease = Frame2DEndRelease.FullRlease };
+            FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { EndRelease = Frame2DEndRelease.FullRelease };
+            FrameElement2D e2 = new FrameElement2D(n1, n3, "e2") { EndRelease = Frame2DEndRelease.FullRelease };
             SpringElement2D e3 = new SpringElement2D(n1, n4, "e3") { K = 2000 };
 
             e1.CrossSection = e2.CrossSection = new FEALiTE2D.CrossSections.Generic2DSection(5.0e-4, 5.0e-4, 5.0e-4, 0.1, 0.1, 0.1, 0.1, 0.1, new GenericIsotropicMaterial() { E = 210000000, U = 0.2 });
@@ -691,7 +691,7 @@ namespace FEALiTE2D.Tests.Structure
             FrameElement2D e5 = new FrameElement2D(n7, n3, "e5") { CrossSection = Beam_Section };
             FrameElement2D e6 = new FrameElement2D(n3, n6, "e6") { CrossSection = Beam_Section };
             FrameElement2D e7 = new FrameElement2D(n6, n8, "e7") { CrossSection = Beam_Section };
-            FrameElement2D e8 = new FrameElement2D(n2, n5, "e8") { CrossSection = Beam_Section, EndRelease = Frame2DEndRelease.FullRlease };
+            FrameElement2D e8 = new FrameElement2D(n2, n5, "e8") { CrossSection = Beam_Section, EndRelease = Frame2DEndRelease.FullRelease };
             structure.AddElement(new[] { e1, e2, e3, e4, e5, e6, e7, e8 });
 
             LoadCase LiveLoadCase = new LoadCase("Live", LoadCaseType.Live);
