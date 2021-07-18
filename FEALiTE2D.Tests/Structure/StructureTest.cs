@@ -84,10 +84,6 @@ namespace FEALiTE2D.Tests.Structure
             Assert.AreEqual(R2.Fx, -49.636744267753542);
             Assert.AreEqual(R2.Fy, 79.628666017130627);
             Assert.AreEqual(R2.Mz, 94.801989825388063);
-
-            FEALiTE2D.Plotter.CADPlotter.DrawStructure(structure, 1);
-            FEALiTE2D.Plotter.CADPlotter.DrawInternalForces(structure, loadCase, 0.005);
-            FEALiTE2D.Plotter.CADPlotter.DrawDefelectionShape(structure, loadCase, 5);
         }
 
         // confirmed with robot
@@ -169,9 +165,10 @@ namespace FEALiTE2D.Tests.Structure
             Assert.AreEqual(fg2[3], -30.37225194999336);
             Assert.AreEqual(fg2[4], 17.913242023296597);
             Assert.AreEqual(fg2[5], -854.0740487820697);
-            FEALiTE2D.Plotter.CADPlotter.DrawStructure(structure, 1);
-            FEALiTE2D.Plotter.CADPlotter.DrawInternalForces(structure, loadCase, 0.1);
-            FEALiTE2D.Plotter.CADPlotter.DrawDefelectionShape(structure, loadCase, 100);
+
+            var op = new FEALiTE2D.Plotting.Dxf.PlottingOption { NFDScaleFactor = 0.5, SFDScaleFactor = 5.0, BMDScaleFactor = 0.1, DisplacmentScaleFactor = 100, DiagramsHorizontalOffsets = 200 };
+            var plotter = new FEALiTE2D. Plotting.Dxf.Plotter(structure, op);
+            plotter.Plot("D:\\text.dxf", loadCase);
         }
 
         [Test]
@@ -287,10 +284,6 @@ namespace FEALiTE2D.Tests.Structure
             structure.LinearMesher.NumberSegements = 20;
             structure.Solve();
 
-            FEALiTE2D.Plotter.CADPlotter.DrawStructure(structure, 1);
-            FEALiTE2D.Plotter.CADPlotter.DrawInternalForces(structure, loadCase, 0.01);
-            FEALiTE2D.Plotter.CADPlotter.DrawDefelectionShape(structure, loadCase, 500);
-
             var R1 = structure.Results.GetSupportReaction(n1, loadCase);
             var R2 = structure.Results.GetSupportReaction(n2, loadCase);
             var R3 = structure.Results.GetSupportReaction(n3, loadCase);
@@ -323,9 +316,6 @@ namespace FEALiTE2D.Tests.Structure
             Assert.AreEqual(R4.Fx, 0);
             Assert.AreEqual(R4.Fy, 50.208253751705314);
             Assert.AreEqual(R4.Mz, 0);
-
-            FEALiTE2D.Plotter.CADPlotter.DrawStructure(structure, 1);
-            FEALiTE2D.Plotter.CADPlotter.DrawInternalForces(structure, loadCase, 0.01);
         }
 
 
@@ -357,10 +347,6 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.LinearMesher.NumberSegements = 10;
             structure.Solve();
-
-            FEALiTE2D.Plotter.CADPlotter.DrawStructure(structure, 1);
-            FEALiTE2D.Plotter.CADPlotter.DrawInternalForces(structure, loadCase, 0.01);
-            FEALiTE2D.Plotter.CADPlotter.DrawDefelectionShape(structure, loadCase, 1000);
 
             Assert.AreEqual(e1.MeshSegments[0].Internalforces1.Fy, 24.553854166666675);
             Assert.AreEqual(e1.MeshSegments[0].Internalforces2.Fy, 24.553854166666675);
@@ -420,10 +406,6 @@ namespace FEALiTE2D.Tests.Structure
             Assert.AreEqual(structure.Results.GetNodeGlobalDisplacement(n2, loadCase), Displacement.FromVector(new double[] { 0, 0, 0 }));
             Assert.AreEqual(structure.Results.GetNodeGlobalDisplacement(n3, loadCase), Displacement.FromVector(new double[] { 0, 0, 0 }));
             Assert.AreEqual(structure.Results.GetNodeGlobalDisplacement(n4, loadCase), Displacement.FromVector(new double[] { 0, -0.10, 0 }));
-
-
-            FEALiTE2D.Plotter.CADPlotter.DrawStructure(structure, 1);
-            FEALiTE2D.Plotter.CADPlotter.DrawInternalForces(structure, loadCase, 0.1);
         }
 
         [Test]
@@ -470,9 +452,6 @@ namespace FEALiTE2D.Tests.Structure
             Assert.AreEqual(structure.Results.GetNodeGlobalDisplacement(n4, loadCase), Displacement.FromVector(new double[] { 0.125, 0, 0 }));
             Assert.AreEqual(structure.Results.GetNodeGlobalDisplacement(n5, loadCase), Displacement.FromVector(new double[] { 0, 0, 0 }));
 
-            FEALiTE2D.Plotter.CADPlotter.DrawStructure(structure, 1);
-            FEALiTE2D.Plotter.CADPlotter.DrawInternalForces(structure, loadCase, 0.1);
-
         }
 
         [Test]
@@ -504,10 +483,6 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.LinearMesher.NumberSegements = 50;
             structure.Solve();
-
-            FEALiTE2D.Plotter.CADPlotter.DrawStructure(structure, 1);
-            FEALiTE2D.Plotter.CADPlotter.DrawInternalForces(structure, loadCase, 0.1);
-            FEALiTE2D.Plotter.CADPlotter.DrawDefelectionShape(structure, loadCase, 10000);
 
             var nd1 = structure.Results.GetNodeGlobalDisplacement(n1, loadCase);
             var nd2 = structure.Results.GetNodeGlobalDisplacement(n2, loadCase);
@@ -558,10 +533,6 @@ namespace FEALiTE2D.Tests.Structure
             var d1 = system.Results.GetNodeGlobalDisplacement(n1, loadCase);
             Assert.AreEqual(d1.Ux, -0.00344827586206897, 1e-5);
             Assert.AreEqual(d1.Uy, -0.00689655172413793, 1e-5);
-            FEALiTE2D.Plotter.CADPlotter.DrawStructure(system, 1);
-            FEALiTE2D.Plotter.CADPlotter.DrawInternalForces(system, loadCase, 0.1);
-            FEALiTE2D.Plotter.CADPlotter.DrawDefelectionShape(system, loadCase, 100);
-
         }
 
 
@@ -706,7 +677,18 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.LinearMesher.NumberSegements = 30;
             structure.Solve();
-            FEALiTE2D.Plotter.CADPlotter.DrawStructure(structure, 1);
+
+            var op = new Plotting.Dxf.PlottingOption
+            {
+                NFDScaleFactor = 0.02,
+                SFDScaleFactor = 0.05,
+                BMDScaleFactor = 0.1,
+                DisplacmentScaleFactor = 1000,
+                DiagramsHorizontalOffsets = 2
+            };
+            FEALiTE2D.Plotting.Dxf.Plotter plotter = new Plotting.Dxf.Plotter(structure, op);
+            plotter.Plot("D:\\text.dxf", LiveLoadCase);
+            plotter.Plot("D:\\text2.dxf", structure.LoadCasesToRun);
 
             LoadCombination loadCombo = new LoadCombination("uls");
             loadCombo.Add(DeadLoadCase, 1.35);

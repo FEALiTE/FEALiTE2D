@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FEALiTE2D.Plotting\FEALiTE2D.Plotting.csproj" />
     <ProjectReference Include="..\FEALiTE2D\FEALiTE2D.csproj" />
   </ItemGroup>
 
