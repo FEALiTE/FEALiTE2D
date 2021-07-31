@@ -41,6 +41,8 @@ namespace FEALiTE2D.Meshing
         public void SetupMeshSegments(IElement element)
         {
             var discreteLocations = new SortedSet<double>();
+            discreteLocations.UnionWith(element.AdditionalMeshPoints);
+
             double len = element.Length;
             discreteLocations.Add(0);
 

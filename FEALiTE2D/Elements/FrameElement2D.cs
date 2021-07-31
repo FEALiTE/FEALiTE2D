@@ -22,6 +22,7 @@ namespace FEALiTE2D.Elements
             this.EndRelease = Frame2DEndRelease.NoRelease;
             this.GlobalEndForcesForLoadCase = new Dictionary<LoadCase, double[]>();
             this.MeshSegments = new List<Meshing.LinearMeshSegment>();
+            this.AdditionalMeshPoints = new SortedSet<double>();
         }
 
         /// <summary>
@@ -106,7 +107,10 @@ namespace FEALiTE2D.Elements
         public Dictionary<LoadCase, double[]> GlobalEndForcesForLoadCase { get; private set; }
 
         /// <inheritdoc/>
-        public List<Meshing.LinearMeshSegment> MeshSegments { get; set; }
+        public List<Meshing.LinearMeshSegment> MeshSegments { get; }
+
+        /// <inheritdoc/>
+        public SortedSet<double> AdditionalMeshPoints { get; set; }
 
         /// <summary>
         /// Get The shape function at a point along the frame elements, including displacement and rotation.

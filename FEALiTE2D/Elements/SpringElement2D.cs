@@ -22,6 +22,7 @@ namespace FEALiTE2D.Elements
             this.Loads = new List<ILoad>();
             this.GlobalEndForcesForLoadCase = new Dictionary<LoadCase, double[]>();
             this.MeshSegments = new List<Meshing.LinearMeshSegment>();
+            this.AdditionalMeshPoints = new SortedSet<double>();
         }
 
         /// <summary>
@@ -158,7 +159,10 @@ namespace FEALiTE2D.Elements
         }
 
         /// <inheritdoc/>
-        public List<Meshing.LinearMeshSegment> MeshSegments { get; set; }
+        public List<Meshing.LinearMeshSegment> MeshSegments { get; }
+     
+        /// <inheritdoc/>
+        public SortedSet<double> AdditionalMeshPoints { get; set; }
 
         /// <inheritdoc/>
         public void EvaluateGlobalFixedEndForces(LoadCase loadCase)
