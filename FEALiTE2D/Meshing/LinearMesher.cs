@@ -42,8 +42,17 @@ namespace FEALiTE2D.Meshing
         {
             var discreteLocations = new SortedSet<double>();
             discreteLocations.UnionWith(element.AdditionalMeshPoints);
-
             double len = element.Length;
+
+            // do some checks
+            foreach (var distance in element.AdditionalMeshPoints)
+            {
+                if (CheckBounds(distance, len, 0))
+                    discreteLocations.Add(distance);
+                else
+                    throw new ArgumentOutOfRangeException($"Additional mesh points contain a distance that is not within the bounds of the element {element.Label} !");
+            }
+
             discreteLocations.Add(0);
 
             // 1- add locations base on load location.
@@ -53,17 +62,34 @@ namespace FEALiTE2D.Meshing
             {
                 if (load is FramePointLoad load1)
                 {
-                    discreteLocations.Add(load1.L1);
+                    if (CheckBounds(load1.L1, len, 0))
+                        discreteLocations.Add(load1.L1);
+                    else
+                        throw new ArgumentOutOfRangeException($"Frame point load on {element.Label} is not within the bounds of the element!");
                 }
                 else if (load is FrameUniformLoad load2)
                 {
-                    discreteLocations.Add(load2.L1); // start location of the load
-                    discreteLocations.Add(len - load2.L2); // end location of the load
+                    if (CheckBounds(load2.L1, len, 0) && CheckBounds(len - load2.L2, element.Length, 0))
+                    {
+                        discreteLocations.Add(load2.L1); // start location of the load
+                        discreteLocations.Add(len - load2.L2); // end location of the load
+                    }
+                    else
+                    {
+                        throw new ArgumentOutOfRangeException($"Frame uniform load on {element.Label} is not within the bounds of the element!");
+                    }
                 }
                 else if (load is FrameTrapezoidalLoad load3)
                 {
-                    discreteLocations.Add(load3.L1); // start location of the load
-                    discreteLocations.Add(len - load3.L2); // end location of the load
+                    if (CheckBounds(load3.L1, len, 0) && CheckBounds(len - load3.L2, element.Length, 0))
+                    {
+                        discreteLocations.Add(load3.L1); // start location of the load
+                        discreteLocations.Add(len - load3.L2); // end location of the load
+                    }
+                    else
+                    {
+                        throw new ArgumentOutOfRangeException($"Frame trapezoidal load on {element.Label} is not within the bounds of the element!");
+                    }
                 }
             }
 
@@ -104,6 +130,20 @@ namespace FEALiTE2D.Meshing
 
                 element.MeshSegments.Add(segment);
             }
+        }
+
+        /// <summary>
+        /// Check a distance on an element is within its bounds.
+        /// </summary>
+        /// <param name="distance">a given distance</param>
+        /// <param name="upperBound">upper bound of the element which is its length</param>
+        /// <param name="lowerBound">lower bound of the element which is 0</param>
+        /// <returns></returns>
+        public bool CheckBounds(double distance, double upperBound, double lowerBound)
+        {
+            if (distance < lowerBound) return false;
+            else if (distance > upperBound) return false;
+            else return true;
         }
     }
 }
