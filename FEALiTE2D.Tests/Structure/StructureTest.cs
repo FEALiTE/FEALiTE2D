@@ -348,24 +348,26 @@ namespace FEALiTE2D.Tests.Structure
             structure.LinearMesher.NumberSegements = 10;
             structure.Solve();
 
-            Assert.AreEqual(e1.MeshSegments[0].Internalforces1.Fy, 24.553854166666675);
-            Assert.AreEqual(e1.MeshSegments[0].Internalforces2.Fy, 24.553854166666675);
-            Assert.AreEqual(e1.MeshSegments[3].Internalforces2.Fy, 22.553511700913251);
-            Assert.AreEqual(e1.MeshSegments[4].Internalforces1.Fy, 22.553511700913251);
-            Assert.AreEqual(e1.MeshSegments[4].Internalforces2.Fy, 16.241867865296811);
-            Assert.AreEqual(e1.MeshSegments[5].Internalforces1.Fy, 16.241867865296811);
-            Assert.AreEqual(e1.MeshSegments[5].Internalforces2.Fy, 10.478169235159823);
-            Assert.AreEqual(e1.MeshSegments[6].Internalforces1.Fy, 10.478169235159823);
-            Assert.AreEqual(e1.MeshSegments[6].Internalforces2.Fy, 5.2624158105022882);
-            Assert.AreEqual(e1.MeshSegments[0].Internalforces1.Mz, 0, 1e-8);
-            Assert.AreEqual(e1.MeshSegments[0].Internalforces2.Mz, -12.276927083333323);
-            Assert.AreEqual(e1.MeshSegments[3].Internalforces2.Mz, -36.680139126712334);
-            Assert.AreEqual(e1.MeshSegments[4].Internalforces1.Mz, -36.680139126712326);
-            Assert.AreEqual(e1.MeshSegments[4].Internalforces2.Mz, -46.356152968036533);
-            Assert.AreEqual(e1.MeshSegments[5].Internalforces1.Mz, -46.356152968036533);
-            Assert.AreEqual(e1.MeshSegments[5].Internalforces2.Mz, -53.013331192922386);
-            Assert.AreEqual(e1.MeshSegments[6].Internalforces1.Mz, -53.013331192922372);
-            Assert.AreEqual(e1.MeshSegments[6].Internalforces2.Mz, -56.925646404109592);
+            var MeshSegments = structure.Results.GetElementInternalForces(e1, loadCase);
+
+            Assert.AreEqual(MeshSegments[0].Internalforces1.Fy, 24.553854166666675);
+            Assert.AreEqual(MeshSegments[0].Internalforces2.Fy, 24.553854166666675);
+            Assert.AreEqual(MeshSegments[3].Internalforces2.Fy, 22.553511700913251);
+            Assert.AreEqual(MeshSegments[4].Internalforces1.Fy, 22.553511700913251);
+            Assert.AreEqual(MeshSegments[4].Internalforces2.Fy, 16.241867865296811);
+            Assert.AreEqual(MeshSegments[5].Internalforces1.Fy, 16.241867865296811);
+            Assert.AreEqual(MeshSegments[5].Internalforces2.Fy, 10.478169235159823);
+            Assert.AreEqual(MeshSegments[6].Internalforces1.Fy, 10.478169235159823);
+            Assert.AreEqual(MeshSegments[6].Internalforces2.Fy, 5.2624158105022882);
+            Assert.AreEqual(MeshSegments[0].Internalforces1.Mz, 0, 1e-8);
+            Assert.AreEqual(MeshSegments[0].Internalforces2.Mz, -12.276927083333323);
+            Assert.AreEqual(MeshSegments[3].Internalforces2.Mz, -36.680139126712334);
+            Assert.AreEqual(MeshSegments[4].Internalforces1.Mz, -36.680139126712326);
+            Assert.AreEqual(MeshSegments[4].Internalforces2.Mz, -46.356152968036533);
+            Assert.AreEqual(MeshSegments[5].Internalforces1.Mz, -46.356152968036533);
+            Assert.AreEqual(MeshSegments[5].Internalforces2.Mz, -53.013331192922386);
+            Assert.AreEqual(MeshSegments[6].Internalforces1.Mz, -53.013331192922372);
+            Assert.AreEqual(MeshSegments[6].Internalforces2.Mz, -56.925646404109592);
         }
 
         [Test]
