@@ -2,6 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Mohamed Salah Ibrahim</Authors>
+    <Description>A plotting library used by FEALiTE2D to plot internal forces diagrams and displacement diagrams for any load case or load combination in a dxf format.</Description>
+    <Copyright>Copyright © 2021 Mohamed Salah Ibrahim Civilms@outlook.com</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/FEALiTE/FEALiTE2D</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>engineering analysis beam frame finite-elements finite-element-analysis structural-engineering structural-analysis finite-element-methods civil-engineering truss 2d-frame structral DXF CAD</PackageTags>
+    <PackageProjectUrl>https://github.com/FEALiTE/FEALiTE2D</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>

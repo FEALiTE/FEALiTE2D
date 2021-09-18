@@ -4,14 +4,18 @@
 		<TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
 		<Authors>Mohamed Salah Ibrahim</Authors>
 		<Copyright>Copyright © 2021 Mohamed Salah Ibrahim Civilms@outlook.com</Copyright>
-		<Description>A finite element analysis library for 2D frame, beams and truss elements using C#</Description>
+		<Description>A fast and reliable finite element analysis library for 2D frame, beam and truss elements using C#.</Description>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/FEALiTE/FEALiTE2D</RepositoryUrl>
-		<PackageTags>Civil Structural Engineering Beam Frame Truss Analysis</PackageTags>
+		<PackageTags>engineering analysis beam frame finite-elements finite-element-analysis structural-engineering structural-analysis finite-element-methods civil-engineering truss 2d-frame structral</PackageTags>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<EnableNETAnalyzers>false</EnableNETAnalyzers>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Version>1.1.0</Version>
+		<PackageReleaseNotes>- Dxf Plotter.
+- Additional meshing points at any location on the frame element.</PackageReleaseNotes>
+		<PackageProjectUrl>https://github.com/FEALiTE/FEALiTE2D</PackageProjectUrl>
 	</PropertyGroup>
 
 	<ItemGroup>
