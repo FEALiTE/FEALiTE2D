@@ -1,6 +1,9 @@
 # FEALiTE2D
 A fast and reliable finite element analysis library for 2D frame, beam and truss elements using C#.
 
+| [![NuGet](https://img.shields.io/nuget/dt/FEALiTE2D.svg)](https://www.nuget.org/packages/FEALiTE2D/) | FEALiTE2D |
+------------ | -------------
+| [![NuGet](https://img.shields.io/nuget/dt/FEALiTE2D.Plotting.svg)](https://www.nuget.org/packages/FEALiTE2D.Plotting/) | FEALiTE2D.Plotting |
 
 ## Features
 * [x] Analysis of frame, beam, truss/link members.
