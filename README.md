@@ -1,5 +1,5 @@
 # FEALiTE2D
-A finite element analysis library for 2D frame, beam and truss elements using C#.
+A fast and reliable finite element analysis library for 2D frame, beam and truss elements using C#.
 
 
 ## Features
@@ -30,50 +30,58 @@ Here is a 2D framed strcture subjected to various loading conditions
 
 ```C#
 
-        public void TestStructure()
-        {
-            // units are kN, m
-            FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
+public void TestStructure()
+{
+     // units are kN, m
+     FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
 
-            Node2D n1 = new Node2D(0, 0, "n1");
-            Node2D n2 = new Node2D(9, 0, "n2");
-            Node2D n3 = new Node2D(0, 6, "n3");
-            Node2D n4 = new Node2D(9, 6, "n4");
-            Node2D n5 = new Node2D(0, 12, "n5");
-            n1.Restrain(NodalDegreeOfFreedom.UX, NodalDegreeOfFreedom.UY, NodalDegreeOfFreedom.RZ); //fully restrained
-            n2.Restrain(NodalDegreeOfFreedom.UX, NodalDegreeOfFreedom.UY, NodalDegreeOfFreedom.RZ); //fully restrained
+     Node2D n1 = new Node2D(0, 0, "n1");
+     Node2D n2 = new Node2D(9, 0, "n2");
+     Node2D n3 = new Node2D(0, 6, "n3");
+     Node2D n4 = new Node2D(9, 6, "n4");
+     Node2D n5 = new Node2D(0, 12, "n5");
+     n1.Restrain(NodalDegreeOfFreedom.UX, NodalDegreeOfFreedom.UY, NodalDegreeOfFreedom.RZ); //fully restrained
+     n2.Restrain(NodalDegreeOfFreedom.UX, NodalDegreeOfFreedom.UY, NodalDegreeOfFreedom.RZ); //fully restrained
 
-            structure.AddNode(n1, n2, n3, n4, n5);
-            IMaterial material = new GenericIsotropicMaterial() { E = 30E6, U = 0.2, Label = "Steel", Alpha = 0.000012, Gama = 39885, MaterialType = MaterialType.Steel };
-            IFrame2DSection section = new Generic2DSection(0.075, 0.075, 0.075, 0.000480, 0.000480, 0.000480 * 2, 0.1, 0.1, material);
+     structure.AddNode(n1, n2, n3, n4, n5);
+     IMaterial material = new GenericIsotropicMaterial() { E = 30E6, U = 0.2, Label = "Steel", Alpha = 0.000012, Gama = 39885, MaterialType = MaterialType.Steel };
+     IFrame2DSection section = new Generic2DSection(0.075, 0.075, 0.075, 0.000480, 0.000480, 0.000480 * 2, 0.1, 0.1, material);
+    
+     FrameElement2D e1 = new FrameElement2D(n1, n3, "e1") { CrossSection = section };
+     FrameElement2D e2 = new FrameElement2D(n2, n4, "e2") { CrossSection = section };
+     FrameElement2D e3 = new FrameElement2D(n3, n5, "e3") { CrossSection = section };
+     FrameElement2D e4 = new FrameElement2D(n3, n4, "e4") { CrossSection = section };
+     FrameElement2D e5 = new FrameElement2D(n4, n5, "e5") { CrossSection = section };
+     structure.AddElement(new[] { e1, e2, e3, e4, e5 });
 
-            FrameElement2D e1 = new FrameElement2D(n1, n3, "e1") { CrossSection = section };
-            FrameElement2D e2 = new FrameElement2D(n2, n4, "e2") { CrossSection = section };
-            FrameElement2D e3 = new FrameElement2D(n3, n5, "e3") { CrossSection = section };
-            FrameElement2D e4 = new FrameElement2D(n3, n4, "e4") { CrossSection = section };
-            FrameElement2D e5 = new FrameElement2D(n4, n5, "e5") { CrossSection = section };
-            structure.AddElement(new[] { e1, e2, e3, e4, e5 });
+     LoadCase loadCase = new LoadCase("live", LoadCaseType.Live);
+     structure.LoadCasesToRun.Add(loadCase);
+     n2.SupportDisplacementLoad.Add(new SupportDisplacementLoad(10E-3, -5E-3, -2.5 * Math.PI / 180, loadCase));
+     e3.Loads.Add(new FramePointLoad(0, 0, 7.5, e3.Length / 2, LoadDirection.Global, loadCase));
+     e4.Loads.Add(new FrameTrapezoidalLoad(0, 0, -15, -7, LoadDirection.Global, loadCase, 0.9, 2.7));
+     e5.Loads.Add(new FrameUniformLoad(0, -12, LoadDirection.Local, loadCase));
+     n3.NodalLoads.Add(new NodalLoad(80, 0, 0, LoadDirection.Global, loadCase));
+     n5.NodalLoads.Add(new NodalLoad(40, 0, 0, LoadDirection.Global, loadCase));
+     n1.NodalLoads.Add(new NodalLoad(40, 0, 0, LoadDirection.Global, loadCase));
 
-            LoadCase loadCase = new LoadCase("live", LoadCaseType.Live);
-            structure.LoadCasesToRun.Add(loadCase);
-            n2.SupportDisplacementLoad.Add(new SupportDisplacementLoad(10E-3, -5E-3, -2.5 * Math.PI / 180, loadCase));
-            e3.Loads.Add(new FramePointLoad(0, 0, 7.5, e3.Length / 2, LoadDirection.Global, loadCase));
-            e4.Loads.Add(new FrameTrapezoidalLoad(0, 0, -15, -7, LoadDirection.Global, loadCase, 0.9, 2.7));
-            e5.Loads.Add(new FrameUniformLoad(0, -12, LoadDirection.Local, loadCase));
-            n3.NodalLoads.Add(new NodalLoad(80, 0, 0, LoadDirection.Global, loadCase));
-            n5.NodalLoads.Add(new NodalLoad(40, 0, 0, LoadDirection.Global, loadCase));
-            n1.NodalLoads.Add(new NodalLoad(40, 0, 0, LoadDirection.Global, loadCase));
-
-            structure.LinearMesher.NumberSegements = 35;
-            structure.Solve();
-        }
+     structure.LinearMesher.NumberSegements = 35;
+     structure.Solve();
+}
 ```
 
-### Bending moment diagram 
+## Ploting internal forces and displacments
+Use ploting Library ```FEALiTE2D.Plotting```, create dxf plotter with correct options and save the file on your local machine.
 
-![bmd](https://user-images.githubusercontent.com/21183259/112727780-c5839500-8f2c-11eb-879d-3e076da3cecd.png)
-
-### Deformed shape
-
-![def](https://user-images.githubusercontent.com/21183259/112727782-c6b4c200-8f2c-11eb-9567-cd56f03c7b90.png)
-
+ ```C#
+ var op = new FEALiTE2D.Plotting.Dxf.PlottingOption 
+ { 
+     NFDScaleFactor = 0.01,
+     SFDScaleFactor = 0.01,
+     BMDScaleFactor = 0.01, 
+     DisplacmentScaleFactor = 1,
+     DiagramsHorizontalOffsets = 10 
+ };
+var plotter = new FEALiTE2D.Plotting.Dxf.Plotter(structure, op);
+plotter.Plot("D:\\internal forces.dxf", loadCase);
+```
+![internal forces](https://user-images.githubusercontent.com/21183259/133887224-05bf37e7-9cd4-43e9-bde1-00a0f5eb48eb.png)
