@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Globalization;
 using System.Text;
 
 namespace FEALiTE2D.Helper
@@ -6,6 +6,7 @@ namespace FEALiTE2D.Helper
     /// <summary>
     /// some extension methods to facilitate the work
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "UnusedMember.Global")]
     public static class ExtensionMethods
     {
         /// <summary>
@@ -47,17 +48,17 @@ namespace FEALiTE2D.Helper
             {
                 for (var i = 0; i < nRows; i++)
                 {
-                    widths[j] = Math.Max(widths[j], sparseMatrix.At(i, j).ToString().Length);
+                    widths[j] = System.Math.Max(widths[j], sparseMatrix.At(i, j).ToString(CultureInfo.InvariantCulture).Length);
                 }
             }
 
             var sb = new StringBuilder();
             for (var i = 0; i < nRows; i++)
             {
-                sb.Append(sparseMatrix.At(i, 0).ToString().PadLeft(widths[0]));
+                sb.Append(sparseMatrix.At(i, 0).ToString(CultureInfo.InvariantCulture).PadLeft(widths[0]));
                 for (var j = 1; j < nColumns; j++) // we add the first element already, so start from 1.
                 {
-                    sb.Append($"\t{sparseMatrix.At(i, j).ToString().PadLeft(widths[j])}");
+                    sb.Append($"\t{sparseMatrix.At(i, j).ToString(CultureInfo.InvariantCulture).PadLeft(widths[j])}");
                 }
                 sb.AppendLine();
             }
@@ -75,17 +76,17 @@ namespace FEALiTE2D.Helper
             {
                 for (var j = 0; j < nColumns; j++)
                 {
-                    widths[j] = Math.Max(widths[j], denseMatrix.At(i, j).ToString().Length);
+                    widths[j] = System.Math.Max(widths[j], denseMatrix.At(i, j).ToString(CultureInfo.InvariantCulture).Length);
                 }
             }
 
             var sb = new StringBuilder();
             for (var i = 0; i < nRows; i++)
             {
-                sb.Append(denseMatrix.At(i, 0).ToString().PadLeft(widths[0]));
+                sb.Append(denseMatrix.At(i, 0).ToString(CultureInfo.InvariantCulture).PadLeft(widths[0]));
                 for (var j = 1; j < nColumns; j++) // we add the first element already, so start from 1.
                 {
-                    sb.Append($"\t\t{denseMatrix.At(i, j).ToString().PadLeft(widths[j])}");
+                    sb.Append($"\t\t{denseMatrix.At(i, j).ToString(CultureInfo.InvariantCulture).PadLeft(widths[j])}");
                 }
                 sb.AppendLine();
             }
@@ -95,9 +96,9 @@ namespace FEALiTE2D.Helper
         internal static string PrintVector(this double[] vec)
         {
             var sb = new StringBuilder();
-            for (var i = 0; i < vec.Length; i++)
+            foreach (var t in vec)
             {
-                sb.AppendLine(vec[i].ToString());
+                sb.AppendLine(t.ToString(CultureInfo.InvariantCulture));
             }
             return sb.ToString();
         }

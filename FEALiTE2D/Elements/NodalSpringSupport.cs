@@ -49,7 +49,7 @@
         {
             get
             {
-                var k = new double[,]
+                var k = new[,]
                 {
                     {Kx, 0 , 0 },
                     { 0, Ky, 0 },

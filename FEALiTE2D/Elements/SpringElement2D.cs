@@ -61,7 +61,16 @@ namespace FEALiTE2D.Elements
         public Node2D EndNode { get; set; }
 
         /// <inheritdoc/>
-        public int DOF { get; private set; }
+        public int Dof
+        {
+            get
+            {
+                var coords = new List<int>();
+                coords.AddRange(StartNode.DegreeOfFreedomIndices);
+                coords.AddRange(EndNode.DegreeOfFreedomIndices);
+                return coords.Count;
+            }
+        }
 
         /// <inheritdoc/>
         public string Label { get; set; }
@@ -75,11 +84,8 @@ namespace FEALiTE2D.Elements
             get
             {
                 var coords = new List<int>();
-                coords.AddRange(StartNode.CoordNumbers);
-                coords.AddRange(EndNode.CoordNumbers);
-
-                DOF = coords.Count;
-
+                coords.AddRange(StartNode.DegreeOfFreedomIndices);
+                coords.AddRange(EndNode.DegreeOfFreedomIndices);
                 return coords;
             }
         }
@@ -136,7 +142,7 @@ namespace FEALiTE2D.Elements
         public DenseMatrix LocalStiffnessMatrix { get; private set; }
         private DenseMatrix GetLocalStiffnessMatrix()
         {
-            var kspring = new double[6, 6]
+            var kSpring = new[,]
             {
                 { +K , 0 ,  0 , -K , 0,  0 },
                 {  0 , 0 ,  0 ,  0 , 0,  0 },
@@ -145,7 +151,7 @@ namespace FEALiTE2D.Elements
                 {  0 , 0 ,  0 ,  0 , 0,  0 },
                 {  0 , 0 , -R ,  0 , 0, +R },
             };
-            return DenseMatrix.OfArray(kspring) as DenseMatrix;
+            return DenseMatrix.OfArray(kSpring) as DenseMatrix;
         }
 
         /// <inheritdoc/>
@@ -153,14 +159,14 @@ namespace FEALiTE2D.Elements
         private DenseMatrix GetGlobalStiffnessMatrix()
         {
             var T = TransformationMatrix;
-            var Tt = T.Transpose();
-            var Tt_Kl = Tt.Multiply(LocalStiffnessMatrix);
-            return Tt_Kl.Multiply(T) as DenseMatrix;
+            var tt = T.Transpose();
+            var ttKl = tt.Multiply(LocalStiffnessMatrix);
+            return ttKl.Multiply(T) as DenseMatrix;
         }
 
         /// <inheritdoc/>
         public List<LinearMeshSegment> MeshSegments { get; }
-     
+
         /// <inheritdoc/>
         public SortedSet<double> AdditionalMeshPoints { get; set; }
 
@@ -177,12 +183,12 @@ namespace FEALiTE2D.Elements
             var l = Length;
             var xsi = x / l;
 
-            double N1 = 1.0 - xsi, N2 = xsi;
-            var nu = new double[,]
+            var n1 = 1.0 - xsi;
+            var nu = new[,]
             {
-                {N1 , 0  , 0  , N2 , 0  , 0 },
-                { 0 , N1 , 0  , 0  , N2 , 0 },
-                { 0 , 0  , N1 , 0  , 0  , N2}
+                {n1 , 0  , 0  , xsi , 0  , 0 },
+                { 0 , n1 , 0  , 0  , xsi , 0 },
+                { 0 , 0  , n1 , 0  , 0  , xsi}
             };
 
             return DenseMatrix.OfArray(nu) as DenseMatrix;

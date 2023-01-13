@@ -10,9 +10,7 @@
         /// <summary>
         /// Create a new instance of <see cref="NodalSupport"/> class.
         /// </summary>
-        public NodalSupport()
-        {
-        }
+        public NodalSupport() { }
 
         /// <summary>
         /// Create a new instance of <see cref="NodalSupport"/> class.
@@ -50,9 +48,9 @@
             get
             {
                 var i = 0;
-                if (Ux == true) i++;
-                if (Uy == true) i++;
-                if (Rz == true) i++;
+                if (Ux) i++;
+                if (Uy) i++;
+                if (Rz) i++;
                 return i;
             }
         }

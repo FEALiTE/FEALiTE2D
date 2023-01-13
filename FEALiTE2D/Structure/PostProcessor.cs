@@ -40,7 +40,7 @@ namespace FEALiTE2D.Structure
         {
             var R = new Force();
 
-            if (node.IsFree == true)
+            if (node.IsFree)
             {
                 return null;
             }
@@ -92,9 +92,9 @@ namespace FEALiTE2D.Structure
             }
 
             // get rid of redundant values which are very small such as 1e-15
-            if (node.IsRestrained(NodalDegreeOfFreedom.UX) != true) R.Fx = 0;
-            if (node.IsRestrained(NodalDegreeOfFreedom.UY) != true) R.Fy = 0;
-            if (node.IsRestrained(NodalDegreeOfFreedom.RZ) != true) R.Mz = 0;
+            if (node.IsRestrained(NodalDegreeOfFreedom.Ux) != true) R.Fx = 0;
+            if (node.IsRestrained(NodalDegreeOfFreedom.Uy) != true) R.Fy = 0;
+            if (node.IsRestrained(NodalDegreeOfFreedom.Rz) != true) R.Mz = 0;
 
             return R;
         }
@@ -140,14 +140,14 @@ namespace FEALiTE2D.Structure
                 // get displacement from displacement vector if this node is free
                 var dVector = structure.DisplacementVectors[loadCase];
 
-                if (node.CoordNumbers[0] < dVector.Length)
-                    nd.Ux = dVector[node.CoordNumbers[0]];
+                if (node.DegreeOfFreedomIndices[0] < dVector.Length)
+                    nd.Ux = dVector[node.DegreeOfFreedomIndices[0]];
 
-                if (node.CoordNumbers[1] < dVector.Length)
-                    nd.Uy = dVector[node.CoordNumbers[1]];
+                if (node.DegreeOfFreedomIndices[1] < dVector.Length)
+                    nd.Uy = dVector[node.DegreeOfFreedomIndices[1]];
 
-                if (node.CoordNumbers[2] < dVector.Length)
-                    nd.Rz = dVector[node.CoordNumbers[2]];
+                if (node.DegreeOfFreedomIndices[2] < dVector.Length)
+                    nd.Rz = dVector[node.DegreeOfFreedomIndices[2]];
             }
             return nd;
         }

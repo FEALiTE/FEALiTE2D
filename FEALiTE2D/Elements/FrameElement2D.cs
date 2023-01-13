@@ -67,7 +67,7 @@ namespace FEALiTE2D.Elements
         public double Length => Sqrt(Pow(EndNode.X - StartNode.X, 2) + Pow(EndNode.Y - StartNode.Y, 2));
 
         /// <inheritdoc/>
-        public int DOF { get; private set; }
+        public int Dof { get; private set; }
 
         /// <inheritdoc/>
         public string Label { get; set; }
@@ -81,10 +81,10 @@ namespace FEALiTE2D.Elements
             get
             {
                 var coords = new List<int>();
-                coords.AddRange(StartNode.CoordNumbers);
-                coords.AddRange(EndNode.CoordNumbers);
+                coords.AddRange(StartNode.DegreeOfFreedomIndices);
+                coords.AddRange(EndNode.DegreeOfFreedomIndices);
 
-                DOF = coords.Count;
+                Dof = coords.Count;
 
                 return coords;
             }

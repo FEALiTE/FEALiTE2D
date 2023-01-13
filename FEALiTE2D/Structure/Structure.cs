@@ -117,7 +117,7 @@ namespace FEALiTE2D.Structure
             if (element == null)
                 throw new NullReferenceException($"element {element.Label} is null");
 
-            if (addNodes == true)
+            if (addNodes)
             {
                 foreach (var n in element.Nodes)
                 {
@@ -176,12 +176,12 @@ namespace FEALiTE2D.Structure
         private void ReNumberNodes()
         {
             nDOF = 0;
-            Nodes = Nodes.OrderBy(i => i.DOF).ToList();
+            Nodes = Nodes.OrderBy(i => i.Dof).ToList();
 
             // get total number of degrees of freedom by summing all ndof for each node.
             foreach (var node in Nodes)
             {
-                nDOF += node.DOF;
+                nDOF += node.Dof;
             }
 
             var freeNumber = new Queue<int>(Enumerable.Range(0, nDOF));
@@ -189,24 +189,24 @@ namespace FEALiTE2D.Structure
 
             foreach (var node in Nodes)
             {
-                node.CoordNumbers.Clear();
+                node.DegreeOfFreedomIndices.Clear();
 
                 // add a free number for a certain dof if this dof is free i.e not restrained
 
-                if (!node.IsRestrained(NodalDegreeOfFreedom.UX))
-                    node.CoordNumbers.Add(freeNumber.Dequeue());
+                if (!node.IsRestrained(NodalDegreeOfFreedom.Ux))
+                    node.DegreeOfFreedomIndices.Add(freeNumber.Dequeue());
                 else
-                    node.CoordNumbers.Add(restrainedNumber.Dequeue());
+                    node.DegreeOfFreedomIndices.Add(restrainedNumber.Dequeue());
 
-                if (!node.IsRestrained(NodalDegreeOfFreedom.UY))
-                    node.CoordNumbers.Add(freeNumber.Dequeue());
+                if (!node.IsRestrained(NodalDegreeOfFreedom.Uy))
+                    node.DegreeOfFreedomIndices.Add(freeNumber.Dequeue());
                 else
-                    node.CoordNumbers.Add(restrainedNumber.Dequeue());
+                    node.DegreeOfFreedomIndices.Add(restrainedNumber.Dequeue());
 
-                if (!node.IsRestrained(NodalDegreeOfFreedom.RZ))
-                    node.CoordNumbers.Add(freeNumber.Dequeue());
+                if (!node.IsRestrained(NodalDegreeOfFreedom.Rz))
+                    node.DegreeOfFreedomIndices.Add(freeNumber.Dequeue());
                 else
-                    node.CoordNumbers.Add(restrainedNumber.Dequeue());
+                    node.DegreeOfFreedomIndices.Add(restrainedNumber.Dequeue());
 
             }
         }

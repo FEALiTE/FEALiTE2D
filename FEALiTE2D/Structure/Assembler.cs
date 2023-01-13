@@ -45,7 +45,7 @@ namespace FEALiTE2D.Structure
                 var elem_kg = elem.GlobalStiffnessMatrix;
                 var elemCoord = elem.DegreeOfFreedoms; // element's coordinates vector.
 
-                var dofElem = elem.DOF; //number of dof for the elements.
+                var dofElem = elem.Dof; //number of dof for the elements.
                 double kij;
                 int i, j, ii, jj;
 
@@ -74,12 +74,12 @@ namespace FEALiTE2D.Structure
             var elasticNodes = structure.Nodes.Where(o => o.Support is NodalSpringSupport);
             foreach (var node in elasticNodes)
             {
-                var dofNode = node.DOF; //number of dof for the node.
+                var dofNode = node.Dof; //number of dof for the node.
                 double kij;
                 int i, ii;
 
                 var node_kg = ((NodalSpringSupport)node.Support).GlobalStiffnessMatrix;
-                var elemCoord = node.CoordNumbers; // node's coordinates vector.
+                var elemCoord = node.DegreeOfFreedomIndices; // node's coordinates vector.
 
                 for (i = 0; i < dofNode; i++)
                 {
@@ -161,12 +161,12 @@ namespace FEALiTE2D.Structure
 
 
                 for (var i = 0; i < 3; i++)
-                    if (node.CoordNumbers[i] < structure.nDOF)
-                        Qf[node.CoordNumbers[i]] += nodeLoad[i];
+                    if (node.DegreeOfFreedomIndices[i] < structure.nDOF)
+                        Qf[node.DegreeOfFreedomIndices[i]] += nodeLoad[i];
 
 
                 //3- get node loads due to support displacement for restraint nodes only.
-                if (node.DOF == 3) // not restrained
+                if (node.Dof == 3) // not restrained
                     continue;
 
                 foreach (var dis in node.SupportDisplacementLoad)
@@ -196,11 +196,11 @@ namespace FEALiTE2D.Structure
 
                             for (var i = 0; i < 3; i++)
                             {
-                                if (elem.Nodes[0].CoordNumbers[i] < structure.nDOF)
-                                    Qf[elem.Nodes[0].CoordNumbers[i]] -= fg[i];
+                                if (elem.Nodes[0].DegreeOfFreedomIndices[i] < structure.nDOF)
+                                    Qf[elem.Nodes[0].DegreeOfFreedomIndices[i]] -= fg[i];
 
-                                if (elem.Nodes[1].CoordNumbers[i] < structure.nDOF)
-                                    Qf[elem.Nodes[1].CoordNumbers[i]] -= fg[i + 3];
+                                if (elem.Nodes[1].DegreeOfFreedomIndices[i] < structure.nDOF)
+                                    Qf[elem.Nodes[1].DegreeOfFreedomIndices[i]] -= fg[i + 3];
 
                             }
                         }

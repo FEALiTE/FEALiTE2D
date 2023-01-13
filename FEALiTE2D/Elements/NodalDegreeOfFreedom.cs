@@ -8,16 +8,16 @@
         /// <summary>
         /// Linear translation along the X axis
         /// </summary>
-        UX = 0,
+        Ux = 0,
 
         /// <summary>
         /// Linear translation along the Y axis
         /// </summary>
-        UY,
+        Uy = 1,
 
         /// <summary>
         /// Rotation around the Z axis
         /// </summary>
-        RZ,
+        Rz = 2,
     }
 }

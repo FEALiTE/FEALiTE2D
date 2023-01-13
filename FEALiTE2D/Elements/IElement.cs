@@ -12,7 +12,7 @@ namespace FEALiTE2D.Elements
         /// <summary>
         /// Gets the number of degrees of freedom of this element.
         /// </summary>
-        int DOF { get; }
+        int Dof { get; }
 
         /// <summary>
         /// Name of the <see cref="IElement"/>
@@ -103,6 +103,5 @@ namespace FEALiTE2D.Elements
         /// </summary>
         /// <param name="x">distance measured from start node</param>
         CSparse.Double.DenseMatrix GetShapeFunctionAt(double x);
-
     }
 }

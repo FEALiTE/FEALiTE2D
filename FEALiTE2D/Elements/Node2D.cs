@@ -21,7 +21,7 @@ namespace FEALiTE2D.Elements
             // initialize default values
             NodalLoads = new List<NodalLoad>();
             SupportDisplacementLoad = new List<SupportDisplacementLoad>();
-            CoordNumbers = new List<int>();
+            DegreeOfFreedomIndices = new List<int>();
         }
 
         /// <summary>
@@ -56,32 +56,23 @@ namespace FEALiTE2D.Elements
         /// <summary>
         /// A list of dof numbers that is set by the program.
         /// </summary>
-        public List<int> CoordNumbers { get; internal set; }
+        public List<int> DegreeOfFreedomIndices { get; internal set; }
 
         /// <summary>
         /// An angle of rotation of the of local axes of the node around Z-axis.
         /// </summary>
-        public double RotaionAngle { get; set; }
+        public double RotationAngle { get; set; }
 
         /// <summary>
         /// Gets number of degrees of freedom of the node.
         /// </summary>
-        public int DOF
-        {
-            get
+        public int Dof =>
+            Support switch
             {
-                if (Support != null)
-                    if (Support is NodalSpringSupport)
-                    {
-                        return 3;
-                    }
-                    else
-                    {
-                        return 3 - Support.RestraintCount;
-                    }
-                return 3;
-            }
-        }
+                null => 3,
+                NodalSpringSupport _ => 3,
+                _ => 3 - Support.RestraintCount
+            };
 
         /// <summary>
         /// Gets or sets the nodal displacement.
@@ -106,15 +97,15 @@ namespace FEALiTE2D.Elements
         public Structure.Structure ParentStructure { get; set; }
 
         /// <summary>
-        /// Transformation matrix of the Node due to a <see cref="RotaionAngle"/>.
+        /// Transformation matrix of the Node due to a <see cref="RotationAngle"/>.
         /// </summary>
         public CSparse.Double.DenseMatrix TransformationMatrix
         {
             get
             {
-                var c = Cos(RotaionAngle);
-                var s = Sin(RotaionAngle);
-                var t = new double[,]
+                var c = Cos(RotationAngle);
+                var s = Sin(RotationAngle);
+                var t = new[,]
                 {
                     { c, s, 0 },
                     {-s, c, 0 },
@@ -127,15 +118,7 @@ namespace FEALiTE2D.Elements
         /// <summary>
         /// Gets whether the node is free or restrained.
         /// </summary>
-        public bool IsFree
-        {
-            get
-            {
-                if (Support == null)
-                    return true;
-                return false;
-            }
-        }
+        public bool IsFree => Support == null;
 
         /// <summary>
         /// Gets or Sets the rigid support of the node.
@@ -149,22 +132,14 @@ namespace FEALiTE2D.Elements
         /// <returns><c>true</c> if the specified dof is a restraint; otherwise, <c>false</c>.</returns>
         public bool IsRestrained(NodalDegreeOfFreedom dof)
         {
-            if (Support != null)
+            if (Support == null) return false;
+            return dof switch
             {
-                if (dof == NodalDegreeOfFreedom.UX)
-                {
-                    return Support.Ux;
-                }
-                else if (dof == NodalDegreeOfFreedom.UY)
-                {
-                    return Support.Uy;
-                }
-                else if (dof == NodalDegreeOfFreedom.RZ)
-                {
-                    return Support.Rz;
-                }
-            }
-            return false;
+                NodalDegreeOfFreedom.Ux => Support.Ux,
+                NodalDegreeOfFreedom.Uy => Support.Uy,
+                NodalDegreeOfFreedom.Rz => Support.Rz,
+                _ => false
+            };
         }
 
     }
