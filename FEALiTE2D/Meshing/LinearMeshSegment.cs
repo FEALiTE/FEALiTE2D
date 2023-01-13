@@ -19,8 +19,8 @@ public class LinearMeshSegment
         fx, // point force value in local x direction at x1
         fy, // point force value in local y direction at x1
         mz; // point moment value in local z direction at x1
-    public Force Internalforces1; // internal forces at start of the segment.
-    public Force Internalforces2; // internal forces at end of the segment.
+    public Force InternalForces1; // internal forces at start of the segment.
+    public Force InternalForces2; // internal forces at end of the segment.
     public Displacement Displacement1, // displacement at start of the segment.
         Displacement2;  // displacement at end of  the segment.
     public double E, // modulus of elasticity of material of the cross-section at this segment.
@@ -34,8 +34,8 @@ public class LinearMeshSegment
     /// </summary>
     public LinearMeshSegment()
     {
-        Internalforces1 = new Force();
-        Internalforces2 = new Force();
+        InternalForces1 = new Force();
+        InternalForces2 = new Force();
         Displacement1 = new Displacement();
         Displacement2 = new Displacement();
     }
@@ -46,7 +46,7 @@ public class LinearMeshSegment
     /// <param name="x">a distance</param>
     public double ShearAt(double x)
     {
-        return Internalforces1.Fy
+        return InternalForces1.Fy
                + wy1 * x + 0.5 * x * x * (wy2 - wy1) / (x2 - x1); // uniform and trap load.
     }
 
@@ -56,8 +56,8 @@ public class LinearMeshSegment
     /// <param name="x">a distance</param>
     public double MomentAt(double x)
     {
-        return Internalforces1.Mz
-               - Internalforces1.Fy * x
+        return InternalForces1.Mz
+               - InternalForces1.Fy * x
                - 0.5 * wy1 * x * x - x * x * x * ((wy2 - wy1) / (x2 - x1)) / 6; // uniform and trap load.
     }
 
@@ -67,7 +67,7 @@ public class LinearMeshSegment
     /// <param name="x">a distance</param>
     public double AxialAt(double x)
     {
-        return Internalforces1.Fx +
+        return InternalForces1.Fx +
                wx1 * x + x * x * (wx2 - wx1) / (x2 - x1) / 2; // uniform and trap load.
     }
 
@@ -93,8 +93,8 @@ public class LinearMeshSegment
     {
         return Displacement1.Rz -
                (
-                   Internalforces1.Mz * x
-                   - Internalforces1.Fy * x * x / 2.0
+                   InternalForces1.Mz * x
+                   - InternalForces1.Fy * x * x / 2.0
                    - wy1 * x * x * x / 6.0
                    - x * x * x * x * ((wy2 - wy1) / (x2 - x1)) / 24 // uniform and trap load.
                ) / (E * Ix);
@@ -110,8 +110,8 @@ public class LinearMeshSegment
                (
                    Displacement1.Rz * x -
                    (
-                       Internalforces1.Mz * x * x / 2.0
-                       - Internalforces1.Fy * x * x * x / 6.0
+                       InternalForces1.Mz * x * x / 2.0
+                       - InternalForces1.Fy * x * x * x / 6.0
                        - wy1 * x * x * x * x / 24.0
                        - x * x * x * x * x * ((wy2 - wy1) / (x2 - x1)) / 120.0 // uniform and trap load.
                    ) / (E * Ix)
@@ -124,9 +124,9 @@ public class LinearMeshSegment
     /// <param name="x">a distance</param>
     public double AxialDisplacementAt(double x)
     {
-        var EA = E * A;
+        var ea = E * A;
         return Displacement1.Ux -
-            Internalforces1.Fx * x / EA + wx1 * x * x / (2.0 * EA) + (wx2 - wx1) * x * x * x / (6.0 * EA * (x2 - x1));
+            InternalForces1.Fx * x / ea + wx1 * x * x / (2.0 * ea) + (wx2 - wx1) * x * x * x / (6.0 * ea * (x2 - x1));
     }
 
     /// <summary>

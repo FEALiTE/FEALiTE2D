@@ -1,9 +1,12 @@
-﻿namespace FEALiTE2D.Structure;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+
+namespace FEALiTE2D.Structure;
 
 /// <summary>
 /// Defines a force of 3 components (Fx, Fy, Mz)
 /// </summary>
-[System.Serializable]
+[Serializable]
 public class Force
 {
     /// <summary>
@@ -26,29 +29,26 @@ public class Force
     /// </summary>
     /// <param name="f1">first force.</param>
     /// <param name="f2">second force.</param>
-    public static Force operator +(Force f1, Force f2) => new Force { Fx = f1.Fx + f2.Fx, Fy = f1.Fy + f2.Fy, Mz = f1.Mz + f2.Mz };
+    public static Force operator +(Force f1, Force f2) => new() { Fx = f1.Fx + f2.Fx, Fy = f1.Fy + f2.Fy, Mz = f1.Mz + f2.Mz };
 
     /// <summary>
     /// Implements the operator - on 2 forces.
     /// </summary>
     /// <param name="f1">first force.</param>
     /// <param name="f2">second force.</param>
-    public static Force operator -(Force f1, Force f2) => new Force { Fx = f1.Fx - f2.Fx, Fy = f1.Fy - f2.Fy, Mz = f1.Mz - f2.Mz };
+    public static Force operator -(Force f1, Force f2) => new() { Fx = f1.Fx - f2.Fx, Fy = f1.Fy - f2.Fy, Mz = f1.Mz - f2.Mz };
 
     /// <summary>
     /// Implements the operator number*force.
     /// </summary>
     /// <param name="factor">factor.</param>
     /// <param name="f">force.</param>
-    public static Force operator *(double factor, Force f) => new Force { Fx = factor * f.Fx, Fy = factor * f.Fy, Mz = factor * f.Mz };
+    public static Force operator *(double factor, Force f) => new() { Fx = factor * f.Fx, Fy = factor * f.Fy, Mz = factor * f.Mz };
 
     /// <summary>
     /// Convert To vector.
     /// </summary>
-    public double[] ToVector()
-    {
-        return new[] { Fx, Fy, Mz };
-    }
+    public double[] ToVector() => new[] { Fx, Fy, Mz };
 
     /// <summary>
     /// Create force from a given vector.
@@ -56,44 +56,23 @@ public class Force
     /// <param name="f">a Vector containing force</param>
     public static Force FromVector(double[] f)
     {
-        if (f.Length == 3)
-        {
-            return new Force() { Fx = f[0], Fy = f[1], Mz = f[2] };
-        }
-        return null;
+        return f.Length == 3 ? new Force() { Fx = f[0], Fy = f[1], Mz = f[2] } : null;
     }
 
     /// <inheritdoc/>
-    public override string ToString()
-    {
-        return
-            $"Fx = {Fx} \r\n" +
-            $"Fy = {Fy} \r\n" +
-            $"Mz = {Mz} \r\n";
-    }
+    public override string ToString() => $"Fx = {Fx} {Environment.NewLine}Fy = {Fy} {Environment.NewLine}Mz = {Mz} {Environment.NewLine}";
 
     /// <inheritdoc/>
     public override bool Equals(object obj)
     {
-        if (obj == null || !(obj is Force))
-            return false;
+        if (obj is not Force force) { return false; }
 
-        var f = obj as Force;
-        if (System.Math.Abs(f.Fx - Fx) > 1e-8 ||
-            System.Math.Abs(f.Fy - Fy) > 1e-8 ||
-            System.Math.Abs(f.Mz - Mz) > 1e-8)
-        {
-            return false;
-        }
-        return true;
+        return !(Math.Abs(force.Fx - Fx) > 1e-8) &&
+               !(Math.Abs(force.Fy - Fy) > 1e-8) &&
+               !(Math.Abs(force.Mz - Mz) > 1e-8);
     }
 
     /// <inheritdoc/>
-    public override int GetHashCode()
-    {
-        return
-            $"Fx = {System.Math.Round(Fx, 8)} \r\n".GetHashCode() +
-            $"Fy = {System.Math.Round(Fy, 8)} \r\n".GetHashCode() +
-            $"Mz = {System.Math.Round(Mz, 8)} \r\n".GetHashCode();
-    }
+    [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
+    public override int GetHashCode() => $"Fx = {Math.Round(Fx, 8)} {Environment.NewLine}".GetHashCode() + $"Fy = {Math.Round(Fy, 8)} {Environment.NewLine}".GetHashCode() + $"Mz = {Math.Round(Mz, 8)} {Environment.NewLine}".GetHashCode();
 }

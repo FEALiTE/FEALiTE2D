@@ -3,6 +3,7 @@
 /// <summary>
 /// Material type
 /// </summary>
+[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "UnusedMember.Global")]
 public enum MaterialType
 {
     /// <summary>
@@ -28,5 +29,5 @@ public enum MaterialType
     /// <summary>
     /// Other Material
     /// </summary>
-    Userdefined
+    UserDefined
 }

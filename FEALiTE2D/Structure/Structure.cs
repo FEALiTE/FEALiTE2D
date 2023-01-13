@@ -65,14 +65,9 @@ public class Structure
     public AnalysisStatus AnalysisStatus { get; private set; }
 
     /// <summary>
-    /// Gets or sets the tolerance.
-    /// </summary>
-    public double Tolerance { get; set; }
-
-    /// <summary>
     /// number of dof which is the sum of free dof in each node.
     /// </summary>
-    public int nDOF { get; private set; }
+    public int NDof { get; private set; }
 
     /// <summary>
     /// Get analysis results
@@ -90,22 +85,16 @@ public class Structure
     /// <param name="node">The node.</param>
     public void AddNode(Node2D node)
     {
-        if (!Nodes.Contains(node))
-        {
-            Nodes.Add(node);
-            node.ParentStructure = this;
-        }
+        if (Nodes.Contains(node)) return;
+        Nodes.Add(node);
+        node.ParentStructure = this;
     }
 
     /// <summary>
     /// Adds nodes to the structure, We check if the nodes are already added to avoid duplicate nodes.
     /// </summary>
     /// <param name="nodes">The nodes.</param>
-    public void AddNode(params Node2D[] nodes)
-    {
-        foreach (var node in nodes)
-            AddNode(node);
-    }
+    public void AddNode(params Node2D[] nodes) { foreach (var node in nodes) { AddNode(node); } }
 
     /// <summary>
     /// Adds elements to the structure.
@@ -114,8 +103,7 @@ public class Structure
     /// <param name="addNodes">Add the nodes of the element to Nodes list?</param>
     public void AddElement(IElement element, bool addNodes = false)
     {
-        if (element == null)
-            throw new NullReferenceException($"element {element.Label} is null");
+        if (element == null) { throw new NullReferenceException($"element {nameof(element)} is null"); }
 
         if (addNodes)
         {
@@ -125,12 +113,10 @@ public class Structure
             }
         }
         // check to see if this element already exists
-        if (!Elements.Contains(element))
-        {
-            Elements.Add(element);
-            element.Initialize();
-            element.ParentStructure = this;
-        }
+        if (Elements.Contains(element)) return;
+        Elements.Add(element);
+        element.Initialize();
+        element.ParentStructure = this;
     }
 
     /// <summary>
@@ -138,13 +124,7 @@ public class Structure
     /// </summary>
     /// <param name="elements">collection of elements.</param>
     /// <param name="addNodes">Add the nodes of the element to Nodes list?</param>
-    public void AddElement(IEnumerable<IElement> elements, bool addNodes = false)
-    {
-        foreach (var item in elements)
-        {
-            AddElement(item, addNodes);
-        }
-    }
+    public void AddElement(IEnumerable<IElement> elements, bool addNodes = false) { foreach (var item in elements) { AddElement(item, addNodes); } }
 
     /// <summary>
     /// Calculates fixed end forces and moments at each node of an element and add them to <see cref="IElement.GlobalEndForcesForLoadCase"/> dictionary.
@@ -167,25 +147,26 @@ public class Structure
     private void SetUpMeshingSegments()
     {
         // generate discretization segments on the element.
-        Elements.ForEach((IElement element) => { LinearMesher.SetupMeshSegments(element); });
+        foreach (var element in Elements)
+        { LinearMesher.SetupMeshSegments(element); }
     }
 
     /// <summary>
-    ///  Order the nodes by number of dofs then renumber the node indexes according to that.
+    ///  Order the nodes by number of DOFs then renumber the node indexes according to that.
     /// </summary>
     private void ReNumberNodes()
     {
-        nDOF = 0;
+        NDof = 0;
         Nodes = Nodes.OrderBy(i => i.Dof).ToList();
 
-        // get total number of degrees of freedom by summing all ndof for each node.
+        // get total number of degrees of freedom by summing all NDof for each node.
         foreach (var node in Nodes)
         {
-            nDOF += node.Dof;
+            NDof += node.Dof;
         }
 
-        var freeNumber = new Queue<int>(Enumerable.Range(0, nDOF));
-        var restrainedNumber = new Queue<int>(Enumerable.Range(nDOF, Nodes.Count * 3 - nDOF));
+        var freeNumber = new Queue<int>(Enumerable.Range(0, NDof));
+        var restrainedNumber = new Queue<int>(Enumerable.Range(NDof, Nodes.Count * 3 - NDof));
 
         foreach (var node in Nodes)
         {
@@ -193,21 +174,17 @@ public class Structure
 
             // add a free number for a certain dof if this dof is free i.e not restrained
 
-            if (!node.IsRestrained(NodalDegreeOfFreedom.Ux))
-                node.DegreeOfFreedomIndices.Add(freeNumber.Dequeue());
-            else
-                node.DegreeOfFreedomIndices.Add(restrainedNumber.Dequeue());
+            node.DegreeOfFreedomIndices.Add(!node.IsRestrained(NodalDegreeOfFreedom.Ux)
+                ? freeNumber.Dequeue()
+                : restrainedNumber.Dequeue());
 
-            if (!node.IsRestrained(NodalDegreeOfFreedom.Uy))
-                node.DegreeOfFreedomIndices.Add(freeNumber.Dequeue());
-            else
-                node.DegreeOfFreedomIndices.Add(restrainedNumber.Dequeue());
+            node.DegreeOfFreedomIndices.Add(!node.IsRestrained(NodalDegreeOfFreedom.Uy)
+                ? freeNumber.Dequeue()
+                : restrainedNumber.Dequeue());
 
-            if (!node.IsRestrained(NodalDegreeOfFreedom.Rz))
-                node.DegreeOfFreedomIndices.Add(freeNumber.Dequeue());
-            else
-                node.DegreeOfFreedomIndices.Add(restrainedNumber.Dequeue());
-
+            node.DegreeOfFreedomIndices.Add(!node.IsRestrained(NodalDegreeOfFreedom.Rz)
+                ? freeNumber.Dequeue()
+                : restrainedNumber.Dequeue());
         }
     }
 
@@ -217,6 +194,7 @@ public class Structure
     public void Solve()
     {
         Console.WriteLine(" ================= FEALiTE Analysis Solver ================= ");
+        // ReSharper disable once StringLiteralTypo
         Console.WriteLine(" FEALiTE2D V1.0.0 - Copyright (C) 2021 Mohamed S. Ibrahim");
         Console.WriteLine(" Linear Analysis of 1D structures.");
         Console.WriteLine($" Analysis Start: {DateTime.Now}.");
@@ -237,13 +215,12 @@ public class Structure
 
         StructuralStiffnessMatrix = assembler.AssembleGlobalStiffnessMatrix();
 
-        for (var i = 0; i < LoadCasesToRun.Count; i++)
+        foreach (var currentLc in LoadCasesToRun)
         {
-            var currentLC = LoadCasesToRun[i];
-            var loadVec = assembler.AssembleGlobalEquivalentLoadVector(currentLC);
-            FixedEndLoadsVectors.Add(currentLC, loadVec);
+            FixedEndLoadsVectors.Add(currentLc, assembler.AssembleGlobalEquivalentLoadVector(currentLc));
         }
 
+        // ReSharper disable once IdentifierTypo
         CSparse.Factorization.ISparseFactorization<double> cholesky = null;
 
         try
@@ -258,25 +235,21 @@ public class Structure
             }
         }
 
-        for (var i = 0; i < LoadCasesToRun.Count; i++)
+        foreach (var currentLc in LoadCasesToRun)
         {
-            var currentLC = LoadCasesToRun[i];
-            var displacementVector = new double[nDOF];
-
-            cholesky.Solve(FixedEndLoadsVectors[currentLC], displacementVector);
-
-            DisplacementVectors.Add(currentLC, displacementVector);
+            var displacementVector = new double[NDof];
+            cholesky!.Solve(FixedEndLoadsVectors[currentLc], displacementVector);
+            DisplacementVectors.Add(currentLc, displacementVector);
         }
 
         AnalysisStatus = AnalysisStatus.Successful;
 
         sw.Stop();
-        Console.WriteLine($" No. of Equations: {nDOF}");
+        Console.WriteLine($" No. of Equations: {NDof}");
         Console.WriteLine($" Analysis End Date: {DateTime.Now}.");
         Console.WriteLine($" Analysis Took {sw.Elapsed.TotalSeconds} sec.");
 
         Results = new PostProcessor(this);
         SetUpMeshingSegments();
     }
-
 }

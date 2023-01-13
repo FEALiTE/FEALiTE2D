@@ -262,9 +262,9 @@ public class PostProcessor
             }
 
             // assign local end forces at start of each segment 
-            segment.Internalforces1.Fx = fl[0];
-            segment.Internalforces1.Fy = fl[1];
-            segment.Internalforces1.Mz = fl[2] - fl[1] * x;
+            segment.InternalForces1.Fx = fl[0];
+            segment.InternalForces1.Fy = fl[1];
+            segment.InternalForces1.Mz = fl[2] - fl[1] * x;
 
             // add effect of point load, uniform and trap. load to start of each segment if this load is before the segment
             var loads = element.Loads.Where(o => o.LoadCase == loadCase);
@@ -275,9 +275,9 @@ public class PostProcessor
                     if (!(pL.L1 <= x)) continue;
                     // get point load in lcs.
                     var p = pL.GetLoadValueAt(element, pL.L1) as FramePointLoad;
-                    segment.Internalforces1.Fx += p.Fx;
-                    segment.Internalforces1.Fy += p.Fy;
-                    segment.Internalforces1.Mz += p.Mz - p.Fy * (x - pL.L1);
+                    segment.InternalForces1.Fx += p.Fx;
+                    segment.InternalForces1.Fy += p.Fy;
+                    segment.InternalForces1.Mz += p.Mz - p.Fy * (x - pL.L1);
                 }
                 else if (load is FrameUniformLoad uL)
                 {
@@ -300,9 +300,9 @@ public class PostProcessor
                         x2 = x;
                     }
 
-                    segment.Internalforces1.Fx += wx * (x2 - x1);
-                    segment.Internalforces1.Fy += wy * (x2 - x1);
-                    segment.Internalforces1.Mz -= wy * (x2 - x1) * (x - 0.5 * x2 - 0.5 * x1);
+                    segment.InternalForces1.Fx += wx * (x2 - x1);
+                    segment.InternalForces1.Fy += wy * (x2 - x1);
+                    segment.InternalForces1.Mz -= wy * (x2 - x1) * (x - 0.5 * x2 - 0.5 * x1);
                 }
                 else if (load is FrameTrapezoidalLoad tL)
                 {
@@ -333,14 +333,14 @@ public class PostProcessor
                         x2 = x;
                     }
 
-                    segment.Internalforces1.Fx += 0.5 * (wx1 + wx2) * (x2 - x1);
-                    segment.Internalforces1.Fy += 0.5 * (wy1 + wy2) * (x2 - x1);
-                    segment.Internalforces1.Mz += (2 * wy1 * x1 - 3 * wy1 * x + wy1 * x2 + wy2 * x1 - 3 * wy2 * x + 2 * wy2 * x2) * (x2 - x1) / 6;
+                    segment.InternalForces1.Fx += 0.5 * (wx1 + wx2) * (x2 - x1);
+                    segment.InternalForces1.Fy += 0.5 * (wy1 + wy2) * (x2 - x1);
+                    segment.InternalForces1.Mz += (2 * wy1 * x1 - 3 * wy1 * x + wy1 * x2 + wy2 * x1 - 3 * wy2 * x + 2 * wy2 * x2) * (x2 - x1) / 6;
                 }
             }
 
             // set internal forces at the end
-            segment.Internalforces2 = segment.GetInternalForceAt(segment.x2 - segment.x1);
+            segment.InternalForces2 = segment.GetInternalForceAt(segment.x2 - segment.x1);
             segment.Displacement2 = segment.GetDisplacementAt(segment.x2 - segment.x1);
 
             // use shape function for elements with end releases.
@@ -397,8 +397,8 @@ public class PostProcessor
                 cListItem.wy2 += lc.Value * cSegment.wy2;
                 cListItem.Displacement1 += lc.Value * cSegment.Displacement1;
                 cListItem.Displacement2 += lc.Value * cSegment.Displacement2;
-                cListItem.Internalforces1 += lc.Value * cSegment.Internalforces1;
-                cListItem.Internalforces2 += lc.Value * cSegment.Internalforces2;
+                cListItem.InternalForces1 += lc.Value * cSegment.InternalForces1;
+                cListItem.InternalForces2 += lc.Value * cSegment.InternalForces2;
             }
         }
         return results;

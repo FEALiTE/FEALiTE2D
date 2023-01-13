@@ -241,8 +241,8 @@ namespace FEALiTE2D.Plotting.Dxf
                 foreach (var segment in segs)
                 {
                     var p1 = e.PointLocationOnLine(segment.x1);
-                    var p2NFD = e.PointPerpendicularToLine(segment.x1, segment.Internalforces1.Fx * -scale);
-                    var p3NFD = e.PointPerpendicularToLine(segment.x2, segment.Internalforces2.Fx * -scale);
+                    var p2NFD = e.PointPerpendicularToLine(segment.x1, segment.InternalForces1.Fx * -scale);
+                    var p3NFD = e.PointPerpendicularToLine(segment.x2, segment.InternalForces2.Fx * -scale);
                     var p4 = e.PointLocationOnLine(segment.x2);
 
                     // write nfd
@@ -304,8 +304,8 @@ namespace FEALiTE2D.Plotting.Dxf
                 foreach (var segment in segs)
                 {
                     var p1 = e.PointLocationOnLine(segment.x1);
-                    var p2NFD = e.PointPerpendicularToLine(segment.x1, segment.Internalforces1.Fx * -scale);
-                    var p3NFD = e.PointPerpendicularToLine(segment.x2, segment.Internalforces2.Fx * -scale);
+                    var p2NFD = e.PointPerpendicularToLine(segment.x1, segment.InternalForces1.Fx * -scale);
+                    var p3NFD = e.PointPerpendicularToLine(segment.x2, segment.InternalForces2.Fx * -scale);
                     var p4 = e.PointLocationOnLine(segment.x2);
 
                     // write nfd
@@ -367,8 +367,8 @@ namespace FEALiTE2D.Plotting.Dxf
                 foreach (var segment in segs)
                 {
                     var p1 = e.PointLocationOnLine(segment.x1);
-                    var p2SFD = e.PointPerpendicularToLine(segment.x1, segment.Internalforces1.Fy * -scale);
-                    var p3SFD = e.PointPerpendicularToLine(segment.x2, segment.Internalforces2.Fy * -scale);
+                    var p2SFD = e.PointPerpendicularToLine(segment.x1, segment.InternalForces1.Fy * -scale);
+                    var p3SFD = e.PointPerpendicularToLine(segment.x2, segment.InternalForces2.Fy * -scale);
                     var p4 = e.PointLocationOnLine(segment.x2);
 
                     // write sfd
@@ -431,8 +431,8 @@ namespace FEALiTE2D.Plotting.Dxf
                 foreach (var segment in segs)
                 {
                     var p1 = e.PointLocationOnLine(segment.x1);
-                    var p2SFD = e.PointPerpendicularToLine(segment.x1, segment.Internalforces1.Fy * -scale);
-                    var p3SFD = e.PointPerpendicularToLine(segment.x2, segment.Internalforces2.Fy * -scale);
+                    var p2SFD = e.PointPerpendicularToLine(segment.x1, segment.InternalForces1.Fy * -scale);
+                    var p3SFD = e.PointPerpendicularToLine(segment.x2, segment.InternalForces2.Fy * -scale);
                     var p4 = e.PointLocationOnLine(segment.x2);
 
                     // write sfd
@@ -494,8 +494,8 @@ namespace FEALiTE2D.Plotting.Dxf
                 foreach (var segment in segs)
                 {
                     var p1 = e.PointLocationOnLine(segment.x1);
-                    var p2BMD = e.PointPerpendicularToLine(segment.x1, segment.Internalforces1.Mz * -scale);
-                    var p3BMD = e.PointPerpendicularToLine(segment.x2, segment.Internalforces2.Mz * -scale);
+                    var p2BMD = e.PointPerpendicularToLine(segment.x1, segment.InternalForces1.Mz * -scale);
+                    var p3BMD = e.PointPerpendicularToLine(segment.x2, segment.InternalForces2.Mz * -scale);
                     var p4 = e.PointLocationOnLine(segment.x2);
 
                     // write BMD
@@ -558,8 +558,8 @@ namespace FEALiTE2D.Plotting.Dxf
                 foreach (var segment in segs)
                 {
                     var p1 = e.PointLocationOnLine(segment.x1);
-                    var p2BMD = e.PointPerpendicularToLine(segment.x1, segment.Internalforces1.Mz * -scale);
-                    var p3BMD = e.PointPerpendicularToLine(segment.x2, segment.Internalforces2.Mz * -scale);
+                    var p2BMD = e.PointPerpendicularToLine(segment.x1, segment.InternalForces1.Mz * -scale);
+                    var p3BMD = e.PointPerpendicularToLine(segment.x2, segment.InternalForces2.Mz * -scale);
                     var p4 = e.PointLocationOnLine(segment.x2);
 
                     // write BMD

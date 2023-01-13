@@ -3,6 +3,7 @@
 /// <summary>
 /// Represents an interface for <see cref="IMaterial"/> class
 /// </summary>
+[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "UnusedMemberInSuper.Global")]
 public interface IMaterial
 {
     /// <summary>

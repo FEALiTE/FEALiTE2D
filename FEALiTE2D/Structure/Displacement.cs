@@ -1,9 +1,12 @@
-﻿namespace FEALiTE2D.Structure;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+
+namespace FEALiTE2D.Structure;
 
 /// <summary>
 /// Defines a displacement of 3 components (Ux, Uy, Rz)
 /// </summary>
-[System.Serializable]
+[Serializable]
 public class Displacement
 {
     /// <summary>
@@ -26,21 +29,21 @@ public class Displacement
     /// </summary>
     /// <param name="d1">first Displacement.</param>
     /// <param name="d2">second Displacement.</param>
-    public static Displacement operator +(Displacement d1, Displacement d2) => new Displacement { Ux = d1.Ux + d2.Ux, Uy = d1.Uy + d2.Uy, Rz = d1.Rz + d2.Rz };
+    public static Displacement operator +(Displacement d1, Displacement d2) => new() { Ux = d1.Ux + d2.Ux, Uy = d1.Uy + d2.Uy, Rz = d1.Rz + d2.Rz };
 
     /// <summary>
     /// Implements the operator - on 2 Displacements.
     /// </summary>
     /// <param name="d1">first displacement.</param>
     /// <param name="d2">second displacement.</param>
-    public static Displacement operator -(Displacement d1, Displacement d2) => new Displacement { Ux = d1.Ux - d2.Ux, Uy = d1.Uy - d2.Uy, Rz = d1.Rz - d2.Rz };
+    public static Displacement operator -(Displacement d1, Displacement d2) => new() { Ux = d1.Ux - d2.Ux, Uy = d1.Uy - d2.Uy, Rz = d1.Rz - d2.Rz };
 
     /// <summary>
     /// Implements the operator number*Displacement.
     /// </summary>
     /// <param name="factor">factor.</param>
     /// <param name="d">Displacement.</param>
-    public static Displacement operator *(double factor, Displacement d) => new Displacement { Ux = factor * d.Ux, Uy = factor * d.Uy, Rz = factor * d.Rz };
+    public static Displacement operator *(double factor, Displacement d) => new() { Ux = factor * d.Ux, Uy = factor * d.Uy, Rz = factor * d.Rz };
 
     /// <summary>
     /// Convert To vector.
@@ -67,33 +70,22 @@ public class Displacement
     public override string ToString()
     {
         return
-            $"Ux = {Ux} \r\n" +
-            $"Uy = {Uy} \r\n" +
-            $"Rz = {Rz} \r\n";
+            $"Ux = {Ux} {Environment.NewLine}" +
+            $"Uy = {Uy} {Environment.NewLine}" +
+            $"Rz = {Rz} {Environment.NewLine}";
     }
 
     /// <inheritdoc/>
     public override bool Equals(object obj)
     {
-        if (obj == null || !(obj is Displacement))
-            return false;
+        if (obj is not Displacement d) { return false; }
 
-        var d = obj as Displacement;
-        if (System.Math.Abs(d.Ux - Ux) > 1e-8 ||
-            System.Math.Abs(d.Uy - Uy) > 1e-8 ||
-            System.Math.Abs(d.Rz - Rz) > 1e-8)
-        {
-            return false;
-        }
-        return true;
+        return !(Math.Abs(d.Ux - Ux) > 1e-8) &&
+               !(Math.Abs(d.Uy - Uy) > 1e-8) &&
+               !(Math.Abs(d.Rz - Rz) > 1e-8);
     }
 
     /// <inheritdoc/>
-    public override int GetHashCode()
-    {
-        return
-            $"Ux = {System.Math.Round(Ux, 8)} \r\n".GetHashCode() +
-            $"Uy = {System.Math.Round(Uy, 8)} \r\n".GetHashCode() +
-            $"Rz = {System.Math.Round(Rz, 8)} \r\n".GetHashCode();
-    }
+    [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode")]
+    public override int GetHashCode() => $"Ux = {Math.Round(Ux, 8)} {Environment.NewLine}".GetHashCode() + $"Uy = {Math.Round(Uy, 8)} {Environment.NewLine}".GetHashCode() + $"Rz = {Math.Round(Rz, 8)} {Environment.NewLine}".GetHashCode();
 }
