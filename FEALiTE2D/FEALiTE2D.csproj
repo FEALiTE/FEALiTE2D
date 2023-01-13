@@ -5,6 +5,7 @@
 		<Authors>Mohamed Salah Ibrahim</Authors>
 		<Copyright>Copyright © 2021 Mohamed Salah Ibrahim Civilms@outlook.com</Copyright>
 		<Description>A fast and reliable finite element analysis library for 2D frame, beam and truss elements using C#.</Description>
+		<LangVersion>11.0</LangVersion>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/FEALiTE/FEALiTE2D</RepositoryUrl>
 		<PackageTags>engineering analysis beam frame finite-elements finite-element-analysis structural-engineering structural-analysis finite-element-methods civil-engineering truss 2d-frame structral</PackageTags>

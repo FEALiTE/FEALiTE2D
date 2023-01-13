@@ -1,23 +1,22 @@
-﻿namespace FEALiTE2D.Elements
+﻿namespace FEALiTE2D.Elements;
+
+/// <summary>
+/// Represents an enum for possible degrees of freedom of a single <see cref="FEALiTE2D.Elements.Node2D"/>
+/// </summary>
+public enum NodalDegreeOfFreedom
 {
     /// <summary>
-    /// Represents an enum for possible degrees of freedom of a single <see cref="FEALiTE2D.Elements.Node2D"/>
+    /// Linear translation along the X axis
     /// </summary>
-    public enum NodalDegreeOfFreedom
-    {
-        /// <summary>
-        /// Linear translation along the X axis
-        /// </summary>
-        Ux = 0,
+    Ux = 0,
 
-        /// <summary>
-        /// Linear translation along the Y axis
-        /// </summary>
-        Uy = 1,
+    /// <summary>
+    /// Linear translation along the Y axis
+    /// </summary>
+    Uy = 1,
 
-        /// <summary>
-        /// Rotation around the Z axis
-        /// </summary>
-        Rz = 2,
-    }
+    /// <summary>
+    /// Rotation around the Z axis
+    /// </summary>
+    Rz = 2,
 }

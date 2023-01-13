@@ -1,17 +1,16 @@
-﻿namespace FEALiTE2D.Structure
+﻿namespace FEALiTE2D.Structure;
+
+/// <summary>
+/// Analysis Result
+/// </summary>
+public enum AnalysisStatus
 {
     /// <summary>
-    /// Analysis Result
+    /// Analysis completed successfully.
     /// </summary>
-    public enum AnalysisStatus
-    {
-        /// <summary>
-        /// Analysis completed successfully.
-        /// </summary>
-        Successful,
-        /// <summary>
-        /// Analysis completed with errors.
-        /// </summary>
-        Failure
-    }
+    Successful,
+    /// <summary>
+    /// Analysis completed with errors.
+    /// </summary>
+    Failure
 }
