@@ -119,7 +119,7 @@ namespace FEALiTE2D.Structure
 
             if (addNodes == true)
             {
-                foreach (Node2D n in element.Nodes)
+                foreach (var n in element.Nodes)
                 {
                     AddNode(n);
                 }
@@ -151,10 +151,10 @@ namespace FEALiTE2D.Structure
         /// </summary>
         private void PrepareLoadsOnElements()
         {
-            foreach (IElement element in Elements)
+            foreach (var element in Elements)
             {
                 // get global fixed end forces for each load assigned to this element.
-                foreach (LoadCase loadCase in LoadCasesToRun)
+                foreach (var loadCase in LoadCasesToRun)
                 {
                     element.EvaluateGlobalFixedEndForces(loadCase);
                 }
@@ -179,15 +179,15 @@ namespace FEALiTE2D.Structure
             Nodes = Nodes.OrderBy(i => i.DOF).ToList();
 
             // get total number of degrees of freedom by summing all ndof for each node.
-            foreach (Node2D node in Nodes)
+            foreach (var node in Nodes)
             {
                 nDOF += node.DOF;
             }
 
-            Queue<int> freeNumber = new Queue<int>(Enumerable.Range(0, nDOF));
-            Queue<int> restrainedNumber = new Queue<int>(Enumerable.Range(nDOF, Nodes.Count * 3 - nDOF));
+            var freeNumber = new Queue<int>(Enumerable.Range(0, nDOF));
+            var restrainedNumber = new Queue<int>(Enumerable.Range(nDOF, Nodes.Count * 3 - nDOF));
 
-            foreach (Node2D node in Nodes)
+            foreach (var node in Nodes)
             {
                 node.CoordNumbers.Clear();
 
@@ -221,7 +221,7 @@ namespace FEALiTE2D.Structure
             Console.WriteLine(" Linear Analysis of 1D structures.");
             Console.WriteLine($" Analysis Start: {DateTime.Now}.");
 
-            System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+            var sw = System.Diagnostics.Stopwatch.StartNew();
 
             if (LoadCasesToRun.Count <= 0)
             {
@@ -233,14 +233,14 @@ namespace FEALiTE2D.Structure
 
             ReNumberNodes();
 
-            Assembler assembler = new Assembler(this);
+            var assembler = new Assembler(this);
 
             StructuralStiffnessMatrix = assembler.AssembleGlobalStiffnessMatrix();
 
-            for (int i = 0; i < LoadCasesToRun.Count; i++)
+            for (var i = 0; i < LoadCasesToRun.Count; i++)
             {
-                LoadCase currentLC = LoadCasesToRun[i];
-                double[] loadVec = assembler.AssembleGlobalEquivalentLoadVector(currentLC);
+                var currentLC = LoadCasesToRun[i];
+                var loadVec = assembler.AssembleGlobalEquivalentLoadVector(currentLC);
                 FixedEndLoadsVectors.Add(currentLC, loadVec);
             }
 
@@ -258,10 +258,10 @@ namespace FEALiTE2D.Structure
                 }
             }
 
-            for (int i = 0; i < LoadCasesToRun.Count; i++)
+            for (var i = 0; i < LoadCasesToRun.Count; i++)
             {
-                LoadCase currentLC = LoadCasesToRun[i];
-                double[] displacementVector = new double[nDOF];
+                var currentLC = LoadCasesToRun[i];
+                var displacementVector = new double[nDOF];
 
                 cholesky.Solve(FixedEndLoadsVectors[currentLC], displacementVector);
 

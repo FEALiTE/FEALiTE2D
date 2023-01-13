@@ -13,12 +13,12 @@ namespace FEALiTE2D.Plotting.Dxf
         /// <returns>a point that lies on the element from a given distance from it's start node.</returns>
         public static Vector2 PointLocationOnLine(this Elements.IElement element, double x)
         {
-            double x1 = element.Nodes[0].X;
-            double y1 = element.Nodes[0].Y;
-            double x2 = element.Nodes[1].X;
-            double y2 = element.Nodes[1].Y;
-            double l = element.Length;
-            double t = x / l;
+            var x1 = element.Nodes[0].X;
+            var y1 = element.Nodes[0].Y;
+            var x2 = element.Nodes[1].X;
+            var y2 = element.Nodes[1].Y;
+            var l = element.Length;
+            var t = x / l;
 
             return new Vector2() { X = (1 - t) * x1 + t * x2, Y = (1 - t) * y1 + t * y2 };
         }
@@ -32,18 +32,18 @@ namespace FEALiTE2D.Plotting.Dxf
         /// <param name="perDistance">the perpendicular distance on the element.</param>
         public static Vector2 PointPerpendicularToLine(this Elements.IElement element, double x, double perDistance)
         {
-            double x1 = element.Nodes[0].X;
-            double y1 = element.Nodes[0].Y;
-            double x2 = element.Nodes[1].X;
-            double y2 = element.Nodes[1].Y;
+            var x1 = element.Nodes[0].X;
+            var y1 = element.Nodes[0].Y;
+            var x2 = element.Nodes[1].X;
+            var y2 = element.Nodes[1].Y;
 
             // find slope of the element
-            double m1 = (y2 - y1) / (x2 - x1);
+            var m1 = (y2 - y1) / (x2 - x1);
 
             // find required point a long the element.
-            Vector2 startPerPoint = PointLocationOnLine(element, x);
-            double m2 = -1 / m1;
-            double theta = Math.Atan(m2);
+            var startPerPoint = PointLocationOnLine(element, x);
+            var m2 = -1 / m1;
+            var theta = Math.Atan(m2);
             return new Vector2() { X = startPerPoint.X + perDistance * Math.Cos(theta), Y = startPerPoint.Y + perDistance * Math.Sin(theta) };
         }
 

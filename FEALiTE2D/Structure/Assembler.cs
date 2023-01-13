@@ -28,24 +28,24 @@ namespace FEALiTE2D.Structure
         /// </summary>
         internal SparseMatrix AssembleGlobalStiffnessMatrix()
         {
-            int nDOF = structure.nDOF;
+            var nDOF = structure.nDOF;
 
             // check if there are free dofs available.
             if (structure.nDOF == 0)
                 throw new InvalidOperationException("There are no sufficient degrees of freedom, thus there are no displacements or rotations could occur!");
 
             // global stiffness matrix.
-            DenseMatrix Kg = new DenseMatrix(nDOF, nDOF);
+            var Kg = new DenseMatrix(nDOF, nDOF);
 
             // start assembling
             foreach (var elem in structure.Elements)
             {
                 //TODO: support other types.
 
-                DenseMatrix elem_kg = elem.GlobalStiffnessMatrix;
-                List<int> elemCoord = elem.DegreeOfFreedoms; // element's coordinates vector.
+                var elem_kg = elem.GlobalStiffnessMatrix;
+                var elemCoord = elem.DegreeOfFreedoms; // element's coordinates vector.
 
-                int dofElem = elem.DOF; //number of dof for the elements.
+                var dofElem = elem.DOF; //number of dof for the elements.
                 double kij;
                 int i, j, ii, jj;
 
@@ -71,15 +71,15 @@ namespace FEALiTE2D.Structure
             }
 
             // assemble elastic supports data
-            IEnumerable<Node2D> elasticNodes = structure.Nodes.Where(o => o.Support is NodalSpringSupport);
-            foreach (Node2D node in elasticNodes)
+            var elasticNodes = structure.Nodes.Where(o => o.Support is NodalSpringSupport);
+            foreach (var node in elasticNodes)
             {
-                int dofNode = node.DOF; //number of dof for the node.
+                var dofNode = node.DOF; //number of dof for the node.
                 double kij;
                 int i, ii;
 
-                DenseMatrix node_kg = ((NodalSpringSupport)node.Support).GlobalStiffnessMatrix;
-                List<int> elemCoord = node.CoordNumbers; // node's coordinates vector.
+                var node_kg = ((NodalSpringSupport)node.Support).GlobalStiffnessMatrix;
+                var elemCoord = node.CoordNumbers; // node's coordinates vector.
 
                 for (i = 0; i < dofNode; i++)
                 {
@@ -109,23 +109,23 @@ namespace FEALiTE2D.Structure
             if (structure.nDOF == 0)
                 throw new InvalidOperationException("There are no sufficient degrees of freedom, thus there are no displacements or rotations could occur!");
 
-            int nDOF = structure.nDOF;
+            var nDOF = structure.nDOF;
 
             // global fem vector.
-            double[] Qf = new double[nDOF];
+            var Qf = new double[nDOF];
 
 
-            foreach (Node2D node in structure.Nodes)
+            foreach (var node in structure.Nodes)
             {
-                double[] nodeLoad = new double[3];
+                var nodeLoad = new double[3];
 
                 // get node loads.
                 //1- add external nodal loads
-                foreach (NodalLoad load in node.NodalLoads)
+                foreach (var load in node.NodalLoads)
                 {
                     if (load.LoadCase == loadCase)
                     {
-                        double[] f = load.GetGlobalFixedEndForces(node);
+                        var f = load.GetGlobalFixedEndForces(node);
 
                         nodeLoad[0] += f[0];
                         nodeLoad[1] += f[1];
@@ -134,20 +134,20 @@ namespace FEALiTE2D.Structure
                 }
 
                 //2- get loads from connected elements to this node.
-                IEnumerable<IElement> connectedElements = structure.Elements.Where(o => o.Nodes.Contains(node));
+                var connectedElements = structure.Elements.Where(o => o.Nodes.Contains(node));
 
                 if (connectedElements.Count() == 0)
                     throw new InvalidOperationException("Isolated node @" + node.Label);
 
                 // get connected elements at this node.
-                foreach (IElement elem in connectedElements)
+                foreach (var elem in connectedElements)
                 {
                     //TODO: support other types.
                     if (elem is FrameElement2D)
                     {
-                        double[] fem = elem.GlobalEndForcesForLoadCase[loadCase];
+                        var fem = elem.GlobalEndForcesForLoadCase[loadCase];
 
-                        for (int i = 0; i < 3; i++)
+                        for (var i = 0; i < 3; i++)
                         {
                             // add and reverse the sign of the force and moment then subtract P(nodal)  -(P(element)) will lead to positive sign
                             if (elem.Nodes[0] == node)
@@ -160,7 +160,7 @@ namespace FEALiTE2D.Structure
                 }
 
 
-                for (int i = 0; i < 3; i++)
+                for (var i = 0; i < 3; i++)
                     if (node.CoordNumbers[i] < structure.nDOF)
                         Qf[node.CoordNumbers[i]] += nodeLoad[i];
 
@@ -169,19 +169,19 @@ namespace FEALiTE2D.Structure
                 if (node.DOF == 3) // not restrained
                     continue;
 
-                foreach (SupportDisplacementLoad dis in node.SupportDisplacementLoad)
+                foreach (var dis in node.SupportDisplacementLoad)
                 {
                     if (dis.LoadCase != loadCase)
                         continue;
 
-                    double[] dg = dis.GetGlobalFixedEndDisplacement(node);
-                    foreach (IElement elem in connectedElements)
+                    var dg = dis.GetGlobalFixedEndDisplacement(node);
+                    foreach (var elem in connectedElements)
                     {
-                        double[] d = new double[6];
+                        var d = new double[6];
 
                         if (elem is FrameElement2D)
                         {
-                            for (int i = 0; i < 3; i++)
+                            for (var i = 0; i < 3; i++)
                             {
                                 if (elem.Nodes[0] == node)
                                     d[i] = dg[i];
@@ -191,10 +191,10 @@ namespace FEALiTE2D.Structure
                             }
 
                             // fixed end vector due to support displacement.
-                            double[] fg = new double[6];
+                            var fg = new double[6];
                             elem.GlobalStiffnessMatrix.Multiply(d, fg);
 
-                            for (int i = 0; i < 3; i++)
+                            for (var i = 0; i < 3; i++)
                             {
                                 if (elem.Nodes[0].CoordNumbers[i] < structure.nDOF)
                                     Qf[elem.Nodes[0].CoordNumbers[i]] -= fg[i];

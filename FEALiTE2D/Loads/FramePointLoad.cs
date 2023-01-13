@@ -61,7 +61,7 @@
         /// <inheritdoc/>
         public double[] GetGlobalFixedEndForces(Elements.FrameElement2D element)
         {
-            double[] fem = new double[6];
+            var fem = new double[6];
             double fx = Fx,
                    fy = Fy,
                    mz = Mz,
@@ -70,9 +70,9 @@
             // transform forces and moments from global to local.
             if (LoadDirection == LoadDirection.Global)
             {
-                double[] F = new double[] { Fx, Fy, Mz };
+                var F = new double[] { Fx, Fy, Mz };
 
-                double[] Q = new double[3];
+                var Q = new double[3];
                 element.LocalCoordinateSystemMatrix.Multiply(F, Q);
 
                 // assign the transformed values to the main new forces values.
@@ -128,9 +128,9 @@
                 load.LoadCase = LoadCase;
                 if (LoadDirection == LoadDirection.Global)
                 {
-                    double[] F = new double[] { Fx, Fy, 0 };
+                    var F = new double[] { Fx, Fy, 0 };
 
-                    double[] Q = new double[3];
+                    var Q = new double[3];
                     element.LocalCoordinateSystemMatrix.Multiply(F, Q);
 
                     // assign the transformed values to the main new forces values.

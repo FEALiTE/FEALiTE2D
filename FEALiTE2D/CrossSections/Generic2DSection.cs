@@ -11,25 +11,25 @@ namespace FEALiTE2D.CrossSections
         /// <summary>
         /// Creates a new instance of the <see cref="Generic2DSection"/>
         /// </summary>
-        /// <param name="A">Cross section area.</param>
-        /// <param name="Ax">Shear area in x-x direction.</param>
-        /// <param name="Ay">Shear area in y-y direction.</param>
-        /// <param name="Ix">Area moment of inertia about x axis.</param>
-        /// <param name="Iy">Area moment of inertia about y axis.</param>
-        /// <param name="J">Torsional constant.</param>
-        /// <param name="hmax">max. height.</param>
-        /// <param name="wmax">max. width.</param>
+        /// <param name="a">Cross section area.</param>
+        /// <param name="ax">Shear area in x-x direction.</param>
+        /// <param name="ay">Shear area in y-y direction.</param>
+        /// <param name="ix">Area moment of inertia about x axis.</param>
+        /// <param name="iy">Area moment of inertia about y axis.</param>
+        /// <param name="j">Torsional constant.</param>
+        /// <param name="maxHeight">max. height.</param>
+        /// <param name="maxWidth">max. width.</param>
         /// <param name="material">material.</param>
-        public Generic2DSection(double A, double Ax, double Ay, double Ix, double Iy, double J, double hmax, double wmax, IMaterial material) : base()
+        public Generic2DSection(double a, double ax, double ay, double ix, double iy, double j, double maxHeight, double maxWidth, IMaterial material)
         {
-            this.A = A;
-            base.Ax = Ax;
-            base.Ay = Ay;
-            base.Ix = Ix;
-            base.Iy = Iy;
-            base.J = J;
-            base.MaxHeight = hmax;
-            base.MaxWidth = wmax;
+            A = a;
+            base.Ax = ax;
+            base.Ay = ay;
+            base.Ix = ix;
+            base.Iy = iy;
+            base.J = j;
+            base.MaxHeight = maxHeight;
+            base.MaxWidth = maxWidth;
             Material = material;
         }
 

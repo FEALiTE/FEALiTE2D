@@ -112,9 +112,9 @@ namespace FEALiTE2D.Elements
         {
             get
             {
-                double c = Cos(RotaionAngle);
-                double s = Sin(RotaionAngle);
-                double[,] t = new double[,]
+                var c = Cos(RotaionAngle);
+                var s = Sin(RotaionAngle);
+                var t = new double[,]
                 {
                     { c, s, 0 },
                     {-s, c, 0 },

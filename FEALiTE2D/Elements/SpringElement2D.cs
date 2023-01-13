@@ -74,7 +74,7 @@ namespace FEALiTE2D.Elements
         {
             get
             {
-                List<int> coords = new List<int>();
+                var coords = new List<int>();
                 coords.AddRange(StartNode.CoordNumbers);
                 coords.AddRange(EndNode.CoordNumbers);
 
@@ -104,10 +104,10 @@ namespace FEALiTE2D.Elements
         public DenseMatrix LocalCoordinateSystemMatrix { get; private set; }
         private DenseMatrix GetLocalCoordinateSystemMatrix()
         {
-            double l = Length;
-            double s = (EndNode.Y - StartNode.Y) / l;
-            double c = (EndNode.X - StartNode.X) / l;
-            DenseMatrix T = new DenseMatrix(3, 3);
+            var l = Length;
+            var s = (EndNode.Y - StartNode.Y) / l;
+            var c = (EndNode.X - StartNode.X) / l;
+            var T = new DenseMatrix(3, 3);
             T[0, 0] = T[1, 1] = c;
             T[0, 1] = s;
             T[1, 0] = -s;
@@ -119,11 +119,11 @@ namespace FEALiTE2D.Elements
         public DenseMatrix TransformationMatrix { get; private set; }
         private DenseMatrix GetTransformationMatrix()
         {
-            DenseMatrix T = new DenseMatrix(6, 6);
+            var T = new DenseMatrix(6, 6);
             var lcs = LocalCoordinateSystemMatrix;
-            for (int i = 0; i < 3; i++)
+            for (var i = 0; i < 3; i++)
             {
-                for (int j = 0; j < 3; j++)
+                for (var j = 0; j < 3; j++)
                 {
                     T[i, j] = lcs.At(i, j);
                     T[i + 3, j + 3] = lcs.At(i, j);
@@ -136,7 +136,7 @@ namespace FEALiTE2D.Elements
         public DenseMatrix LocalStiffnessMatrix { get; private set; }
         private DenseMatrix GetLocalStiffnessMatrix()
         {
-            double[,] kspring = new double[6, 6]
+            var kspring = new double[6, 6]
             {
                 { +K , 0 ,  0 , -K , 0,  0 },
                 {  0 , 0 ,  0 ,  0 , 0,  0 },
@@ -167,18 +167,18 @@ namespace FEALiTE2D.Elements
         /// <inheritdoc/>
         public void EvaluateGlobalFixedEndForces(LoadCase loadCase)
         {
-            double[] f = new double[6];
+            var f = new double[6];
             GlobalEndForcesForLoadCase.Add(loadCase, f);
         }
 
         /// <inheritdoc/>
         public DenseMatrix GetShapeFunctionAt(double x)
         {
-            double l = Length;
-            double xsi = x / l;
+            var l = Length;
+            var xsi = x / l;
 
             double N1 = 1.0 - xsi, N2 = xsi;
-            double[,] nu = new double[,]
+            var nu = new double[,]
             {
                 {N1 , 0  , 0  , N2 , 0  , 0 },
                 { 0 , N1 , 0  , 0  , N2 , 0 },

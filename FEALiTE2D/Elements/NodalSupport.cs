@@ -49,7 +49,7 @@
         {
             get
             {
-                int i = 0;
+                var i = 0;
                 if (Ux == true) i++;
                 if (Uy == true) i++;
                 if (Rz == true) i++;

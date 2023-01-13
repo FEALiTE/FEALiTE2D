@@ -42,7 +42,7 @@ namespace FEALiTE2D.Meshing
         {
             var discreteLocations = new SortedSet<double>();
             discreteLocations.UnionWith(element.AdditionalMeshPoints);
-            double len = element.Length;
+            var len = element.Length;
 
             // do some checks
             foreach (var distance in element.AdditionalMeshPoints)
@@ -58,7 +58,7 @@ namespace FEALiTE2D.Meshing
             // 1- add locations base on load location.
 
             // loop through each load 
-            foreach (ILoad load in element.Loads)
+            foreach (var load in element.Loads)
             {
                 if (load is FramePointLoad load1)
                 {
@@ -96,12 +96,12 @@ namespace FEALiTE2D.Meshing
             // 2- add locations based on number of segments and length of the segment.
             if (element.GetType() != typeof(SpringElement2D))
             {
-                int n1 = (int)Math.Floor(len / MinDistance);
-                int n2 = NumberSegements;
-                int n = Math.Max(n1, n2);
-                double dx = len / n;
+                var n1 = (int)Math.Floor(len / MinDistance);
+                var n2 = NumberSegements;
+                var n = Math.Max(n1, n2);
+                var dx = len / n;
 
-                for (int i = 0; i < n; i++)
+                for (var i = 0; i < n; i++)
                 {
                     discreteLocations.Add(i * dx);
                 }
@@ -114,10 +114,10 @@ namespace FEALiTE2D.Meshing
 
             // loop through each segment to find if there's load applied on it
             // for point loads, the load will be applied to start of the segment
-            for (int i = 0; i < discreteLocations.Count - 1; i++)
+            for (var i = 0; i < discreteLocations.Count - 1; i++)
             {
                 // Create a new segment and apply loads on it.
-                LinearMeshSegment segment = new LinearMeshSegment();
+                var segment = new LinearMeshSegment();
                 segment.x1 = discreteLocations.ElementAt(i);
                 segment.x2 = discreteLocations.ElementAt(i + 1);
                 // set geometric properties.

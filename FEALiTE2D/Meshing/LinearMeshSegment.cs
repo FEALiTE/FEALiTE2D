@@ -124,7 +124,7 @@ namespace FEALiTE2D.Meshing
         /// <param name="x">a distance</param>
         public double AxialDisplacementAt(double x)
         {
-            double EA = E * A;
+            var EA = E * A;
             return Displacement1.Ux -
                 Internalforces1.Fx * x / EA + wx1 * x * x / (2.0 * EA) + (wx2 - wx1) * x * x * x / (6.0 * EA * (x2 - x1));
         }

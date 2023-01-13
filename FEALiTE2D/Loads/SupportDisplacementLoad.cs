@@ -56,7 +56,7 @@ namespace FEALiTE2D.Loads
         public double[] GetGlobalFixedEndDisplacement(Node2D node)
         {
             // create force vector
-            double[] Q = new double[3] { Ux, Uy, Rz };
+            var Q = new double[3] { Ux, Uy, Rz };
 
             // if the forces is in global coordinate system of the node then return it.
             if (LoadDirection == LoadDirection.Global)
@@ -64,7 +64,7 @@ namespace FEALiTE2D.Loads
                 return Q;
             }
             // transform the load vector to the local coordinate of the node.
-            double[] F = new double[3];
+            var F = new double[3];
             node.TransformationMatrix.TransposeMultiply(Q, F);
             return F;
         }
@@ -80,7 +80,7 @@ namespace FEALiTE2D.Loads
             {
                 return false;
             }
-            SupportDisplacementLoad nd = obj as SupportDisplacementLoad;
+            var nd = obj as SupportDisplacementLoad;
             if (Ux != nd.Ux || Uy != nd.Uy || Rz != nd.Rz || LoadCase != nd.LoadCase)
             {
                 return false;
@@ -111,7 +111,7 @@ namespace FEALiTE2D.Loads
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            int result = 0;
+            var result = 0;
             result += (Ux + 1e-10).GetHashCode();
             result += (Uy + 2e-10).GetHashCode();
             result += (Rz + 6e-10).GetHashCode();

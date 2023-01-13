@@ -59,7 +59,7 @@ namespace FEALiTE2D.Plotting.Dxf
             }
 
             // initialize a new instance of a dxf document
-            netDxf.DxfDocument dxfDocument = new netDxf.DxfDocument(this.PlottingOption.DxfVersion);
+            var dxfDocument = new netDxf.DxfDocument(this.PlottingOption.DxfVersion);
 
             // normal force diagram
             PlotNFD(dxfDocument, loadCase, netDxf.Vector2.Zero);
@@ -92,7 +92,7 @@ namespace FEALiTE2D.Plotting.Dxf
             }
 
             // initialize a new instance of a dxf document
-            netDxf.DxfDocument dxfDocument = new netDxf.DxfDocument(this.PlottingOption.DxfVersion);
+            var dxfDocument = new netDxf.DxfDocument(this.PlottingOption.DxfVersion);
 
             double cumY = 0;
 
@@ -137,7 +137,7 @@ namespace FEALiTE2D.Plotting.Dxf
             }
 
             // initialize a new instance of a dxf document
-            netDxf.DxfDocument dxfDocument = new netDxf.DxfDocument(this.PlottingOption.DxfVersion);
+            var dxfDocument = new netDxf.DxfDocument(this.PlottingOption.DxfVersion);
 
             // normal force diagram
             PlotNFD(dxfDocument, loadCombination, netDxf.Vector2.Zero);
@@ -170,7 +170,7 @@ namespace FEALiTE2D.Plotting.Dxf
             }
 
             // initialize a new instance of a dxf document
-            netDxf.DxfDocument dxfDocument = new netDxf.DxfDocument(this.PlottingOption.DxfVersion);
+            var dxfDocument = new netDxf.DxfDocument(this.PlottingOption.DxfVersion);
 
             double cumY = 0;
 
@@ -203,14 +203,14 @@ namespace FEALiTE2D.Plotting.Dxf
         /// <param name="startPosition">The start point of drawing the structure in XY-plan.</param>
         public void PlotStructure(netDxf.DxfDocument dxfDocument, netDxf.Vector2 startPosition)
         {
-            double scale = PlottingOption.StructureScaleFactor;
+            var scale = PlottingOption.StructureScaleFactor;
 
             // loop through elements first to plot them
-            for (int i = 0; i < this.Structure.Elements.Count; i++)
+            for (var i = 0; i < this.Structure.Elements.Count; i++)
             {
                 foreach (var fe in this.Structure.Elements)
                 {
-                    netDxf.Entities.Line line = new netDxf.Entities.Line(
+                    var line = new netDxf.Entities.Line(
                             new netDxf.Vector2((startPosition.X + fe.Nodes[0].X) * scale, (startPosition.Y + fe.Nodes[0].Y) * scale),
                             new netDxf.Vector2((startPosition.X + fe.Nodes[1].X) * scale, (startPosition.Y + fe.Nodes[1].Y) * scale))
                     {
@@ -232,7 +232,7 @@ namespace FEALiTE2D.Plotting.Dxf
         {
             PlotStructure(dxfDocument, startPosition);
 
-            double scale = PlottingOption.NFDScaleFactor;
+            var scale = PlottingOption.NFDScaleFactor;
 
             foreach (var e in this.Structure.Elements)
             {
@@ -240,27 +240,27 @@ namespace FEALiTE2D.Plotting.Dxf
 
                 foreach (var segment in segs)
                 {
-                    Vector2 p1 = e.PointLocationOnLine(segment.x1);
-                    Vector2 p2NFD = e.PointPerpendicularToLine(segment.x1, segment.Internalforces1.Fx * -scale);
-                    Vector2 p3NFD = e.PointPerpendicularToLine(segment.x2, segment.Internalforces2.Fx * -scale);
-                    Vector2 p4 = e.PointLocationOnLine(segment.x2);
+                    var p1 = e.PointLocationOnLine(segment.x1);
+                    var p2NFD = e.PointPerpendicularToLine(segment.x1, segment.Internalforces1.Fx * -scale);
+                    var p3NFD = e.PointPerpendicularToLine(segment.x2, segment.Internalforces2.Fx * -scale);
+                    var p4 = e.PointLocationOnLine(segment.x2);
 
                     // write nfd
-                    netDxf.Entities.Line line1 = new netDxf.Entities.Line
+                    var line1 = new netDxf.Entities.Line
                     {
                         StartPoint = new Vector3(p1.X + startPosition.X, p1.Y + startPosition.Y, 0),
                         EndPoint = new Vector3(p2NFD.X + startPosition.X, p2NFD.Y + startPosition.Y, 0),
                         Layer = PlottingOption.LayerOfNFD
                     };
 
-                    netDxf.Entities.Line line2 = new netDxf.Entities.Line
+                    var line2 = new netDxf.Entities.Line
                     {
                         StartPoint = new Vector3(p2NFD.X + startPosition.X, p2NFD.Y + startPosition.Y, 0),
                         EndPoint = new Vector3(p3NFD.X + startPosition.X, p3NFD.Y + startPosition.Y, 0),
                         Layer = PlottingOption.LayerOfNFD
                     };
 
-                    netDxf.Entities.Line line3 = new netDxf.Entities.Line
+                    var line3 = new netDxf.Entities.Line
                     {
                         StartPoint = new Vector3(p3NFD.X + startPosition.X, p3NFD.Y + startPosition.Y, 0),
                         EndPoint = new Vector3(p4.X + startPosition.X, p4.Y + startPosition.Y, 0),
@@ -273,7 +273,7 @@ namespace FEALiTE2D.Plotting.Dxf
                 }
             }
 
-            netDxf.Entities.MText text = new netDxf.Entities.MText
+            var text = new netDxf.Entities.MText
             {
                 Layer = PlottingOption.LayerOfNFD,
                 Height = 0.01 * boundingRectangle.Width,
@@ -295,7 +295,7 @@ namespace FEALiTE2D.Plotting.Dxf
         {
             PlotStructure(dxfDocument, startPosition);
 
-            double scale = PlottingOption.NFDScaleFactor;
+            var scale = PlottingOption.NFDScaleFactor;
 
             foreach (var e in this.Structure.Elements)
             {
@@ -303,27 +303,27 @@ namespace FEALiTE2D.Plotting.Dxf
 
                 foreach (var segment in segs)
                 {
-                    Vector2 p1 = e.PointLocationOnLine(segment.x1);
-                    Vector2 p2NFD = e.PointPerpendicularToLine(segment.x1, segment.Internalforces1.Fx * -scale);
-                    Vector2 p3NFD = e.PointPerpendicularToLine(segment.x2, segment.Internalforces2.Fx * -scale);
-                    Vector2 p4 = e.PointLocationOnLine(segment.x2);
+                    var p1 = e.PointLocationOnLine(segment.x1);
+                    var p2NFD = e.PointPerpendicularToLine(segment.x1, segment.Internalforces1.Fx * -scale);
+                    var p3NFD = e.PointPerpendicularToLine(segment.x2, segment.Internalforces2.Fx * -scale);
+                    var p4 = e.PointLocationOnLine(segment.x2);
 
                     // write nfd
-                    netDxf.Entities.Line line1 = new netDxf.Entities.Line
+                    var line1 = new netDxf.Entities.Line
                     {
                         StartPoint = new Vector3(p1.X + startPosition.X, p1.Y + startPosition.Y, 0),
                         EndPoint = new Vector3(p2NFD.X + startPosition.X, p2NFD.Y + startPosition.Y, 0),
                         Layer = PlottingOption.LayerOfNFD
                     };
 
-                    netDxf.Entities.Line line2 = new netDxf.Entities.Line
+                    var line2 = new netDxf.Entities.Line
                     {
                         StartPoint = new Vector3(p2NFD.X + startPosition.X, p2NFD.Y + startPosition.Y, 0),
                         EndPoint = new Vector3(p3NFD.X + startPosition.X, p3NFD.Y + startPosition.Y, 0),
                         Layer = PlottingOption.LayerOfNFD
                     };
 
-                    netDxf.Entities.Line line3 = new netDxf.Entities.Line
+                    var line3 = new netDxf.Entities.Line
                     {
                         StartPoint = new Vector3(p3NFD.X + startPosition.X, p3NFD.Y + startPosition.Y, 0),
                         EndPoint = new Vector3(p4.X + startPosition.X, p4.Y + startPosition.Y, 0),
@@ -336,7 +336,7 @@ namespace FEALiTE2D.Plotting.Dxf
                 }
             }
 
-            netDxf.Entities.MText text = new netDxf.Entities.MText
+            var text = new netDxf.Entities.MText
             {
                 Layer = PlottingOption.LayerOfNFD,
                 Height = 0.01 * boundingRectangle.Width,
@@ -358,7 +358,7 @@ namespace FEALiTE2D.Plotting.Dxf
         {
             PlotStructure(dxfDocument, startPosition);
 
-            double scale = PlottingOption.SFDScaleFactor;
+            var scale = PlottingOption.SFDScaleFactor;
 
             foreach (var e in this.Structure.Elements)
             {
@@ -366,27 +366,27 @@ namespace FEALiTE2D.Plotting.Dxf
 
                 foreach (var segment in segs)
                 {
-                    Vector2 p1 = e.PointLocationOnLine(segment.x1);
-                    Vector2 p2SFD = e.PointPerpendicularToLine(segment.x1, segment.Internalforces1.Fy * -scale);
-                    Vector2 p3SFD = e.PointPerpendicularToLine(segment.x2, segment.Internalforces2.Fy * -scale);
-                    Vector2 p4 = e.PointLocationOnLine(segment.x2);
+                    var p1 = e.PointLocationOnLine(segment.x1);
+                    var p2SFD = e.PointPerpendicularToLine(segment.x1, segment.Internalforces1.Fy * -scale);
+                    var p3SFD = e.PointPerpendicularToLine(segment.x2, segment.Internalforces2.Fy * -scale);
+                    var p4 = e.PointLocationOnLine(segment.x2);
 
                     // write sfd
-                    netDxf.Entities.Line line1 = new netDxf.Entities.Line
+                    var line1 = new netDxf.Entities.Line
                     {
                         StartPoint = new Vector3(p1.X + startPosition.X, p1.Y + startPosition.Y, 0),
                         EndPoint = new Vector3(p2SFD.X + startPosition.X, p2SFD.Y + startPosition.Y, 0),
                         Layer = PlottingOption.LayerOfSFD
                     };
 
-                    netDxf.Entities.Line line2 = new netDxf.Entities.Line
+                    var line2 = new netDxf.Entities.Line
                     {
                         StartPoint = new Vector3(p2SFD.X + startPosition.X, p2SFD.Y + startPosition.Y, 0),
                         EndPoint = new Vector3(p3SFD.X + startPosition.X, p3SFD.Y + startPosition.Y, 0),
                         Layer = PlottingOption.LayerOfSFD
                     };
 
-                    netDxf.Entities.Line line3 = new netDxf.Entities.Line
+                    var line3 = new netDxf.Entities.Line
                     {
                         StartPoint = new Vector3(p3SFD.X + startPosition.X, p3SFD.Y + startPosition.Y, 0),
                         EndPoint = new Vector3(p4.X + startPosition.X, p4.Y + startPosition.Y, 0),
@@ -399,7 +399,7 @@ namespace FEALiTE2D.Plotting.Dxf
                 }
             }
 
-            netDxf.Entities.MText text = new netDxf.Entities.MText
+            var text = new netDxf.Entities.MText
             {
                 Layer = PlottingOption.LayerOfSFD,
                 Height = 0.01 * boundingRectangle.Width,
@@ -422,7 +422,7 @@ namespace FEALiTE2D.Plotting.Dxf
         {
             PlotStructure(dxfDocument, startPosition);
 
-            double scale = PlottingOption.SFDScaleFactor;
+            var scale = PlottingOption.SFDScaleFactor;
 
             foreach (var e in this.Structure.Elements)
             {
@@ -430,27 +430,27 @@ namespace FEALiTE2D.Plotting.Dxf
 
                 foreach (var segment in segs)
                 {
-                    Vector2 p1 = e.PointLocationOnLine(segment.x1);
-                    Vector2 p2SFD = e.PointPerpendicularToLine(segment.x1, segment.Internalforces1.Fy * -scale);
-                    Vector2 p3SFD = e.PointPerpendicularToLine(segment.x2, segment.Internalforces2.Fy * -scale);
-                    Vector2 p4 = e.PointLocationOnLine(segment.x2);
+                    var p1 = e.PointLocationOnLine(segment.x1);
+                    var p2SFD = e.PointPerpendicularToLine(segment.x1, segment.Internalforces1.Fy * -scale);
+                    var p3SFD = e.PointPerpendicularToLine(segment.x2, segment.Internalforces2.Fy * -scale);
+                    var p4 = e.PointLocationOnLine(segment.x2);
 
                     // write sfd
-                    netDxf.Entities.Line line1 = new netDxf.Entities.Line
+                    var line1 = new netDxf.Entities.Line
                     {
                         StartPoint = new Vector3(p1.X + startPosition.X, p1.Y + startPosition.Y, 0),
                         EndPoint = new Vector3(p2SFD.X + startPosition.X, p2SFD.Y + startPosition.Y, 0),
                         Layer = PlottingOption.LayerOfSFD
                     };
 
-                    netDxf.Entities.Line line2 = new netDxf.Entities.Line
+                    var line2 = new netDxf.Entities.Line
                     {
                         StartPoint = new Vector3(p2SFD.X + startPosition.X, p2SFD.Y + startPosition.Y, 0),
                         EndPoint = new Vector3(p3SFD.X + startPosition.X, p3SFD.Y + startPosition.Y, 0),
                         Layer = PlottingOption.LayerOfSFD
                     };
 
-                    netDxf.Entities.Line line3 = new netDxf.Entities.Line
+                    var line3 = new netDxf.Entities.Line
                     {
                         StartPoint = new Vector3(p3SFD.X + startPosition.X, p3SFD.Y + startPosition.Y, 0),
                         EndPoint = new Vector3(p4.X + startPosition.X, p4.Y + startPosition.Y, 0),
@@ -463,7 +463,7 @@ namespace FEALiTE2D.Plotting.Dxf
                 }
             }
       
-            netDxf.Entities.MText text = new netDxf.Entities.MText
+            var text = new netDxf.Entities.MText
             {
                 Layer = PlottingOption.LayerOfSFD,
                 Height = 0.01 * boundingRectangle.Width,
@@ -485,7 +485,7 @@ namespace FEALiTE2D.Plotting.Dxf
         {
             PlotStructure(dxfDocument, startPosition);
 
-            double scale = PlottingOption.BMDScaleFactor;
+            var scale = PlottingOption.BMDScaleFactor;
 
             foreach (var e in this.Structure.Elements)
             {
@@ -493,27 +493,27 @@ namespace FEALiTE2D.Plotting.Dxf
 
                 foreach (var segment in segs)
                 {
-                    Vector2 p1 = e.PointLocationOnLine(segment.x1);
-                    Vector2 p2BMD = e.PointPerpendicularToLine(segment.x1, segment.Internalforces1.Mz * -scale);
-                    Vector2 p3BMD = e.PointPerpendicularToLine(segment.x2, segment.Internalforces2.Mz * -scale);
-                    Vector2 p4 = e.PointLocationOnLine(segment.x2);
+                    var p1 = e.PointLocationOnLine(segment.x1);
+                    var p2BMD = e.PointPerpendicularToLine(segment.x1, segment.Internalforces1.Mz * -scale);
+                    var p3BMD = e.PointPerpendicularToLine(segment.x2, segment.Internalforces2.Mz * -scale);
+                    var p4 = e.PointLocationOnLine(segment.x2);
 
                     // write BMD
-                    netDxf.Entities.Line line1 = new netDxf.Entities.Line
+                    var line1 = new netDxf.Entities.Line
                     {
                         StartPoint = new Vector3(p1.X + startPosition.X, p1.Y + startPosition.Y, 0),
                         EndPoint = new Vector3(p2BMD.X + startPosition.X, p2BMD.Y + startPosition.Y, 0),
                         Layer = PlottingOption.LayerOfBMD
                     };
 
-                    netDxf.Entities.Line line2 = new netDxf.Entities.Line
+                    var line2 = new netDxf.Entities.Line
                     {
                         StartPoint = new Vector3(p2BMD.X + startPosition.X, p2BMD.Y + startPosition.Y, 0),
                         EndPoint = new Vector3(p3BMD.X + startPosition.X, p3BMD.Y + startPosition.Y, 0),
                         Layer = PlottingOption.LayerOfBMD
                     };
 
-                    netDxf.Entities.Line line3 = new netDxf.Entities.Line
+                    var line3 = new netDxf.Entities.Line
                     {
                         StartPoint = new Vector3(p3BMD.X + startPosition.X, p3BMD.Y + startPosition.Y, 0),
                         EndPoint = new Vector3(p4.X + startPosition.X, p4.Y + startPosition.Y, 0),
@@ -526,7 +526,7 @@ namespace FEALiTE2D.Plotting.Dxf
                 }
             }
 
-            netDxf.Entities.MText text = new netDxf.Entities.MText
+            var text = new netDxf.Entities.MText
             {
                 Layer = PlottingOption.LayerOfBMD,
                 Height = 0.01 * boundingRectangle.Width,
@@ -549,7 +549,7 @@ namespace FEALiTE2D.Plotting.Dxf
         {
             PlotStructure(dxfDocument, startPosition);
 
-            double scale = PlottingOption.BMDScaleFactor;
+            var scale = PlottingOption.BMDScaleFactor;
 
             foreach (var e in this.Structure.Elements)
             {
@@ -557,27 +557,27 @@ namespace FEALiTE2D.Plotting.Dxf
 
                 foreach (var segment in segs)
                 {
-                    Vector2 p1 = e.PointLocationOnLine(segment.x1);
-                    Vector2 p2BMD = e.PointPerpendicularToLine(segment.x1, segment.Internalforces1.Mz * -scale);
-                    Vector2 p3BMD = e.PointPerpendicularToLine(segment.x2, segment.Internalforces2.Mz * -scale);
-                    Vector2 p4 = e.PointLocationOnLine(segment.x2);
+                    var p1 = e.PointLocationOnLine(segment.x1);
+                    var p2BMD = e.PointPerpendicularToLine(segment.x1, segment.Internalforces1.Mz * -scale);
+                    var p3BMD = e.PointPerpendicularToLine(segment.x2, segment.Internalforces2.Mz * -scale);
+                    var p4 = e.PointLocationOnLine(segment.x2);
 
                     // write BMD
-                    netDxf.Entities.Line line1 = new netDxf.Entities.Line
+                    var line1 = new netDxf.Entities.Line
                     {
                         StartPoint = new Vector3(p1.X + startPosition.X, p1.Y + startPosition.Y, 0),
                         EndPoint = new Vector3(p2BMD.X + startPosition.X, p2BMD.Y + startPosition.Y, 0),
                         Layer = PlottingOption.LayerOfBMD
                     };
 
-                    netDxf.Entities.Line line2 = new netDxf.Entities.Line
+                    var line2 = new netDxf.Entities.Line
                     {
                         StartPoint = new Vector3(p2BMD.X + startPosition.X, p2BMD.Y + startPosition.Y, 0),
                         EndPoint = new Vector3(p3BMD.X + startPosition.X, p3BMD.Y + startPosition.Y, 0),
                         Layer = PlottingOption.LayerOfBMD
                     };
 
-                    netDxf.Entities.Line line3 = new netDxf.Entities.Line
+                    var line3 = new netDxf.Entities.Line
                     {
                         StartPoint = new Vector3(p3BMD.X + startPosition.X, p3BMD.Y + startPosition.Y, 0),
                         EndPoint = new Vector3(p4.X + startPosition.X, p4.Y + startPosition.Y, 0),
@@ -590,7 +590,7 @@ namespace FEALiTE2D.Plotting.Dxf
                 }
             }
      
-            netDxf.Entities.MText text = new netDxf.Entities.MText
+            var text = new netDxf.Entities.MText
             {
                 Layer = PlottingOption.LayerOfBMD,
                 Height = 0.01 * boundingRectangle.Width,
@@ -612,7 +612,7 @@ namespace FEALiTE2D.Plotting.Dxf
         {
             PlotStructure(dxfDocument, startPosition);
 
-            double scale = PlottingOption.DisplacmentScaleFactor;
+            var scale = PlottingOption.DisplacmentScaleFactor;
 
             foreach (var e in this.Structure.Elements)
             {
@@ -620,10 +620,10 @@ namespace FEALiTE2D.Plotting.Dxf
 
                 foreach (var segment in segs)
                 {
-                    Vector2 p2def = e.PointForDeflection(segment.x1, segment.Displacement1.Ux * scale, segment.Displacement1.Uy * scale);
-                    Vector2 p3def = e.PointForDeflection(segment.x2, segment.Displacement2.Ux * scale, segment.Displacement2.Uy * scale);
+                    var p2def = e.PointForDeflection(segment.x1, segment.Displacement1.Ux * scale, segment.Displacement1.Uy * scale);
+                    var p3def = e.PointForDeflection(segment.x2, segment.Displacement2.Ux * scale, segment.Displacement2.Uy * scale);
 
-                    netDxf.Entities.Line line1 = new netDxf.Entities.Line
+                    var line1 = new netDxf.Entities.Line
                     {
                         StartPoint = new Vector3(p2def.X + startPosition.X, p2def.Y + startPosition.Y, 0),
                         EndPoint = new Vector3(p3def.X + startPosition.X, p3def.Y + startPosition.Y, 0),
@@ -634,7 +634,7 @@ namespace FEALiTE2D.Plotting.Dxf
                 }
             }
      
-            netDxf.Entities.MText text = new netDxf.Entities.MText
+            var text = new netDxf.Entities.MText
             {
                 Layer = PlottingOption.LayerOfDisplacement,
                 Height = 0.01 * boundingRectangle.Width,
@@ -656,7 +656,7 @@ namespace FEALiTE2D.Plotting.Dxf
         {
             PlotStructure(dxfDocument, startPosition);
 
-            double scale = PlottingOption.DisplacmentScaleFactor;
+            var scale = PlottingOption.DisplacmentScaleFactor;
 
             foreach (var e in this.Structure.Elements)
             {
@@ -664,10 +664,10 @@ namespace FEALiTE2D.Plotting.Dxf
 
                 foreach (var segment in segs)
                 {
-                    Vector2 p2def = e.PointForDeflection(segment.x1, segment.Displacement1.Ux * scale, segment.Displacement1.Uy * scale);
-                    Vector2 p3def = e.PointForDeflection(segment.x2, segment.Displacement2.Ux * scale, segment.Displacement2.Uy * scale);
+                    var p2def = e.PointForDeflection(segment.x1, segment.Displacement1.Ux * scale, segment.Displacement1.Uy * scale);
+                    var p3def = e.PointForDeflection(segment.x2, segment.Displacement2.Ux * scale, segment.Displacement2.Uy * scale);
 
-                    netDxf.Entities.Line line1 = new netDxf.Entities.Line
+                    var line1 = new netDxf.Entities.Line
                     {
                         StartPoint = new Vector3(p2def.X + startPosition.X, p2def.Y + startPosition.Y, 0),
                         EndPoint = new Vector3(p3def.X + startPosition.X, p3def.Y + startPosition.Y, 0),
@@ -678,7 +678,7 @@ namespace FEALiTE2D.Plotting.Dxf
                 }
             }
 
-            netDxf.Entities.MText text = new netDxf.Entities.MText
+            var text = new netDxf.Entities.MText
             {
                 Layer = PlottingOption.LayerOfDisplacement,
                 Height = 0.01 * boundingRectangle.Width,
@@ -696,7 +696,7 @@ namespace FEALiTE2D.Plotting.Dxf
         /// </summary>
         private netDxf.BoundingRectangle BoundingRectangle()
         {
-            List<Vector2> allPoints = new List<Vector2>(this.Structure.Nodes.Count);
+            var allPoints = new List<Vector2>(this.Structure.Nodes.Count);
             Parallel.ForEach(this.Structure.Nodes, (n) =>
             {
                 allPoints.Add(new Vector2(n.X, n.Y));

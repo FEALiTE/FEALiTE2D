@@ -78,7 +78,7 @@
             if (obj == null || !(obj is Displacement))
                 return false;
 
-            Displacement d = obj as Displacement;
+            var d = obj as Displacement;
             if (System.Math.Abs(d.Ux - Ux) > 1e-8 ||
                 System.Math.Abs(d.Uy - Uy) > 1e-8 ||
                     System.Math.Abs(d.Rz - Rz) > 1e-8)

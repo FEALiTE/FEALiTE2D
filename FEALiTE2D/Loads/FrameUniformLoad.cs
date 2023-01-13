@@ -68,7 +68,7 @@ namespace FEALiTE2D.Loads
         /// <inheritdoc/>
         public double[] GetGlobalFixedEndForces(Elements.FrameElement2D element)
         {
-            double[] fem = new double[6];
+            var fem = new double[6];
             double wx = Wx,
                    wy = Wy,
                    l = element.Length;
@@ -76,9 +76,9 @@ namespace FEALiTE2D.Loads
             // transform forces and moments from global to local.
             if (LoadDirection == LoadDirection.Global)
             {
-                double[] F = new double[] { Wx, Wy, 0 };
+                var F = new double[] { Wx, Wy, 0 };
 
-                double[] Q = new double[3];
+                var Q = new double[3];
                 element.LocalCoordinateSystemMatrix.Multiply(F, Q);
 
                 // assign the transformed values to the main new forces values.
@@ -93,12 +93,12 @@ namespace FEALiTE2D.Loads
             // 5 |Mz end  |
 
             // integrate using 5 points
-            int nn = 5;
-            GaussLegendreRule rule = new GaussLegendreRule(L1, l - L2, nn);
+            var nn = 5;
+            var rule = new GaussLegendreRule(L1, l - L2, nn);
             var weights = rule.Weights;
             var xi = rule.Abscissas;
 
-            for (int i = 0; i < nn; i++)
+            for (var i = 0; i < nn; i++)
             {
                 var n = element.GetShapeFunctionAt(xi[i]);
                 fem[0] += n[0, 0] * wx * weights[i];
@@ -118,7 +118,7 @@ namespace FEALiTE2D.Loads
         public ILoad GetLoadValueAt(Elements.IElement element, double x)
         {
             FrameUniformLoad load = null;
-            double l = element.Length;
+            var l = element.Length;
 
             if (x >= L1 && x <= l - L2)
             {
@@ -126,9 +126,9 @@ namespace FEALiTE2D.Loads
                 load.LoadCase = LoadCase;
                 if (LoadDirection == LoadDirection.Global)
                 {
-                    double[] F = new double[] { Wx, Wy, 0 };
+                    var F = new double[] { Wx, Wy, 0 };
 
-                    double[] Q = new double[3];
+                    var Q = new double[3];
                     element.LocalCoordinateSystemMatrix.Multiply(F, Q);
 
                     // assign the transformed values to the main new forces values.

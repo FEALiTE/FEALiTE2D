@@ -14,7 +14,7 @@ namespace FEALiTE2D.CrossSections
         /// </summary>
         /// <param name="d">diameter of the <see cref="CircularSection"/>.</param>
         /// <param name="material">Material of the cross-section.</param>
-        public CircularSection(double d, IMaterial material) : base()
+        public CircularSection(double d, IMaterial material)
         {
             D = d;
             Material = material;

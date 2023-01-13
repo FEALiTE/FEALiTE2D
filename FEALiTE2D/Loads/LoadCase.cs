@@ -96,7 +96,7 @@
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            int result = 0;
+            var result = 0;
             result += Label.GetHashCode();
             result += LoadCaseType.GetHashCode();
             return result;

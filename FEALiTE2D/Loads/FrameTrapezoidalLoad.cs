@@ -95,11 +95,11 @@ namespace FEALiTE2D.Loads
             {
                 // transform forces and moments from global to local.
 
-                double[] F1 = new[] { Wx1, Wy1, 0 };
-                double[] F2 = new[] { Wx2, Wy2, 0 };
+                var F1 = new[] { Wx1, Wy1, 0 };
+                var F2 = new[] { Wx2, Wy2, 0 };
 
-                double[] Q1 = new double[3];
-                double[] Q2 = new double[3];
+                var Q1 = new double[3];
+                var Q2 = new double[3];
 
                 element.LocalCoordinateSystemMatrix.Multiply(F1, Q1);
                 element.LocalCoordinateSystemMatrix.Multiply(F2, Q2);
@@ -110,17 +110,17 @@ namespace FEALiTE2D.Loads
             }
 
             // Trapezoidal Load is a linear equation of first degree
-            LinearFunction wx = new LinearFunction(L1, l - L2, wx1, wx2);
-            LinearFunction wy = new LinearFunction(L1, l - L2, wy1, wy2);
+            var wx = new LinearFunction(L1, l - L2, wx1, wx2);
+            var wy = new LinearFunction(L1, l - L2, wy1, wy2);
 
             // integrate using 7 points
-            int nn = 7;
-            GaussLegendreRule rule = new GaussLegendreRule(L1, l - L2, nn);
+            var nn = 7;
+            var rule = new GaussLegendreRule(L1, l - L2, nn);
             var weights = rule.Weights;
             var xi = rule.Abscissas;
 
-            double[] fem = new double[6];
-            for (int i = 0; i < nn; i++)
+            var fem = new double[6];
+            for (var i = 0; i < nn; i++)
             {
                 var n = element.GetShapeFunctionAt(xi[i]);
                 var nx = wx.GetValueAt(xi[i]);
@@ -142,7 +142,7 @@ namespace FEALiTE2D.Loads
         public ILoad GetLoadValueAt(Elements.IElement element, double x)
         {
             FrameTrapezoidalLoad load = null;
-            double l = element.Length;
+            var l = element.Length;
 
             if (x >= L1 && x <= l - L2)
             {
@@ -152,18 +152,18 @@ namespace FEALiTE2D.Loads
                 {
                     // transform forces and moments from global to local.
 
-                    double[] F1 = new[] { Wx1, Wy1, 0 };
-                    double[] F2 = new[] { Wx2, Wy2, 0 };
+                    var F1 = new[] { Wx1, Wy1, 0 };
+                    var F2 = new[] { Wx2, Wy2, 0 };
 
-                    double[] Q1 = new double[3];
-                    double[] Q2 = new double[3];
+                    var Q1 = new double[3];
+                    var Q2 = new double[3];
 
                     element.LocalCoordinateSystemMatrix.Multiply(F1, Q1);
                     element.LocalCoordinateSystemMatrix.Multiply(F2, Q2);
 
                     // Trapezoidal Load is a linear equation of first degree
-                    LinearFunction wxFunc = new LinearFunction(L1, l - L2, Q1[0], Q2[0]);
-                    LinearFunction wyFunc = new LinearFunction(L1, l - L2, Q1[1], Q2[1]);
+                    var wxFunc = new LinearFunction(L1, l - L2, Q1[0], Q2[0]);
+                    var wyFunc = new LinearFunction(L1, l - L2, Q1[1], Q2[1]);
 
                     load.Wx1 = load.Wx2 = wxFunc.GetValueAt(x);
                     load.Wy1 = load.Wy2 = wyFunc.GetValueAt(x);
@@ -172,8 +172,8 @@ namespace FEALiTE2D.Loads
                 }
                 else
                 {
-                    LinearFunction wxFunc = new LinearFunction(L1, l - L2, Wx1, Wx2);
-                    LinearFunction wyFunc = new LinearFunction(L1, l - L2, Wy1, Wy2);
+                    var wxFunc = new LinearFunction(L1, l - L2, Wx1, Wx2);
+                    var wyFunc = new LinearFunction(L1, l - L2, Wy1, Wy2);
                     load.Wx1 = load.Wx2 = wxFunc.GetValueAt(x);
                     load.Wy1 = load.Wy2 = wyFunc.GetValueAt(x);
                     load.L1 = load.L2 = x;

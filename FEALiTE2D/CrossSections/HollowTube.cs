@@ -45,7 +45,7 @@ namespace FEALiTE2D.CrossSections
         /// <param name="t">thickness</param>
         private void SetSectionProperties(double d, double t)
         {
-            double di = d - 2 * t;
+            var di = d - 2 * t;
             A = 0.25 * PI * (d * d - di * di);
             Ay = Ax = A * 0.5;
             Iy = Iy = PI * Pow(d / 2, 3) * t;

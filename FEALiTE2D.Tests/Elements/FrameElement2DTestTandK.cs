@@ -73,9 +73,9 @@ namespace FEALiTE2D.Tests.Elements
 
             var kl2Expected = CSparse.Double.SparseMatrix.OfIndexed(kl2expeectedCS) as CSparse.Double.SparseMatrix;
            
-            for (int i = 0; i < kl1.RowCount; i++)
+            for (var i = 0; i < kl1.RowCount; i++)
             {
-                for (int j = 0; j < kl1.ColumnCount; j++)
+                for (var j = 0; j < kl1.ColumnCount; j++)
                 {
                     Assert.AreEqual(kl2.At(i, j), kl2Expected.At(i, j), 1e-5);
                 }
@@ -96,9 +96,9 @@ namespace FEALiTE2D.Tests.Elements
             T2expeectedCS.At(5,5, 1);
 
             var T2Expected = CSparse.Double.SparseMatrix.OfIndexed(T2expeectedCS) as CSparse.Double.SparseMatrix;
-            for (int i = 0; i < kl1.RowCount; i++)
+            for (var i = 0; i < kl1.RowCount; i++)
             {
-                for (int j = 0; j < kl1.ColumnCount; j++)
+                for (var j = 0; j < kl1.ColumnCount; j++)
                 {
                     Assert.AreEqual(T2.At(i, j), T2Expected.At(i, j), 1e-5);
                 }
@@ -113,9 +113,9 @@ namespace FEALiTE2D.Tests.Elements
             Assert.IsTrue(kg1.IsSymmetric());
             //Assert.IsTrue(kg2.IsSymmetric());
            
-            for (int i = 0; i < kg2.RowCount; i++)
+            for (var i = 0; i < kg2.RowCount; i++)
             {
-                for (int j = 0; j < kg2.ColumnCount; j++)
+                for (var j = 0; j < kg2.ColumnCount; j++)
                 {
                     Assert.AreEqual(kg2.At(i, j), kg2.At(j, i), 1e-8);
                 }

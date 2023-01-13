@@ -8,24 +8,24 @@ namespace FEALiTE2D.CrossSections
     /// </summary>
     /// <seealso cref="FEALiTE2D.CrossSections.IFrame2DSection" />
     [Serializable]
-    public class IPESection : IFrame2DSection
+    public class IpeSection : IFrame2DSection
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="IPESection"/> class.
+        /// Initializes a new instance of the <see cref="IpeSection"/> class.
         /// </summary>
         /// <param name="tf">flange thickness.</param>
         /// <param name="tw">web thickness.</param>
         /// <param name="b">flange width.</param>
-        /// <param name="h">total hight of the web.</param>
+        /// <param name="h">total height of the web.</param>
         /// <param name="r">fillet radius</param>
         /// <param name="material">the material.</param>
-        public IPESection(double tf, double tw, double b, double h, double r, IMaterial material)
+        public IpeSection(double tf, double tw, double b, double h, double r, IMaterial material)
         {
-            this.tf = tf;
-            this.tw = tw;
-            this.b = b;
-            this.h = h;
-            this.r = r;
+            this.Tf = tf;
+            this.Tw = tw;
+            this.B = b;
+            this.H = h;
+            this.R = r;
             Material = material;
 
             // calculate section properties and set them here 
@@ -36,27 +36,27 @@ namespace FEALiTE2D.CrossSections
         /// <summary>
         /// flange thickness.
         /// </summary>
-        public double tf { get; set; }
+        public double Tf { get; set; }
 
         /// <summary>
         /// web thickness.
         /// </summary>
-        public double tw { get; set; }
+        public double Tw { get; set; }
 
         /// <summary>
-        /// total hight of the web.
+        /// total height of the web.
         /// </summary>
-        public double h { get; set; }
+        public double H { get; set; }
 
         /// <summary>
         /// flange width.
         /// </summary>
-        public double b { get; set; }
+        public double B { get; set; }
 
         /// <summary>
         /// fillet radius
         /// </summary>
-        public double r { get; set; }
+        public double R { get; set; }
 
         /// <summary>
         /// Sets the section properties.
@@ -64,7 +64,7 @@ namespace FEALiTE2D.CrossSections
         /// <param name="tf">flange thickness.</param>
         /// <param name="tw">web thickness.</param>
         /// <param name="b">flange width.</param>
-        /// <param name="h">total hight of the web.</param>
+        /// <param name="h">total height of the web.</param>
         /// <param name="r">fillet radius</param>
         private void SetSectionProperties(double tf, double tw, double b, double h, double r)
         {

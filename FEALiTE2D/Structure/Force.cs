@@ -78,7 +78,7 @@
             if (obj == null || !(obj is Force))
                 return false;
 
-            Force f = obj as Force;
+            var f = obj as Force;
             if (System.Math.Abs(f.Fx - Fx) > 1e-8 ||
                 System.Math.Abs(f.Fy - Fy) > 1e-8 ||
                     System.Math.Abs(f.Mz - Mz) > 1e-8)
