@@ -25,10 +25,10 @@ namespace FEALiTE2D.Loads
         public SupportDisplacementLoad(double ux, double uy, double rz, LoadCase loadCase)
             : this()
         {
-            this.Ux = ux;
-            this.Uy = uy;
-            this.Rz = rz;
-            this.LoadCase = loadCase;
+            Ux = ux;
+            Uy = uy;
+            Rz = rz;
+            LoadCase = loadCase;
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace FEALiTE2D.Loads
             double[] Q = new double[3] { Ux, Uy, Rz };
 
             // if the forces is in global coordinate system of the node then return it.
-            if (this.LoadDirection == LoadDirection.Global)
+            if (LoadDirection == LoadDirection.Global)
             {
                 return Q;
             }

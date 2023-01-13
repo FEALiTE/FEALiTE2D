@@ -11,7 +11,7 @@ namespace FEALiTE2D.Elements
     /// <summary>
     /// Represents a spring element/Fictitious bar in 2d space that has a spring stiffness and has 2 dof at each node. Spring may be longitudinal or rotational.
     /// </summary>
-    [System.Serializable]
+    [Serializable]
     public class SpringElement2D : IElement
     {
         /// <summary>
@@ -19,10 +19,10 @@ namespace FEALiTE2D.Elements
         /// </summary>
         public SpringElement2D()
         {
-            this.Loads = new List<ILoad>();
-            this.GlobalEndForcesForLoadCase = new Dictionary<LoadCase, double[]>();
-            this.MeshSegments = new List<Meshing.LinearMeshSegment>();
-            this.AdditionalMeshPoints = new SortedSet<double>();
+            Loads = new List<ILoad>();
+            GlobalEndForcesForLoadCase = new Dictionary<LoadCase, double[]>();
+            MeshSegments = new List<LinearMeshSegment>();
+            AdditionalMeshPoints = new SortedSet<double>();
         }
 
         /// <summary>
@@ -33,11 +33,11 @@ namespace FEALiTE2D.Elements
         /// <param name="label">name of the spring</param>
         public SpringElement2D(Node2D startNode, Node2D endNode, string label) : this()
         {
-            this.StartNode = startNode;
-            this.EndNode = endNode;
-            this.Label = label;
-            this.LocalCoordinateSystemMatrix = GetLocalCoordinateSystemMatrix();
-            this.TransformationMatrix = GetTransformationMatrix();
+            StartNode = startNode;
+            EndNode = endNode;
+            Label = label;
+            LocalCoordinateSystemMatrix = GetLocalCoordinateSystemMatrix();
+            TransformationMatrix = GetTransformationMatrix();
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace FEALiTE2D.Elements
                 coords.AddRange(StartNode.CoordNumbers);
                 coords.AddRange(EndNode.CoordNumbers);
 
-                this.DOF = coords.Count;
+                DOF = coords.Count;
 
                 return coords;
             }
@@ -104,7 +104,7 @@ namespace FEALiTE2D.Elements
         public DenseMatrix LocalCoordinateSystemMatrix { get; private set; }
         private DenseMatrix GetLocalCoordinateSystemMatrix()
         {
-            double l = this.Length;
+            double l = Length;
             double s = (EndNode.Y - StartNode.Y) / l;
             double c = (EndNode.X - StartNode.X) / l;
             DenseMatrix T = new DenseMatrix(3, 3);
@@ -120,7 +120,7 @@ namespace FEALiTE2D.Elements
         private DenseMatrix GetTransformationMatrix()
         {
             DenseMatrix T = new DenseMatrix(6, 6);
-            var lcs = this.LocalCoordinateSystemMatrix;
+            var lcs = LocalCoordinateSystemMatrix;
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
@@ -152,14 +152,14 @@ namespace FEALiTE2D.Elements
         public DenseMatrix GlobalStiffnessMatrix { get; private set; }
         private DenseMatrix GetGlobalStiffnessMatrix()
         {
-            var T = this.TransformationMatrix;
+            var T = TransformationMatrix;
             var Tt = T.Transpose();
             var Tt_Kl = Tt.Multiply(LocalStiffnessMatrix);
             return Tt_Kl.Multiply(T) as DenseMatrix;
         }
 
         /// <inheritdoc/>
-        public List<Meshing.LinearMeshSegment> MeshSegments { get; }
+        public List<LinearMeshSegment> MeshSegments { get; }
      
         /// <inheritdoc/>
         public SortedSet<double> AdditionalMeshPoints { get; set; }
@@ -168,13 +168,13 @@ namespace FEALiTE2D.Elements
         public void EvaluateGlobalFixedEndForces(LoadCase loadCase)
         {
             double[] f = new double[6];
-            this.GlobalEndForcesForLoadCase.Add(loadCase, f);
+            GlobalEndForcesForLoadCase.Add(loadCase, f);
         }
 
         /// <inheritdoc/>
         public DenseMatrix GetShapeFunctionAt(double x)
         {
-            double l = this.Length;
+            double l = Length;
             double xsi = x / l;
 
             double N1 = 1.0 - xsi, N2 = xsi;
@@ -191,10 +191,10 @@ namespace FEALiTE2D.Elements
         /// <inheritdoc/>
         public void Initialize()
         {
-            this.LocalCoordinateSystemMatrix = GetLocalCoordinateSystemMatrix();
-            this.TransformationMatrix = GetTransformationMatrix();
-            this.LocalStiffnessMatrix = GetLocalStiffnessMatrix();
-            this.GlobalStiffnessMatrix = GetGlobalStiffnessMatrix();
+            LocalCoordinateSystemMatrix = GetLocalCoordinateSystemMatrix();
+            TransformationMatrix = GetTransformationMatrix();
+            LocalStiffnessMatrix = GetLocalStiffnessMatrix();
+            GlobalStiffnessMatrix = GetGlobalStiffnessMatrix();
         }
     }
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FEALiTE2D.Plotting.Dxf
+﻿namespace FEALiTE2D.Plotting.Dxf
 {
     /// <summary>
     /// A class for plotting options for dxf file format

@@ -23,7 +23,7 @@ namespace FEALiTE2D.Loads
         /// <param name="name">name of the load combination</param>
         public LoadCombination(string name)
         {
-            this.Label = name;
+            Label = name;
         }
 
         /// <summary>

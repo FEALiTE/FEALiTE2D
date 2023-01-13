@@ -25,11 +25,11 @@ namespace FEALiTE2D.Loads
         /// <param name="loadCase">load case.</param>
         public NodalLoad(double fx, double fy, double mz, LoadDirection direction, LoadCase loadCase) : this()
         {
-            this.Fx = fx;
-            this.Fy = fy;
-            this.Mz = mz;
-            this.LoadDirection = direction;
-            this.LoadCase = loadCase;
+            Fx = fx;
+            Fy = fy;
+            Mz = mz;
+            LoadDirection = direction;
+            LoadCase = loadCase;
         }
 
 
@@ -61,7 +61,7 @@ namespace FEALiTE2D.Loads
             double[] Q = new double[3] { Fx, Fy, Mz };
             
             // if the forces is in global coordinate system of the node then return it.
-            if (this.LoadDirection == LoadDirection.Global)
+            if (LoadDirection == LoadDirection.Global)
             {
                 return Q;
             }

@@ -19,7 +19,7 @@ namespace FEALiTE2D.CrossSections
         {
             this.b = b;
             this.t = t;
-            this.Material = material;
+            Material = material;
 
             // calculate section properties and set them here 
             // to avoid recalculation in each time they are called to save time.
@@ -43,14 +43,14 @@ namespace FEALiTE2D.CrossSections
         /// <param name="t">The t.</param>
         private void SetSectionProperties(double b, double t)
         {
-            this.A = b * t;
-            this.Ay = this.Ax = this.A * 5.0 / 6.0;
-            this.Ix = b * t * t * t / 12.0;
-            this.Iy = b * b * b * t / 12.0;
+            A = b * t;
+            Ay = Ax = A * 5.0 / 6.0;
+            Ix = b * t * t * t / 12.0;
+            Iy = b * b * b * t / 12.0;
             double _t = Max(b, t);
             double _b = Min(b, t);
             double beta = 1.0 / 3.0 - 0.21 * (_b / _t) * (1 - Pow(_b / t, 4) / 12.0);
-            this.J = beta * _b * _b * _b * _t;
+            J = beta * _b * _b * _b * _t;
             base.MaxWidth = b;
             base.MaxHeight = t;
         }

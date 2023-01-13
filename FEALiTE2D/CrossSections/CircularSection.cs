@@ -1,5 +1,4 @@
 ﻿using FEALiTE2D.Materials;
-using static System.Math;
 
 namespace FEALiTE2D.CrossSections
 {
@@ -8,17 +7,17 @@ namespace FEALiTE2D.CrossSections
     /// </summary>
     /// <seealso cref="FEALiTE2D.CrossSections.IFrame2DSection" />
     [System.Serializable]
-    public class CirclularSection : IFrame2DSection
+    public class CircularSection : IFrame2DSection
     {
         /// <summary>
-        /// Creates new instance of a <see cref="CirclularSection"/>.
+        /// Creates new instance of a <see cref="CircularSection"/>.
         /// </summary>
-        /// <param name="d">diameter of the <see cref="CirclularSection"/>.</param>
+        /// <param name="d">diameter of the <see cref="CircularSection"/>.</param>
         /// <param name="material">Material of the cross-section.</param>
-        public CirclularSection(double d, IMaterial material) : base()
+        public CircularSection(double d, IMaterial material) : base()
         {
-            this.D = d;
-            this.Material = material;
+            D = d;
+            Material = material;
 
             // calculate section properties and set them here 
             // to avoid recalculation in each time they are called to save time.
@@ -33,13 +32,13 @@ namespace FEALiTE2D.CrossSections
         /// <summary>
         /// Sets the section properties.
         /// </summary>
-        /// <param name="d">diameter of the <see cref="CirclularSection"/>.</param>
+        /// <param name="d">diameter of the <see cref="CircularSection"/>.</param>
         private void SetSectionProperties(double d)
         {
-            this.A = PI * d * d / 4.0;
-            this.Ay = this.Ax = this.A * 0.9;
-            this.Iy = this.Ix = PI * d * d * d * d / 64.0;
-            this.J = 0.5 * this.Iy;
+            A = System.Math.PI * d * d / 4.0;
+            Ay = Ax = A * 0.9;
+            Iy = Ix = System.Math.PI * d * d * d * d / 64.0;
+            J = 0.5 * Iy;
             base.MaxWidth = base.MaxHeight = d;
         }
     }

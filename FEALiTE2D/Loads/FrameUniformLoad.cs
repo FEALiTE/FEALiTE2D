@@ -27,12 +27,12 @@ namespace FEALiTE2D.Loads
         /// <param name="l2">distance from end.</param>
         public FrameUniformLoad(double wx, double wy, LoadDirection direction, LoadCase loadCase, double l1 = 0, double l2 = 0) : this()
         {
-            this.Wx = wx;
-            this.Wy = wy;
-            this.LoadDirection = direction;
-            this.LoadCase = loadCase;
-            this.L1 = l1;
-            this.L2 = l2;
+            Wx = wx;
+            Wy = wy;
+            LoadDirection = direction;
+            LoadCase = loadCase;
+            L1 = l1;
+            L2 = l2;
         }
 
         /// <summary>
@@ -66,17 +66,17 @@ namespace FEALiTE2D.Loads
         public LoadCase LoadCase { get; set; }
 
         /// <inheritdoc/>
-        public double[] GetGlobalFixedEndForces(FEALiTE2D.Elements.FrameElement2D element)
+        public double[] GetGlobalFixedEndForces(Elements.FrameElement2D element)
         {
             double[] fem = new double[6];
-            double wx = this.Wx,
-                   wy = this.Wy,
+            double wx = Wx,
+                   wy = Wy,
                    l = element.Length;
 
             // transform forces and moments from global to local.
             if (LoadDirection == LoadDirection.Global)
             {
-                double[] F = new double[] { this.Wx, this.Wy, 0 };
+                double[] F = new double[] { Wx, Wy, 0 };
 
                 double[] Q = new double[3];
                 element.LocalCoordinateSystemMatrix.Multiply(F, Q);
@@ -115,18 +115,18 @@ namespace FEALiTE2D.Loads
         }
 
         /// <inheritdoc/>
-        public ILoad GetLoadValueAt(FEALiTE2D.Elements.IElement element, double x)
+        public ILoad GetLoadValueAt(Elements.IElement element, double x)
         {
             FrameUniformLoad load = null;
             double l = element.Length;
 
-            if (x >= this.L1 && x <= l - this.L2)
+            if (x >= L1 && x <= l - L2)
             {
                 load = new FrameUniformLoad();
-                load.LoadCase = this.LoadCase;
-                if (this.LoadDirection == LoadDirection.Global)
+                load.LoadCase = LoadCase;
+                if (LoadDirection == LoadDirection.Global)
                 {
-                    double[] F = new double[] { this.Wx, this.Wy, 0 };
+                    double[] F = new double[] { Wx, Wy, 0 };
 
                     double[] Q = new double[3];
                     element.LocalCoordinateSystemMatrix.Multiply(F, Q);
@@ -139,8 +139,8 @@ namespace FEALiTE2D.Loads
                 }
                 else
                 {
-                    load.Wx = this.Wx;
-                    load.Wy = this.Wy;
+                    load.Wx = Wx;
+                    load.Wy = Wy;
                     load.L1 = load.L2 = x;
                 }
             }

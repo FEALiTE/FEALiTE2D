@@ -50,7 +50,7 @@ namespace FEALiTE2D.Structure
             {
                 // F= K * D
                 // get node displacement
-                Displacement d = this.GetNodeGlobalDisplacement(node, loadCase);
+                Displacement d = GetNodeGlobalDisplacement(node, loadCase);
                 double[] f = new double[3];
                 ns.GlobalStiffnessMatrix.Multiply(d.ToVector(), f);
 
@@ -75,7 +75,7 @@ namespace FEALiTE2D.Structure
             // reactions are the sum of global external fixed end forces
             foreach (var e in connectedElements)
             {
-                double[] fext = this.GetElementGlobalFixedEndForeces(e, loadCase);
+                double[] fext = GetElementGlobalFixedEndForeces(e, loadCase);
 
                 if (e.Nodes[0] == node)
                 {
@@ -110,7 +110,7 @@ namespace FEALiTE2D.Structure
             Force R = new Force();
             foreach (var lc in loadCombination)
             {
-                R += lc.Value * this.GetSupportReaction(node, lc.Key);
+                R += lc.Value * GetSupportReaction(node, lc.Key);
             }
             return R;
         }
@@ -163,7 +163,7 @@ namespace FEALiTE2D.Structure
             double[] q = new double[6];
 
             // Q = k*u+qf
-            double[] dl = this.GetElementLocalEndDisplacement(element, loadCase);
+            double[] dl = GetElementLocalEndDisplacement(element, loadCase);
 
             //ql = kl*dl
             element.LocalStiffnessMatrix.Multiply(dl, q);
@@ -189,7 +189,7 @@ namespace FEALiTE2D.Structure
         /// <returns>Global End forces of an element after the structure is solved.</returns>
         public double[] GetElementGlobalFixedEndForeces(IElement element, LoadCase loadCase)
         {
-            double[] ql = this.GetElementLocalFixedEndForeces(element, loadCase);
+            double[] ql = GetElementLocalFixedEndForeces(element, loadCase);
 
             // fg = Tt*fl
             double[] fg = new double[ql.Length];
@@ -205,8 +205,8 @@ namespace FEALiTE2D.Structure
         public double[] GetElementLocalEndDisplacement(IElement element, LoadCase loadCase)
         {
             // get displacement of fist node and second node of the element
-            Displacement nd1 = this.GetNodeGlobalDisplacement(element.Nodes[0], loadCase);
-            Displacement nd2 = this.GetNodeGlobalDisplacement(element.Nodes[1], loadCase);
+            Displacement nd1 = GetNodeGlobalDisplacement(element.Nodes[0], loadCase);
+            Displacement nd2 = GetNodeGlobalDisplacement(element.Nodes[1], loadCase);
 
             double[] dg = new double[] { nd1.Ux, nd1.Uy, nd1.Rz, nd2.Ux, nd2.Uy, nd2.Rz };
             double[] dl = new double[dg.Length];
@@ -221,13 +221,13 @@ namespace FEALiTE2D.Structure
         /// <param name="element">an element to get its internal forces</param>
         /// <param name="loadCase">a load case to get the internal forces in an element</param>
         /// <returns>List of segments containing internal forces and displacements of an element.</returns>
-        public List<FEALiTE2D.Meshing.LinearMeshSegment> GetElementInternalForces(IElement element, LoadCase loadCase)
+        public List<Meshing.LinearMeshSegment> GetElementInternalForces(IElement element, LoadCase loadCase)
         {
             double len = element.Length;
 
             // get local end forces after the structure is solved
-            double[] fl = this.GetElementLocalFixedEndForeces(element, loadCase);
-            double[] dl = this.GetElementLocalEndDisplacement(element, loadCase);
+            double[] fl = GetElementLocalFixedEndForeces(element, loadCase);
+            double[] dl = GetElementLocalEndDisplacement(element, loadCase);
 
             //loop through each segment
             for (int i = 0; i < element.MeshSegments.Count; i++)
@@ -253,7 +253,7 @@ namespace FEALiTE2D.Structure
                 else
                 {
                     // get a reference to previous segment
-                    FEALiTE2D.Meshing.LinearMeshSegment pS = element.MeshSegments[i - 1];
+                    Meshing.LinearMeshSegment pS = element.MeshSegments[i - 1];
                     segment.Displacement1.Ux = pS.AxialDisplacementAt(pS.x2 - pS.x1);
                     segment.Displacement1.Uy = pS.VerticalDisplacementAt(pS.x2 - pS.x1);
                     segment.Displacement1.Rz = pS.SlopeAngleAt(pS.x2 - pS.x1);
@@ -385,12 +385,12 @@ namespace FEALiTE2D.Structure
         /// <param name="element">an element to get its internal forces</param>
         /// <param name="loadCombination">a load combination</param>
         /// <returns>List of segments containing internal forces and displacements of an element.</returns>
-        public List<FEALiTE2D.Meshing.LinearMeshSegment> GetElementInternalForces(IElement element, LoadCombination loadCombination)
+        public List<Meshing.LinearMeshSegment> GetElementInternalForces(IElement element, LoadCombination loadCombination)
         {
-            var list = new List<FEALiTE2D.Meshing.LinearMeshSegment>();
+            var list = new List<Meshing.LinearMeshSegment>();
             for (int i = 0; i < element.MeshSegments.Count; i++)
             {
-                FEALiTE2D.Meshing.LinearMeshSegment temp = new FEALiTE2D.Meshing.LinearMeshSegment();
+                Meshing.LinearMeshSegment temp = new Meshing.LinearMeshSegment();
                 var cSegment = element.MeshSegments[i];
                 temp.x1 = cSegment.x1;
                 temp.x2 = cSegment.x2;
@@ -402,7 +402,7 @@ namespace FEALiTE2D.Structure
 
             foreach (var lc in loadCombination)
             {
-                var segments = this.GetElementInternalForces(element, lc.Key);
+                var segments = GetElementInternalForces(element, lc.Key);
 
                 for (int i = 0; i < segments.Count; i++)
                 {
@@ -437,7 +437,7 @@ namespace FEALiTE2D.Structure
         public Force GetElementInternalForcesAt(IElement element, LoadCase loadCase, double x)
         {
             // get a list of meshed segments of the element
-            List<Meshing.LinearMeshSegment> segments = this.GetElementInternalForces(element, loadCase);
+            List<Meshing.LinearMeshSegment> segments = GetElementInternalForces(element, loadCase);
 
             // loop through the segments to find which segment this distance is bounded to.
             foreach (var segment in segments)
@@ -456,7 +456,7 @@ namespace FEALiTE2D.Structure
         /// <returns>internal forces of an element at a distance.</returns>
         public Force GetElementInternalForcesAt(IElement element, LoadCombination loadCombination, double x)
         {
-            List<Meshing.LinearMeshSegment> segments = this.GetElementInternalForces(element, loadCombination);
+            List<Meshing.LinearMeshSegment> segments = GetElementInternalForces(element, loadCombination);
 
             // loop through the segments to find which segment this distance is bounded to.
             foreach (var segment in segments)
@@ -476,7 +476,7 @@ namespace FEALiTE2D.Structure
         public Displacement GetElementDisplacementAt(IElement element, LoadCase loadCase, double x)
         {
             // get a list of meshed segments of the element
-            List<Meshing.LinearMeshSegment> segments = this.GetElementInternalForces(element, loadCase);
+            List<Meshing.LinearMeshSegment> segments = GetElementInternalForces(element, loadCase);
 
             // loop through the segments to find which segment this distance is bounded to.
             foreach (var segment in segments)
@@ -496,7 +496,7 @@ namespace FEALiTE2D.Structure
         public Displacement GetElementDisplacementAt(IElement element, LoadCombination loadCombination, double x)
         {
             // get a list of meshed segments of the element
-            List<Meshing.LinearMeshSegment> segments = this.GetElementInternalForces(element, loadCombination);
+            List<Meshing.LinearMeshSegment> segments = GetElementInternalForces(element, loadCombination);
 
             // loop through the segments to find which segment this distance is bounded to.
             foreach (var segment in segments)

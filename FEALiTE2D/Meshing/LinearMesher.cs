@@ -9,15 +9,15 @@ namespace FEALiTE2D.Meshing
     /// <summary>
     /// This class represents a mesher for 1D elements.
     /// </summary>
-    [System.Serializable]
-    public class LinearMesher : FEALiTE2D.Meshing.ILinearMesher
+    [Serializable]
+    public class LinearMesher : ILinearMesher
     {
         /// <summary>
         /// Creates a new instance of <see cref="LinearMesher"/> class.
         /// </summary>
         public LinearMesher()
         {
-            this.NumberSegements = 5;
+            NumberSegements = 5;
         }
 
         /// <summary>
@@ -27,8 +27,8 @@ namespace FEALiTE2D.Meshing
         /// <param name="d">minimum length of segments that the <see cref="Elements.IElement"/> be discretized into.</param>
         public LinearMesher(int n, double d)
         {
-            this.MinDistance = d;
-            this.NumberSegements = n;
+            MinDistance = d;
+            NumberSegements = n;
         }
 
         /// <inheritdoc/>
@@ -96,8 +96,8 @@ namespace FEALiTE2D.Meshing
             // 2- add locations based on number of segments and length of the segment.
             if (element.GetType() != typeof(SpringElement2D))
             {
-                int n1 = (int)Math.Floor(len / this.MinDistance);
-                int n2 = this.NumberSegements;
+                int n1 = (int)Math.Floor(len / MinDistance);
+                int n2 = NumberSegements;
                 int n = Math.Max(n1, n2);
                 double dx = len / n;
 

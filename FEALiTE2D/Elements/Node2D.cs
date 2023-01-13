@@ -10,7 +10,7 @@ namespace FEALiTE2D.Elements
     /// Each node has 3 degrees of freedom (DOF) one displacement in x-direction, one displacement in y-direction and one rotation about z-direction (perpendicular to the plan)
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("label:{Label}, x:{X}, y:{Y}")]
-    [System.Serializable]
+    [Serializable]
     public class Node2D
     {
         /// <summary>
@@ -19,9 +19,9 @@ namespace FEALiTE2D.Elements
         public Node2D()
         {
             // initialize default values
-            this.NodalLoads = new List<NodalLoad>();
-            this.SupportDisplacementLoad = new List<SupportDisplacementLoad>();
-            this.CoordNumbers = new List<int>();
+            NodalLoads = new List<NodalLoad>();
+            SupportDisplacementLoad = new List<SupportDisplacementLoad>();
+            CoordNumbers = new List<int>();
         }
 
         /// <summary>
@@ -33,9 +33,9 @@ namespace FEALiTE2D.Elements
         public Node2D(double x, double y, string label) : this()
         {
             // assign variable
-            this.X = x;
-            this.Y = y;
-            this.Label = label;
+            X = x;
+            Y = y;
+            Label = label;
         }
 
         /// <summary> 
@@ -70,14 +70,14 @@ namespace FEALiTE2D.Elements
         {
             get
             {
-                if (this.Support != null)
-                    if (this.Support is NodalSpringSupport)
+                if (Support != null)
+                    if (Support is NodalSpringSupport)
                     {
                         return 3;
                     }
                     else
                     {
-                        return 3 - this.Support.RestraintCount;
+                        return 3 - Support.RestraintCount;
                     }
                 return 3;
             }
@@ -131,7 +131,7 @@ namespace FEALiTE2D.Elements
         {
             get
             {
-                if (this.Support == null)
+                if (Support == null)
                     return true;
                 return false;
             }
@@ -149,19 +149,19 @@ namespace FEALiTE2D.Elements
         /// <returns><c>true</c> if the specified dof is a restraint; otherwise, <c>false</c>.</returns>
         public bool IsRestrained(NodalDegreeOfFreedom dof)
         {
-            if (this.Support != null)
+            if (Support != null)
             {
                 if (dof == NodalDegreeOfFreedom.UX)
                 {
-                    return this.Support.Ux;
+                    return Support.Ux;
                 }
                 else if (dof == NodalDegreeOfFreedom.UY)
                 {
-                    return this.Support.Uy;
+                    return Support.Uy;
                 }
                 else if (dof == NodalDegreeOfFreedom.RZ)
                 {
-                    return this.Support.Rz;
+                    return Support.Rz;
                 }
             }
             return false;

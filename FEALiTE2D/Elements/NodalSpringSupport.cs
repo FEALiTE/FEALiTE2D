@@ -22,9 +22,9 @@
         /// <param name="cz">Spring constant for rotation about Z-Direction</param>
         public NodalSpringSupport(double kx, double ky, double cz)
         {
-            this.Kx = kx;
-            this.Ky = ky;
-            this.Cz = cz;
+            Kx = kx;
+            Ky = ky;
+            Cz = cz;
         }
 
         /// <summary>

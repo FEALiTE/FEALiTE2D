@@ -78,7 +78,7 @@ namespace FEALiTE2D.Elements
         /// <summary>
         /// A list of mesh segments of change in external forces and moments.
         /// </summary>
-       List<FEALiTE2D.Meshing.LinearMeshSegment> MeshSegments { get; }
+       List<Meshing.LinearMeshSegment> MeshSegments { get; }
 
         /// <summary>
         /// A collection of additional locations on the <see cref="FrameElement2D"/> to mesh the elements at these locations.

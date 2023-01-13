@@ -19,7 +19,7 @@
         /// This method should set locations of change in external forces and moments to properly calculate internal forces.
         /// </summary>
         /// <param name="element">an element to set up points on.</param>
-        void SetupMeshSegments(FEALiTE2D.Elements.IElement element);
+        void SetupMeshSegments(Elements.IElement element);
 
     }
 }

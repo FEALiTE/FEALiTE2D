@@ -79,9 +79,9 @@
                 return false;
 
             Force f = obj as Force;
-            if (System.Math.Abs(f.Fx - this.Fx) > 1e-8 ||
-                System.Math.Abs(f.Fy - this.Fy) > 1e-8 ||
-                    System.Math.Abs(f.Mz - this.Mz) > 1e-8)
+            if (System.Math.Abs(f.Fx - Fx) > 1e-8 ||
+                System.Math.Abs(f.Fy - Fy) > 1e-8 ||
+                    System.Math.Abs(f.Mz - Mz) > 1e-8)
             {
                 return false;
             }

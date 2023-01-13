@@ -4,7 +4,6 @@ using FEALiTE2D.Elements;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FEALiTE2D.Helper;
 
 namespace FEALiTE2D.Structure
 {

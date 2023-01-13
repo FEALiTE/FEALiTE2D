@@ -22,9 +22,9 @@
         /// <param name="rz">rotation about Z-Direction</param>
         public NodalSupport(bool ux, bool uy, bool rz)
         {
-            this.Ux = ux;
-            this.Uy = uy;
-            this.Rz = rz;
+            Ux = ux;
+            Uy = uy;
+            Rz = rz;
         }
 
         /// <summary>
@@ -50,9 +50,9 @@
             get
             {
                 int i = 0;
-                if (this.Ux == true) i++;
-                if (this.Uy == true) i++;
-                if (this.Rz == true) i++;
+                if (Ux == true) i++;
+                if (Uy == true) i++;
+                if (Rz == true) i++;
                 return i;
             }
         }

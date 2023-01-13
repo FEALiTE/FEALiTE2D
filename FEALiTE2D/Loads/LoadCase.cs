@@ -11,7 +11,7 @@
         /// </summary>
         public LoadCase()
         {
-            this.IsLinearCase = true;
+            IsLinearCase = true;
             LoadCaseDuration = LoadCaseDuration.Permanent;
         }
 
@@ -23,8 +23,8 @@
         /// <param name="type">Load case type.</param>
         public LoadCase(string label, LoadCaseType type) : this()
         {
-            this.Label = label;
-            this.LoadCaseType = type;
+            Label = label;
+            LoadCaseType = type;
         }
 
 
@@ -58,15 +58,15 @@
             {
                 return false;
             }
-            if (this.GetType() != typeof(LoadCase) || obj.GetType() != typeof(LoadCase))
+            if (GetType() != typeof(LoadCase) || obj.GetType() != typeof(LoadCase))
             {
                 return false;
             }
-            if (this.Label != ((LoadCase)obj).Label)
+            if (Label != ((LoadCase)obj).Label)
             {
                 return false;
             }
-            if (this.LoadCaseType != ((LoadCase)obj).LoadCaseType)
+            if (LoadCaseType != ((LoadCase)obj).LoadCaseType)
             {
                 return false;
             }

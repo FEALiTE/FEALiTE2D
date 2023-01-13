@@ -1,6 +1,4 @@
-﻿using CSparse.Double;
-
-namespace FEALiTE2D.Loads
+﻿namespace FEALiTE2D.Loads
 {
     /// <summary>
     /// Represents an interface for all loads.
@@ -22,7 +20,7 @@ namespace FEALiTE2D.Loads
         /// </summary>
         /// <param name="element">frame element</param>
         /// <returns>global fixed end forces of this load</returns>
-        double[] GetGlobalFixedEndForces(FEALiTE2D.Elements.FrameElement2D element);
+        double[] GetGlobalFixedEndForces(Elements.FrameElement2D element);
 
         /// <summary>
         /// Get the magnitude of a load at given distance in local coordinates system.
@@ -30,6 +28,6 @@ namespace FEALiTE2D.Loads
         /// <param name="element">the element which this load is applied into to process></param>
         /// <param name="x">distance measured from start node of an element.</param>
         /// <returns>load value</returns>
-        ILoad GetLoadValueAt(FEALiTE2D.Elements.IElement element, double x);
+        ILoad GetLoadValueAt(Elements.IElement element, double x);
     }
 }

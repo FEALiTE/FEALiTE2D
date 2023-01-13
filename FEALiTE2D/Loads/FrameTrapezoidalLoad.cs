@@ -7,7 +7,7 @@ namespace FEALiTE2D.Loads
     /// <summary>
     /// Represents a trapezoidal loads on frame elements.
     /// </summary>
-    [System.Serializable]
+    [Serializable]
     public class FrameTrapezoidalLoad : ILoad
     {
         /// <summary>
@@ -34,12 +34,12 @@ namespace FEALiTE2D.Loads
                                      LoadCase loadCase, double l1 = 0, double l2 = 0)
         {
 
-            this.Wx1 = wx1; this.Wx2 = wx2;
-            this.Wy1 = wy1; this.Wy2 = wy2;
-            this.LoadDirection = direction;
-            this.LoadCase = loadCase;
-            this.L1 = l1;
-            this.L2 = l2;
+            Wx1 = wx1; Wx2 = wx2;
+            Wy1 = wy1; Wy2 = wy2;
+            LoadDirection = direction;
+            LoadCase = loadCase;
+            L1 = l1;
+            L2 = l2;
         }
 
         /// <summary>
@@ -83,20 +83,20 @@ namespace FEALiTE2D.Loads
         public LoadCase LoadCase { get; set; }
 
         /// <inheritdoc/>
-        public double[] GetGlobalFixedEndForces(FEALiTE2D.Elements.FrameElement2D element)
+        public double[] GetGlobalFixedEndForces(Elements.FrameElement2D element)
         {
-            double wx1 = this.Wx1,
-                   wy1 = this.Wy1,
-                   wx2 = this.Wx2,
-                   wy2 = this.Wy2,
+            double wx1 = Wx1,
+                   wy1 = Wy1,
+                   wx2 = Wx2,
+                   wy2 = Wy2,
                    l = element.Length;
 
             if (LoadDirection == LoadDirection.Global)
             {
                 // transform forces and moments from global to local.
 
-                double[] F1 = new[] { this.Wx1, this.Wy1, 0 };
-                double[] F2 = new[] { this.Wx2, this.Wy2, 0 };
+                double[] F1 = new[] { Wx1, Wy1, 0 };
+                double[] F2 = new[] { Wx2, Wy2, 0 };
 
                 double[] Q1 = new double[3];
                 double[] Q2 = new double[3];
@@ -144,16 +144,16 @@ namespace FEALiTE2D.Loads
             FrameTrapezoidalLoad load = null;
             double l = element.Length;
 
-            if (x >= this.L1 && x <= l - this.L2)
+            if (x >= L1 && x <= l - L2)
             {
                 load = new FrameTrapezoidalLoad();
-                load.LoadCase = this.LoadCase;
-                if (this.LoadDirection == LoadDirection.Global)
+                load.LoadCase = LoadCase;
+                if (LoadDirection == LoadDirection.Global)
                 {
                     // transform forces and moments from global to local.
 
-                    double[] F1 = new[] { this.Wx1, this.Wy1, 0 };
-                    double[] F2 = new[] { this.Wx2, this.Wy2, 0 };
+                    double[] F1 = new[] { Wx1, Wy1, 0 };
+                    double[] F2 = new[] { Wx2, Wy2, 0 };
 
                     double[] Q1 = new double[3];
                     double[] Q2 = new double[3];
@@ -172,8 +172,8 @@ namespace FEALiTE2D.Loads
                 }
                 else
                 {
-                    LinearFunction wxFunc = new LinearFunction(L1, l - L2, this.Wx1, this.Wx2);
-                    LinearFunction wyFunc = new LinearFunction(L1, l - L2, this.Wy1, this.Wy2);
+                    LinearFunction wxFunc = new LinearFunction(L1, l - L2, Wx1, Wx2);
+                    LinearFunction wyFunc = new LinearFunction(L1, l - L2, Wy1, Wy2);
                     load.Wx1 = load.Wx2 = wxFunc.GetValueAt(x);
                     load.Wy1 = load.Wy2 = wyFunc.GetValueAt(x);
                     load.L1 = load.L2 = x;

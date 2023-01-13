@@ -18,11 +18,11 @@ namespace FEALiTE2D.Elements
         /// </summary>
         public FrameElement2D()
         {
-            this.Loads = new List<ILoad>();
-            this.EndRelease = Frame2DEndRelease.NoRelease;
-            this.GlobalEndForcesForLoadCase = new Dictionary<LoadCase, double[]>();
-            this.MeshSegments = new List<Meshing.LinearMeshSegment>();
-            this.AdditionalMeshPoints = new SortedSet<double>();
+            Loads = new List<ILoad>();
+            EndRelease = Frame2DEndRelease.NoRelease;
+            GlobalEndForcesForLoadCase = new Dictionary<LoadCase, double[]>();
+            MeshSegments = new List<Meshing.LinearMeshSegment>();
+            AdditionalMeshPoints = new SortedSet<double>();
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace FEALiTE2D.Elements
         /// <param name="label">name of the frame element</param>
         public FrameElement2D(string label) : this()
         {
-            this.Label = label;
+            Label = label;
         }
 
         /// <summary>
@@ -42,10 +42,10 @@ namespace FEALiTE2D.Elements
         /// <param name="label">name of the frame</param>
         public FrameElement2D(Node2D startNode, Node2D endNode, string label) : this(label)
         {
-            this.StartNode = startNode;
-            this.EndNode = endNode;
-            this.LocalCoordinateSystemMatrix = GetLocalCoordinateSystemMatrix();
-            this.TransformationMatrix = GetTransformationMatrix();
+            StartNode = startNode;
+            EndNode = endNode;
+            LocalCoordinateSystemMatrix = GetLocalCoordinateSystemMatrix();
+            TransformationMatrix = GetTransformationMatrix();
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace FEALiTE2D.Elements
                 coords.AddRange(StartNode.CoordNumbers);
                 coords.AddRange(EndNode.CoordNumbers);
 
-                this.DOF = coords.Count;
+                DOF = coords.Count;
 
                 return coords;
             }
@@ -118,7 +118,7 @@ namespace FEALiTE2D.Elements
         /// <param name="x">distance measured from start node</param>
         public DenseMatrix GetShapeFunctionAt(double x)
         {
-            double l = this.Length;
+            double l = Length;
             double xsi = x / l;
             double xsi2 = xsi * xsi;
             double xsi3 = xsi * xsi * xsi;
@@ -161,7 +161,7 @@ namespace FEALiTE2D.Elements
         /// <param name="x">distance from start of the element</param>
         public DenseMatrix GetBmatrixAt(double x)
         {
-            double l = this.Length;
+            double l = Length;
             double l2 = l * l;
             double xsi = x / l;
 
@@ -183,7 +183,7 @@ namespace FEALiTE2D.Elements
         public DenseMatrix LocalCoordinateSystemMatrix { get; private set; }
         private DenseMatrix GetLocalCoordinateSystemMatrix()
         {
-            double l = this.Length;
+            double l = Length;
             double s = (EndNode.Y - StartNode.Y) / l;
             double c = (EndNode.X - StartNode.X) / l;
             DenseMatrix T = new DenseMatrix(3, 3);
@@ -199,7 +199,7 @@ namespace FEALiTE2D.Elements
         private DenseMatrix GetTransformationMatrix()
         {
             DenseMatrix T = new DenseMatrix(6, 6);
-            var lcs = this.LocalCoordinateSystemMatrix;
+            var lcs = LocalCoordinateSystemMatrix;
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
@@ -215,7 +215,7 @@ namespace FEALiTE2D.Elements
         public DenseMatrix LocalStiffnessMatrix { get; private set; }
         private DenseMatrix GetLocalStiffnessMatrix()
         {
-            switch (this.EndRelease)
+            switch (EndRelease)
             {
                 default:
                 case Frame2DEndRelease.NoRelease:
@@ -242,13 +242,13 @@ namespace FEALiTE2D.Elements
         /// </summary>
         private DenseMatrix Kl1_1()
         {
-            double l = this.Length;
+            double l = Length;
             double l2 = l * l;
             double l3 = l * l * l;
-            double EAL = this.CrossSection.Material.E * this.CrossSection.A / l;
-            double EIL = this.CrossSection.Material.E * this.CrossSection.Ix / l;
-            double EIL2 = this.CrossSection.Material.E * this.CrossSection.Ix / l2;
-            double EIL3 = this.CrossSection.Material.E * this.CrossSection.Ix / l3;
+            double EAL = CrossSection.Material.E * CrossSection.A / l;
+            double EIL = CrossSection.Material.E * CrossSection.Ix / l;
+            double EIL2 = CrossSection.Material.E * CrossSection.Ix / l2;
+            double EIL3 = CrossSection.Material.E * CrossSection.Ix / l3;
 
             DenseMatrix k = new DenseMatrix(6, 6);
 
@@ -284,13 +284,13 @@ namespace FEALiTE2D.Elements
         /// </summary>
         private DenseMatrix Kl0_1()
         {
-            double l = this.Length;
+            double l = Length;
             double l2 = l * l;
             double l3 = l * l * l;
-            double EAL = this.CrossSection.Material.E * this.CrossSection.A / l;
-            double EIL = this.CrossSection.Material.E * this.CrossSection.Ix / l;
-            double EIL2 = this.CrossSection.Material.E * this.CrossSection.Ix / l2;
-            double EIL3 = this.CrossSection.Material.E * this.CrossSection.Ix / l3;
+            double EAL = CrossSection.Material.E * CrossSection.A / l;
+            double EIL = CrossSection.Material.E * CrossSection.Ix / l;
+            double EIL2 = CrossSection.Material.E * CrossSection.Ix / l2;
+            double EIL3 = CrossSection.Material.E * CrossSection.Ix / l3;
 
             DenseMatrix k = new DenseMatrix(6, 6);
 
@@ -318,13 +318,13 @@ namespace FEALiTE2D.Elements
         /// </summary>
         private DenseMatrix Kl1_0()
         {
-            double l = this.Length;
+            double l = Length;
             double l2 = l * l;
             double l3 = l * l * l;
-            double EAL = this.CrossSection.Material.E * this.CrossSection.A / l;
-            double EIL = this.CrossSection.Material.E * this.CrossSection.Ix / l;
-            double EIL2 = this.CrossSection.Material.E * this.CrossSection.Ix / l2;
-            double EIL3 = this.CrossSection.Material.E * this.CrossSection.Ix / l3;
+            double EAL = CrossSection.Material.E * CrossSection.A / l;
+            double EIL = CrossSection.Material.E * CrossSection.Ix / l;
+            double EIL2 = CrossSection.Material.E * CrossSection.Ix / l2;
+            double EIL3 = CrossSection.Material.E * CrossSection.Ix / l3;
 
             DenseMatrix k = new DenseMatrix(6, 6);
 
@@ -352,8 +352,8 @@ namespace FEALiTE2D.Elements
         /// </summary>
         private DenseMatrix Kl0_0()
         {
-            double l = this.Length;
-            double EAL = this.CrossSection.Material.E * this.CrossSection.A / l;
+            double l = Length;
+            double EAL = CrossSection.Material.E * CrossSection.A / l;
 
             DenseMatrix k = new DenseMatrix(6, 6);
 
@@ -368,7 +368,7 @@ namespace FEALiTE2D.Elements
         public DenseMatrix GlobalStiffnessMatrix { get; private set; }
         private DenseMatrix GetGlobalStiffnessMatrix()
         {
-            var T = this.TransformationMatrix;
+            var T = TransformationMatrix;
             var Tt = T.Transpose();
             var Tt_Kl = Tt.Multiply(LocalStiffnessMatrix);
             return Tt_Kl.Multiply(T) as DenseMatrix;
@@ -380,7 +380,7 @@ namespace FEALiTE2D.Elements
             double[] f = new double[6];
 
             // get loads that are in current load case
-            IEnumerable<ILoad> loads = this.Loads.Where(xx => xx.LoadCase == loadCase);
+            IEnumerable<ILoad> loads = Loads.Where(xx => xx.LoadCase == loadCase);
             foreach (ILoad load in loads)
             {
                 double[] fg = load.GetGlobalFixedEndForces(this);
@@ -392,8 +392,8 @@ namespace FEALiTE2D.Elements
                 f[5] -= fg[5];
             }
 
-            double l = this.Length;
-            switch (this.EndRelease)
+            double l = Length;
+            switch (EndRelease)
             {
                 default:
                 case Frame2DEndRelease.NoRelease:
@@ -423,16 +423,16 @@ namespace FEALiTE2D.Elements
                         break;
                     }
             }
-            this.GlobalEndForcesForLoadCase.Add(loadCase, f);
+            GlobalEndForcesForLoadCase.Add(loadCase, f);
         }
 
         /// <inheritdoc/>
         public void Initialize()
         {
-            this.LocalCoordinateSystemMatrix = GetLocalCoordinateSystemMatrix();
-            this.TransformationMatrix = GetTransformationMatrix();
-            this.LocalStiffnessMatrix = GetLocalStiffnessMatrix();
-            this.GlobalStiffnessMatrix = GetGlobalStiffnessMatrix();
+            LocalCoordinateSystemMatrix = GetLocalCoordinateSystemMatrix();
+            TransformationMatrix = GetTransformationMatrix();
+            LocalStiffnessMatrix = GetLocalStiffnessMatrix();
+            GlobalStiffnessMatrix = GetGlobalStiffnessMatrix();
         }
 
     }

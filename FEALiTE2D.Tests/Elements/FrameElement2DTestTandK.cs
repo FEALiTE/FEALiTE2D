@@ -3,9 +3,6 @@ using FEALiTE2D.Elements;
 using FEALiTE2D.Materials;
 using FEALiTE2D.Tests.Helper;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FEALiTE2D.Tests.Elements
 {

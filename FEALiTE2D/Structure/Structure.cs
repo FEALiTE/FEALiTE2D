@@ -12,7 +12,7 @@ namespace FEALiTE2D.Structure
     /// These elements are subjected to external actions.
     /// To solve a structural model, the model must have at least one degree of freedom.
     /// </summary>
-    [System.Serializable]
+    [Serializable]
     public class Structure
     {
         /// <summary>
@@ -20,12 +20,12 @@ namespace FEALiTE2D.Structure
         /// </summary>
         public Structure()
         {
-            this.Nodes = new List<Node2D>();
-            this.Elements = new List<IElement>();
-            this.LoadCasesToRun = new List<LoadCase>();
-            this.FixedEndLoadsVectors = new Dictionary<LoadCase, double[]>();
-            this.DisplacementVectors = new Dictionary<LoadCase, double[]>();
-            this.LinearMesher = new FEALiTE2D.Meshing.LinearMesher();
+            Nodes = new List<Node2D>();
+            Elements = new List<IElement>();
+            LoadCasesToRun = new List<LoadCase>();
+            FixedEndLoadsVectors = new Dictionary<LoadCase, double[]>();
+            DisplacementVectors = new Dictionary<LoadCase, double[]>();
+            LinearMesher = new Meshing.LinearMesher();
 
         }
 
@@ -82,7 +82,7 @@ namespace FEALiTE2D.Structure
         /// <summary>
         /// Get or set Linear mesher class for <see cref="IElement"/>.
         /// </summary>
-        public FEALiTE2D.Meshing.ILinearMesher LinearMesher { get; set; }
+        public Meshing.ILinearMesher LinearMesher { get; set; }
 
         /// <summary>
         /// Adds a node to the structure, We check if the node is already added to avoid duplicate nodes.
@@ -92,7 +92,7 @@ namespace FEALiTE2D.Structure
         {
             if (!Nodes.Contains(node))
             {
-                this.Nodes.Add(node);
+                Nodes.Add(node);
                 node.ParentStructure = this;
             }
         }
@@ -104,7 +104,7 @@ namespace FEALiTE2D.Structure
         public void AddNode(params Node2D[] nodes)
         {
             foreach (var node in nodes)
-                this.AddNode(node);
+                AddNode(node);
         }
 
         /// <summary>
@@ -121,13 +121,13 @@ namespace FEALiTE2D.Structure
             {
                 foreach (Node2D n in element.Nodes)
                 {
-                    this.AddNode(n);
+                    AddNode(n);
                 }
             }
             // check to see if this element already exists
-            if (!this.Elements.Contains(element))
+            if (!Elements.Contains(element))
             {
-                this.Elements.Add(element);
+                Elements.Add(element);
                 element.Initialize();
                 element.ParentStructure = this;
             }
@@ -142,7 +142,7 @@ namespace FEALiTE2D.Structure
         {
             foreach (var item in elements)
             {
-                this.AddElement(item, addNodes);
+                AddElement(item, addNodes);
             }
         }
 
@@ -151,10 +151,10 @@ namespace FEALiTE2D.Structure
         /// </summary>
         private void PrepareLoadsOnElements()
         {
-            foreach (IElement element in this.Elements)
+            foreach (IElement element in Elements)
             {
                 // get global fixed end forces for each load assigned to this element.
-                foreach (LoadCase loadCase in this.LoadCasesToRun)
+                foreach (LoadCase loadCase in LoadCasesToRun)
                 {
                     element.EvaluateGlobalFixedEndForces(loadCase);
                 }
@@ -167,7 +167,7 @@ namespace FEALiTE2D.Structure
         private void SetUpMeshingSegments()
         {
             // generate discretization segments on the element.
-            this.Elements.ForEach((IElement element) => { LinearMesher.SetupMeshSegments(element); });
+            Elements.ForEach((IElement element) => { LinearMesher.SetupMeshSegments(element); });
         }
 
         /// <summary>
@@ -223,25 +223,25 @@ namespace FEALiTE2D.Structure
 
             System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
 
-            if (this.LoadCasesToRun.Count <= 0)
+            if (LoadCasesToRun.Count <= 0)
             {
                 AnalysisStatus = AnalysisStatus.Failure;
                 throw new InvalidOperationException("No load cases are set for analysis.");
             }
 
-            this.PrepareLoadsOnElements();
+            PrepareLoadsOnElements();
 
-            this.ReNumberNodes();
+            ReNumberNodes();
 
             Assembler assembler = new Assembler(this);
 
-            this.StructuralStiffnessMatrix = assembler.AssembleGlobalStiffnessMatrix();
+            StructuralStiffnessMatrix = assembler.AssembleGlobalStiffnessMatrix();
 
             for (int i = 0; i < LoadCasesToRun.Count; i++)
             {
-                LoadCase currentLC = this.LoadCasesToRun[i];
+                LoadCase currentLC = LoadCasesToRun[i];
                 double[] loadVec = assembler.AssembleGlobalEquivalentLoadVector(currentLC);
-                this.FixedEndLoadsVectors.Add(currentLC, loadVec);
+                FixedEndLoadsVectors.Add(currentLC, loadVec);
             }
 
             CSparse.Factorization.ISparseFactorization<double> cholesky = null;
@@ -260,23 +260,23 @@ namespace FEALiTE2D.Structure
 
             for (int i = 0; i < LoadCasesToRun.Count; i++)
             {
-                LoadCase currentLC = this.LoadCasesToRun[i];
+                LoadCase currentLC = LoadCasesToRun[i];
                 double[] displacementVector = new double[nDOF];
 
                 cholesky.Solve(FixedEndLoadsVectors[currentLC], displacementVector);
 
-                this.DisplacementVectors.Add(currentLC, displacementVector);
+                DisplacementVectors.Add(currentLC, displacementVector);
             }
 
             AnalysisStatus = AnalysisStatus.Successful;
 
             sw.Stop();
-            Console.WriteLine($" No. of Equations: {this.nDOF}");
+            Console.WriteLine($" No. of Equations: {nDOF}");
             Console.WriteLine($" Analysis End Date: {DateTime.Now}.");
             Console.WriteLine($" Analysis Took {sw.Elapsed.TotalSeconds} sec.");
 
-            this.Results = new PostProcessor(this);
-            this.SetUpMeshingSegments();
+            Results = new PostProcessor(this);
+            SetUpMeshingSegments();
         }
 
     }

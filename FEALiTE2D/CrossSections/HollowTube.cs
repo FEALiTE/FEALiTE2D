@@ -18,9 +18,9 @@ namespace FEALiTE2D.CrossSections
         /// <param name="material">The material.</param>
         public HollowTube(double d, double thickness, IMaterial material)
         {
-            this.D = d;
-            this.Thickness = thickness;
-            base.Material = material;
+            D = d;
+            Thickness = thickness;
+            Material = material;
 
             // calculate section properties and set them here 
             // to avoid recalculation in each time they are called to save time.
@@ -46,10 +46,10 @@ namespace FEALiTE2D.CrossSections
         private void SetSectionProperties(double d, double t)
         {
             double di = d - 2 * t;
-            this.A = 0.25 * PI * (d * d - di * di);
-            this.Ay = this.Ax = this.A * 0.5;
-            this.Iy = this.Iy = PI * Pow(d / 2, 3) * t;
-            this.J = Iy + Ix;
+            A = 0.25 * PI * (d * d - di * di);
+            Ay = Ax = A * 0.5;
+            Iy = Iy = PI * Pow(d / 2, 3) * t;
+            J = Iy + Ix;
             base.MaxWidth = base.MaxHeight = d;
         }       
     }

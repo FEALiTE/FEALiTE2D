@@ -1,5 +1,4 @@
-﻿using FEALiTE2D.Elements;
-using FEALiTE2D.Materials;
+﻿using FEALiTE2D.Materials;
 
 namespace FEALiTE2D.CrossSections
 {
@@ -23,7 +22,7 @@ namespace FEALiTE2D.CrossSections
         /// <param name="material">material.</param>
         public Generic2DSection(double A, double Ax, double Ay, double Ix, double Iy, double J, double hmax, double wmax, IMaterial material) : base()
         {
-            base.A = A;
+            this.A = A;
             base.Ax = Ax;
             base.Ay = Ay;
             base.Ix = Ix;
@@ -31,7 +30,7 @@ namespace FEALiTE2D.CrossSections
             base.J = J;
             base.MaxHeight = hmax;
             base.MaxWidth = wmax;
-            base.Material = material;
+            Material = material;
         }
 
     }

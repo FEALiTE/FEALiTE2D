@@ -34,10 +34,10 @@ namespace FEALiTE2D.Meshing
         /// </summary>
         public LinearMeshSegment()
         {
-            this.Internalforces1 = new Force();
-            this.Internalforces2 = new Force();
-            this.Displacement1 = new Displacement();
-            this.Displacement2 = new Displacement();
+            Internalforces1 = new Force();
+            Internalforces2 = new Force();
+            Displacement1 = new Displacement();
+            Displacement2 = new Displacement();
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace FEALiTE2D.Meshing
         /// <param name="x">a distance</param>
         public double ShearAt(double x)
         {
-            return this.Internalforces1.Fy
+            return Internalforces1.Fy
                + wy1 * x + 0.5 * x * x * (wy2 - wy1) / (x2 - x1); // uniform and trap load.
         }
 
@@ -56,7 +56,7 @@ namespace FEALiTE2D.Meshing
         /// <param name="x">a distance</param>
         public double MomentAt(double x)
         {
-            return this.Internalforces1.Mz
+            return Internalforces1.Mz
                - Internalforces1.Fy * x
                - 0.5 * wy1 * x * x - x * x * x * ((wy2 - wy1) / (x2 - x1)) / 6; // uniform and trap load.
         }
@@ -67,7 +67,7 @@ namespace FEALiTE2D.Meshing
         /// <param name="x">a distance</param>
         public double AxialAt(double x)
         {
-            return this.Internalforces1.Fx +
+            return Internalforces1.Fx +
                 wx1 * x + x * x * (wx2 - wx1) / (x2 - x1) / 2; // uniform and trap load.
         }
 
@@ -93,7 +93,7 @@ namespace FEALiTE2D.Meshing
         {
             return Displacement1.Rz -
                 (
-                     this.Internalforces1.Mz * x
+                     Internalforces1.Mz * x
                      - Internalforces1.Fy * x * x / 2.0
                      - wy1 * x * x * x / 6.0
                      - x * x * x * x * ((wy2 - wy1) / (x2 - x1)) / 24 // uniform and trap load.
@@ -110,7 +110,7 @@ namespace FEALiTE2D.Meshing
                 (
                     Displacement1.Rz * x -
                     (
-                         this.Internalforces1.Mz * x * x / 2.0
+                         Internalforces1.Mz * x * x / 2.0
                          - Internalforces1.Fy * x * x * x / 6.0
                          - wy1 * x * x * x * x / 24.0
                          - x * x * x * x * x * ((wy2 - wy1) / (x2 - x1)) / 120.0 // uniform and trap load.

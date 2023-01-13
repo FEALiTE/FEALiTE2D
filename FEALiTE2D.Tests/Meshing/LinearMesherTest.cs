@@ -4,9 +4,6 @@ using FEALiTE2D.Loads;
 using FEALiTE2D.Materials;
 using FEALiTE2D.Meshing;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FEALiTE2D.Tests.Meshing
 {

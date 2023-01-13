@@ -24,12 +24,12 @@
         /// <param name="loadCase">load case.</param>
         public FramePointLoad(double fx, double fy, double mz, double l1, LoadDirection direction, LoadCase loadCase)
         {
-            this.Fx = fx;
-            this.Fy = fy;
-            this.Mz = mz;
-            this.L1 = l1;
-            this.LoadCase = loadCase;
-            this.LoadDirection = direction;
+            Fx = fx;
+            Fy = fy;
+            Mz = mz;
+            L1 = l1;
+            LoadCase = loadCase;
+            LoadDirection = direction;
         }
 
         /// <summary>
@@ -59,18 +59,18 @@
         public LoadCase LoadCase { get; set; }
 
         /// <inheritdoc/>
-        public double[] GetGlobalFixedEndForces(FEALiTE2D.Elements.FrameElement2D element)
+        public double[] GetGlobalFixedEndForces(Elements.FrameElement2D element)
         {
             double[] fem = new double[6];
-            double fx = this.Fx,
-                   fy = this.Fy,
-                   mz = this.Mz,
+            double fx = Fx,
+                   fy = Fy,
+                   mz = Mz,
                    l = element.Length;
 
             // transform forces and moments from global to local.
             if (LoadDirection == LoadDirection.Global)
             {
-                double[] F = new double[] { this.Fx, this.Fy, this.Mz };
+                double[] F = new double[] { Fx, Fy, Mz };
 
                 double[] Q = new double[3];
                 element.LocalCoordinateSystemMatrix.Multiply(F, Q);
@@ -122,13 +122,13 @@
         {
             FramePointLoad load = null;
 
-            if (x == this.L1)
+            if (x == L1)
             {
                 load = new FramePointLoad();
-                load.LoadCase = this.LoadCase;
-                if (this.LoadDirection == LoadDirection.Global)
+                load.LoadCase = LoadCase;
+                if (LoadDirection == LoadDirection.Global)
                 {
-                    double[] F = new double[] { this.Fx, this.Fy, 0 };
+                    double[] F = new double[] { Fx, Fy, 0 };
 
                     double[] Q = new double[3];
                     element.LocalCoordinateSystemMatrix.Multiply(F, Q);
@@ -136,14 +136,14 @@
                     // assign the transformed values to the main new forces values.
                     load.Fx = Q[0];
                     load.Fy = Q[1];
-                    load.Mz = this.Mz;
+                    load.Mz = Mz;
                     load.LoadDirection = LoadDirection.Local;
                 }
                 else
                 {
-                    load.Fx = this.Fx;
-                    load.Fy = this.Fy;
-                    load.Mz = this.Mz;
+                    load.Fx = Fx;
+                    load.Fy = Fy;
+                    load.Mz = Mz;
                 }
             }
 

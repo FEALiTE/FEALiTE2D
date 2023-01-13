@@ -13,8 +13,8 @@ namespace FEALiTE2D.Helper
         /// <param name="b">a constant</param>
         internal LinearFunction(double m, double b)
         {
-            this.slope = m;
-            this.constant = b;
+            slope = m;
+            constant = b;
         }
 
         /// <summary>
@@ -31,9 +31,9 @@ namespace FEALiTE2D.Helper
         /// <param name="y2">y coordinate of second point</param>
         internal LinearFunction(double x1, double x2, double y1, double y2)
         {
-            this.slope = (y2 - y1) / (x2 - x1);
+            slope = (y2 - y1) / (x2 - x1);
             //b = Y-mX
-            this.constant = y1 - slope * x1;
+            constant = y1 - slope * x1;
         }
 
         internal double slope { get; set; }

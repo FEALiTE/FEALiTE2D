@@ -1,10 +1,7 @@
 ﻿using FEALiTE2D.Elements;
 using FEALiTE2D.Materials;
 using FEALiTE2D.CrossSections;
-using FEALiTE2D.Tests.Helper;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using FEALiTE2D.Loads;
 using NUnit.Framework;
 using FEALiTE2D.Structure;
@@ -651,7 +648,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3, n4, n5, n6, n7, n8);
             IMaterial material = new GenericIsotropicMaterial() { E = 30E6, U = 0.2, Label = "Steel", Alpha = 0.000012, Gama = 39885, MaterialType = MaterialType.Steel };
-            IFrame2DSection Columns_Section = new CirclularSection(0.4, material);
+            IFrame2DSection Columns_Section = new CircularSection(0.4, material);
             IFrame2DSection Beam_Section = new RectangularSection(0.4, 0.4, material);
 
             // columns

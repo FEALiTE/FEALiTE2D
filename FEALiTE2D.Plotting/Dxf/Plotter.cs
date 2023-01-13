@@ -1,7 +1,6 @@
 ﻿using netDxf;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace FEALiTE2D.Plotting.Dxf

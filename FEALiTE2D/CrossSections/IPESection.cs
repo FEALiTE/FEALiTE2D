@@ -7,7 +7,7 @@ namespace FEALiTE2D.CrossSections
     /// Represent an European I beams section.
     /// </summary>
     /// <seealso cref="FEALiTE2D.CrossSections.IFrame2DSection" />
-    [System.Serializable]
+    [Serializable]
     public class IPESection : IFrame2DSection
     {
         /// <summary>
@@ -26,7 +26,7 @@ namespace FEALiTE2D.CrossSections
             this.b = b;
             this.h = h;
             this.r = r;
-            base.Material = material;
+            Material = material;
 
             // calculate section properties and set them here 
             // to avoid recalculation in each time they are called to save time.
@@ -68,8 +68,8 @@ namespace FEALiTE2D.CrossSections
         /// <param name="r">fillet radius</param>
         private void SetSectionProperties(double tf, double tw, double b, double h, double r)
         {
-            base.A = 2 * tf * b + (h - 2 * tf) * tw + (4 - Math.PI) * r * r;
-            base.Ay = base.A - 2 * b * tf + (tw + 2 * r) * tf;
+            A = 2 * tf * b + (h - 2 * tf) * tw + (4 - Math.PI) * r * r;
+            base.Ay = A - 2 * b * tf + (tw + 2 * r) * tf;
             base.Ax = 0.6667 * b * tf;
             base.Ix = (b * h * h * h - (b - tw) * Math.Pow((h - 2 * tf), 3)) / 12 + 0.03 * Math.Pow(r, 4) + 0.2146 * r * r * Math.Pow((h - 2 * tf - 0.4468 * r), 2);
             base.Iy = (2 * tf * b * b * b + (h - 2 * tf) * tw * tw * tw) / 12 + 0.03 * Math.Pow(r, 4) + 0.2146 * r * r * Math.Pow((tw + 0.4468 * r), 2);
