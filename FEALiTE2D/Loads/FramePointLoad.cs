@@ -1,9 +1,12 @@
-﻿namespace FEALiTE2D.Loads;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace FEALiTE2D.Loads;
 
 /// <summary>
 /// Represents a class for <see cref="FramePointLoad"/>.
 /// </summary>
 [System.Serializable]
+[SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
 public class FramePointLoad : ILoad
 {
     /// <summary>
@@ -70,13 +73,13 @@ public class FramePointLoad : ILoad
         // transform forces and moments from global to local.
         if (LoadDirection == LoadDirection.Global)
         {
-            var F = new double[] { Fx, Fy, Mz };
+            var f = new[] { Fx, Fy, Mz };
 
-            var Q = new double[3];
-            element.LocalCoordinateSystemMatrix.Multiply(F, Q);
+            var q = new double[3];
+            element.LocalCoordinateSystemMatrix.Multiply(f, q);
 
             // assign the transformed values to the main new forces values.
-            fx = Q[0]; fy = Q[1]; mz = Q[2];
+            fx = q[0]; fy = q[1]; mz = q[2];
         }
 
         // 0 |Qx start|
@@ -86,65 +89,60 @@ public class FramePointLoad : ILoad
         // 4 |Qy end  |
         // 5 |Mz end  |
 
-        double a = L1 / l, l2 = l - L1, B = (l - L1) / l;
+        double a = L1 / l, l2 = l - L1, b = (l - L1) / l;
 
 
         // Qx start
-        fem[0] = fx * B;
+        fem[0] = fx * b;
 
         // Qy start 
-        fem[1] = fy * B * B * (3 * a + B) // due to forces
-                 - 6.0 * mz * a * B / l; // due to moments
+        fem[1] = fy * b * b * (3 * a + b) // due to forces
+                 - 6.0 * mz * a * b / l; // due to moments
 
         // Mz start
-        fem[2] = fy * L1 * B * B // due to forces
-                 + mz * B * (B - 2.0 * a); // due to moments
+        fem[2] = fy * L1 * b * b // due to forces
+                 + mz * b * (b - 2.0 * a); // due to moments
 
         // Qx end
         fem[3] = fx * a;
 
         // Qy end   
-        fem[4] = fy * a * a * (a + 3 * B) // due to forces
-                 + 6.0 * mz * a * B / l; // due to moments
+        fem[4] = fy * a * a * (a + 3 * b) // due to forces
+                 + 6.0 * mz * a * b / l; // due to moments
 
         // Mz end
         fem[5] = -fy * a * a * l2 // due to forces
-                 + mz * a * (a - 2.0 * B); // due to moments
+                 + mz * a * (a - 2.0 * b); // due to moments
 
         // back to global
-        var fansewr = new double[6];
-        element.TransformationMatrix.TransposeMultiply(fem, fansewr);
-        return fansewr;
+        var globalFixedEndForces = new double[6];
+        element.TransformationMatrix.TransposeMultiply(fem, globalFixedEndForces);
+        return globalFixedEndForces;
     }
 
     /// <inheritdoc/>
     public ILoad GetLoadValueAt(Elements.IElement element, double x)
     {
-        FramePointLoad load = null;
-
-        if (x == L1)
+        if (x != L1) return null;
+        var load = new FramePointLoad { LoadCase = LoadCase };
+        if (LoadDirection == LoadDirection.Global)
         {
-            load = new FramePointLoad();
-            load.LoadCase = LoadCase;
-            if (LoadDirection == LoadDirection.Global)
-            {
-                var F = new double[] { Fx, Fy, 0 };
+            var f = new[] { Fx, Fy, 0 };
 
-                var Q = new double[3];
-                element.LocalCoordinateSystemMatrix.Multiply(F, Q);
+            var q = new double[3];
+            element.LocalCoordinateSystemMatrix.Multiply(f, q);
 
-                // assign the transformed values to the main new forces values.
-                load.Fx = Q[0];
-                load.Fy = Q[1];
-                load.Mz = Mz;
-                load.LoadDirection = LoadDirection.Local;
-            }
-            else
-            {
-                load.Fx = Fx;
-                load.Fy = Fy;
-                load.Mz = Mz;
-            }
+            // assign the transformed values to the main new forces values.
+            load.Fx = q[0];
+            load.Fy = q[1];
+            load.Mz = Mz;
+            load.LoadDirection = LoadDirection.Local;
+        }
+        else
+        {
+            load.Fx = Fx;
+            load.Fy = Fy;
+            load.Mz = Mz;
         }
 
         return load;

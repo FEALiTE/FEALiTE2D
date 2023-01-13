@@ -28,7 +28,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3, n4, n5);
             IMaterial material = new GenericIsotropicMaterial() { E = 30E6, U = 0.2, Label = "Steel", Alpha = 0.000012, Gama = 39885, MaterialType = MaterialType.Steel };
-            IFrame2DSection section = new Generic2DSection(0.075, 0.075, 0.075, 0.000480, 0.000480, 0.000480 * 2, 0.1, 0.1, material);
+            Frame2DSection section = new Generic2DSection(0.075, 0.075, 0.075, 0.000480, 0.000480, 0.000480 * 2, 0.1, 0.1, material);
 
             var e1 = new FrameElement2D(n1, n3, "e1") { CrossSection = section };
             var e2 = new FrameElement2D(n2, n4, "e2") { CrossSection = section };
@@ -98,7 +98,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 29E3, U = 0.2, Label = "Concrete", Alpha = 0.000012, Gama = 24.53, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section = new Generic2DSection(11.8, 11.8, 11.8, 310, 310, 310 * 2, 0.1, 0.1, material);
+            Frame2DSection section = new Generic2DSection(11.8, 11.8, 11.8, 310, 310, 310 * 2, 0.1, 0.1, material);
 
             var e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section };
             var e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section };
@@ -130,10 +130,10 @@ namespace FEALiTE2D.Tests.Structure
             Assert.AreEqual(nd2.Uy, -0.06732180013884803);
             Assert.AreEqual(nd2.Rz, -0.0025498997289483097);
 
-            var ql1 = structure.Results.GetElementLocalFixedEndForeces(e1, loadCase);
-            var ql2 = structure.Results.GetElementLocalFixedEndForeces(e2, loadCase);
-            var fg1 = structure.Results.GetElementGlobalFixedEndForeces(e1, loadCase);
-            var fg2 = structure.Results.GetElementGlobalFixedEndForeces(e2, loadCase);
+            var ql1 = structure.Results.GetElementLocalFixedEndForces(e1, loadCase);
+            var ql2 = structure.Results.GetElementLocalFixedEndForces(e2, loadCase);
+            var fg1 = structure.Results.GetElementGlobalFixedEndForces(e1, loadCase);
+            var fg2 = structure.Results.GetElementGlobalFixedEndForces(e2, loadCase);
 
             Assert.AreEqual(ql1[0], 104.89205617337821);
             Assert.AreEqual(ql1[1], 18.488818091721274);
@@ -182,7 +182,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 29E3, U = 0.2, Label = "Concrete", Alpha = 0.000012, Gama = 24.53, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section = new Generic2DSection(11.8, 11.8, 11.8, 310, 310, 310 * 2, 0.1, 0.1, material);
+            Frame2DSection section = new Generic2DSection(11.8, 11.8, 11.8, 310, 310, 310 * 2, 0.1, 0.1, material);
 
             var e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section };
             var e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section };
@@ -211,10 +211,10 @@ namespace FEALiTE2D.Tests.Structure
             Assert.AreEqual(nd2.Uy, -1.059915467868475);
             Assert.AreEqual(nd2.Rz, 0.00074191638715062017);
 
-            var ql1 = structure.Results.GetElementLocalFixedEndForeces(e1, loadCase);
-            var ql2 = structure.Results.GetElementLocalFixedEndForeces(e2, loadCase);
-            var fg1 = structure.Results.GetElementGlobalFixedEndForeces(e1, loadCase);
-            var fg2 = structure.Results.GetElementGlobalFixedEndForeces(e2, loadCase);
+            var ql1 = structure.Results.GetElementLocalFixedEndForces(e1, loadCase);
+            var ql2 = structure.Results.GetElementLocalFixedEndForces(e2, loadCase);
+            var fg1 = structure.Results.GetElementGlobalFixedEndForces(e1, loadCase);
+            var fg2 = structure.Results.GetElementGlobalFixedEndForces(e2, loadCase);
 
             Assert.AreEqual(ql1[0], 98.463276589933216);
             Assert.AreEqual(ql1[1], 20.91875793338594);
@@ -263,8 +263,8 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3, n4);
             IMaterial material = new GenericIsotropicMaterial() { E = 28E6, U = 0.2, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section1 = new Generic2DSection(0.03228, 0.03228, 0.03228, 0.0058, 0.0058, 0, 0, 0, material);
-            IFrame2DSection section2 = new Generic2DSection(1.5 * 0.03228, 1.5 * 0.03228, 1.5 * 0.1634, 1.5 * 0.0058, 1.5 * 0.0058, 0, 0, 0, material);
+            Frame2DSection section1 = new Generic2DSection(0.03228, 0.03228, 0.03228, 0.0058, 0.0058, 0, 0, 0, material);
+            Frame2DSection section2 = new Generic2DSection(1.5 * 0.03228, 1.5 * 0.03228, 1.5 * 0.1634, 1.5 * 0.0058, 1.5 * 0.0058, 0, 0, 0, material);
 
             var e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section2 };
             var e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1 };
@@ -331,7 +331,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section1 = new RectangularSection(0.25, 0.75, material);
+            Frame2DSection section1 = new RectangularSection(0.25, 0.75, material);
 
             var e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
             var e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1 };
@@ -469,7 +469,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section1 = new RectangularSection(0.25, 0.75, material);
+            Frame2DSection section1 = new RectangularSection(0.25, 0.75, material);
 
             var e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
             var e2 = new FrameElement2D(n2, n3, "e3") { CrossSection = section1, EndRelease = Frame2DEndRelease.StartRelease };
@@ -554,7 +554,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3, n1_, n2_, n3_);
             IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section1 = new RectangularSection(0.25, 0.75, material);
+            Frame2DSection section1 = new RectangularSection(0.25, 0.75, material);
 
             var e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
             var e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1, EndRelease = Frame2DEndRelease.StartRelease };
@@ -599,7 +599,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section1 = new RectangularSection(0.25, 0.75, material);
+            Frame2DSection section1 = new RectangularSection(0.25, 0.75, material);
 
             var e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
             var e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1, EndRelease = Frame2DEndRelease.StartRelease };
@@ -648,8 +648,8 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3, n4, n5, n6, n7, n8);
             IMaterial material = new GenericIsotropicMaterial() { E = 30E6, U = 0.2, Label = "Steel", Alpha = 0.000012, Gama = 39885, MaterialType = MaterialType.Steel };
-            IFrame2DSection Columns_Section = new CircularSection(0.4, material);
-            IFrame2DSection Beam_Section = new RectangularSection(0.4, 0.4, material);
+            Frame2DSection Columns_Section = new CircularSection(0.4, material);
+            Frame2DSection Beam_Section = new RectangularSection(0.4, 0.4, material);
 
             // columns
             var e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = Columns_Section };

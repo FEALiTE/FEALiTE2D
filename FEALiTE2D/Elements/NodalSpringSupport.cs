@@ -10,9 +10,7 @@ public class NodalSpringSupport : NodalSupport
     /// <summary>
     /// Create a new instance of <see cref="NodalSpringSupport"/> class.
     /// </summary>
-    public NodalSpringSupport()
-    {
-    }
+    public NodalSpringSupport() { }
 
     /// <summary>
     /// Create a new instance of <see cref="NodalSpringSupport"/> class.

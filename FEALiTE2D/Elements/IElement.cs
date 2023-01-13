@@ -37,7 +37,7 @@ public interface IElement
     /// <summary>
     /// Gets or sets the cross section for this element.
     /// </summary>
-    IFrame2DSection CrossSection { get; set; }
+    Frame2DSection CrossSection { get; set; }
 
     /// <summary>
     /// Length of the member.

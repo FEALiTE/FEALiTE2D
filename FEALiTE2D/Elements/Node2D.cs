@@ -70,7 +70,7 @@ public class Node2D
         Support switch
         {
             null => 3,
-            NodalSpringSupport _ => 3,
+            NodalSpringSupport => 3,
             _ => 3 - Support.RestraintCount
         };
 

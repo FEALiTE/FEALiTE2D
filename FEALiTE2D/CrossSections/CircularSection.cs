@@ -5,9 +5,9 @@ namespace FEALiTE2D.CrossSections;
 /// <summary>
 /// Represents a Solid Circular Cross-Section.
 /// </summary>
-/// <seealso cref="FEALiTE2D.CrossSections.IFrame2DSection" />
+/// <seealso cref="Frame2DSection" />
 [System.Serializable]
-public class CircularSection : IFrame2DSection
+public class CircularSection : Frame2DSection
 {
     /// <summary>
     /// Creates new instance of a <see cref="CircularSection"/>.

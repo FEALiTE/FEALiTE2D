@@ -1,4 +1,5 @@
-﻿using FEALiTE2D.Elements;
+﻿using System.Diagnostics.CodeAnalysis;
+using FEALiTE2D.Elements;
 
 namespace FEALiTE2D.Loads;
 
@@ -11,9 +12,7 @@ public class SupportDisplacementLoad
     /// <summary>
     /// Creates a new class of <see cref="SupportDisplacementLoad"/>.
     /// </summary>
-    public SupportDisplacementLoad()
-    {
-    }
+    public SupportDisplacementLoad() { }
 
     /// <summary>
     /// Creates a new class of <see cref="SupportDisplacementLoad"/>
@@ -34,42 +33,52 @@ public class SupportDisplacementLoad
     /// <summary>
     /// Displacement in X-Direction.
     /// </summary>
-    public double Ux { get; set; }
+    public double Ux { get; }
 
     /// <summary>
     /// Displacement in Y-Direction.
     /// </summary>
-    public double Uy { get; set; }
+    public double Uy { get; }
 
     /// <summary>
     /// rotation about Z-Direction.
     /// </summary>
-    public double Rz { get; set; }
+    public double Rz { get; }
 
-    /// <inheritdoc/>
+    
+    /// <summary>
+    /// 
+    /// </summary>
     public LoadDirection LoadDirection { get; set; }
 
-    /// <inheritdoc/>
-    public LoadCase LoadCase { get; set; }
+    /// <summary>
+    /// 
+    /// </summary>
+    public LoadCase LoadCase { get; }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="node"></param>
+    /// <returns></returns>
     public double[] GetGlobalFixedEndDisplacement(Node2D node)
     {
         // create force vector
-        var Q = new double[3] { Ux, Uy, Rz };
+        var q = new[] { Ux, Uy, Rz };
 
         // if the forces is in global coordinate system of the node then return it.
         if (LoadDirection == LoadDirection.Global)
         {
-            return Q;
+            return q;
         }
         // transform the load vector to the local coordinate of the node.
-        var F = new double[3];
-        node.TransformationMatrix.TransposeMultiply(Q, F);
-        return F;
+        var f = new double[3];
+        node.TransformationMatrix.TransposeMultiply(q, f);
+        return f;
     }
 
     /// <inheritdoc/>
+    [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     public override bool Equals(object obj)
     {
         if (ReferenceEquals(obj, null))
@@ -80,15 +89,17 @@ public class SupportDisplacementLoad
         {
             return false;
         }
-        var nd = obj as SupportDisplacementLoad;
-        if (Ux != nd.Ux || Uy != nd.Uy || Rz != nd.Rz || LoadCase != nd.LoadCase)
-        {
-            return false;
-        }
-        return true;
+        var nd = (SupportDisplacementLoad)obj;
+        return Ux == nd.Ux && Uy == nd.Uy && Rz == nd.Rz && LoadCase == nd.LoadCase;
     }
 
-    /// <inheritdoc/>
+    
+    /// <summary>
+    /// Equality
+    /// </summary>
+    /// <param name="nl1"></param>
+    /// <param name="nl2"></param>
+    /// <returns></returns>
     public static bool operator ==(SupportDisplacementLoad nl1, SupportDisplacementLoad nl2)
     {
         if (ReferenceEquals(nl1, null))
@@ -98,7 +109,12 @@ public class SupportDisplacementLoad
         return nl1.Equals(nl2);
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Inequality
+    /// </summary>
+    /// <param name="nl1"></param>
+    /// <param name="nl2"></param>
+    /// <returns></returns>
     public static bool operator !=(SupportDisplacementLoad nl1, SupportDisplacementLoad nl2)
     {
         if (ReferenceEquals(nl1, null))

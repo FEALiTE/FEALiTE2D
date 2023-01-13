@@ -43,9 +43,5 @@ internal class LinearFunction
     /// get value at a distance
     /// </summary>
     /// <param name="x">distant from the left side</param>
-    internal double GetValueAt(double x)
-    {
-        // Y = mX+b
-        return Slope * x + Constant;
-    }
+    internal double GetValueAt(double x) => Slope * x + Constant;
 }

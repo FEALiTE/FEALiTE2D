@@ -14,9 +14,7 @@ public class FrameTrapezoidalLoad : ILoad
     /// Creates a new instance of <see cref="FrameTrapezoidalLoad"/> class.
     /// <para>The load is trapezoidally distributed along part of the span.</para>
     /// </summary>
-    public FrameTrapezoidalLoad()
-    {
-    }
+    public FrameTrapezoidalLoad() { }
 
     /// <summary>
     /// Creates a new instance of <see cref="FrameTrapezoidalLoad"/> class.
@@ -95,18 +93,18 @@ public class FrameTrapezoidalLoad : ILoad
         {
             // transform forces and moments from global to local.
 
-            var F1 = new[] { Wx1, Wy1, 0 };
-            var F2 = new[] { Wx2, Wy2, 0 };
+            var f1 = new[] { Wx1, Wy1, 0 };
+            var f2 = new[] { Wx2, Wy2, 0 };
 
-            var Q1 = new double[3];
-            var Q2 = new double[3];
+            var q1 = new double[3];
+            var q2 = new double[3];
 
-            element.LocalCoordinateSystemMatrix.Multiply(F1, Q1);
-            element.LocalCoordinateSystemMatrix.Multiply(F2, Q2);
+            element.LocalCoordinateSystemMatrix.Multiply(f1, q1);
+            element.LocalCoordinateSystemMatrix.Multiply(f2, q2);
 
             // assign the transformed values to the main new forces values.
-            wx1 = Q1[0]; wy1 = Q1[1];
-            wx2 = Q2[0]; wy2 = Q2[1];
+            wx1 = q1[0]; wy1 = q1[1];
+            wx2 = q2[0]; wy2 = q2[1];
         }
 
         // Trapezoidal Load is a linear equation of first degree
@@ -133,51 +131,46 @@ public class FrameTrapezoidalLoad : ILoad
             fem[5] += n[1,5] * ny * weights[i];
         }
 
-        var fansewr = new double[6];
-        element.TransformationMatrix.TransposeMultiply(fem, fansewr);
-        return fansewr;
+        var globalFixedEndForces = new double[6];
+        element.TransformationMatrix.TransposeMultiply(fem, globalFixedEndForces);
+        return globalFixedEndForces;
     }
 
     /// <inheritdoc/>
     public ILoad GetLoadValueAt(Elements.IElement element, double x)
     {
-        FrameTrapezoidalLoad load = null;
         var l = element.Length;
-
-        if (x >= L1 && x <= l - L2)
+        if (!(x >= L1) || !(x <= l - L2)) return null;
+        var load = new FrameTrapezoidalLoad { LoadCase = LoadCase };
+        if (LoadDirection == LoadDirection.Global)
         {
-            load = new FrameTrapezoidalLoad();
-            load.LoadCase = LoadCase;
-            if (LoadDirection == LoadDirection.Global)
-            {
-                // transform forces and moments from global to local.
+            // transform forces and moments from global to local.
 
-                var F1 = new[] { Wx1, Wy1, 0 };
-                var F2 = new[] { Wx2, Wy2, 0 };
+            var f1 = new[] { Wx1, Wy1, 0 };
+            var f2 = new[] { Wx2, Wy2, 0 };
 
-                var Q1 = new double[3];
-                var Q2 = new double[3];
+            var q1 = new double[3];
+            var q2 = new double[3];
 
-                element.LocalCoordinateSystemMatrix.Multiply(F1, Q1);
-                element.LocalCoordinateSystemMatrix.Multiply(F2, Q2);
+            element.LocalCoordinateSystemMatrix.Multiply(f1, q1);
+            element.LocalCoordinateSystemMatrix.Multiply(f2, q2);
 
-                // Trapezoidal Load is a linear equation of first degree
-                var wxFunc = new LinearFunction(L1, l - L2, Q1[0], Q2[0]);
-                var wyFunc = new LinearFunction(L1, l - L2, Q1[1], Q2[1]);
+            // Trapezoidal Load is a linear equation of first degree
+            var wxFunc = new LinearFunction(L1, l - L2, q1[0], q2[0]);
+            var wyFunc = new LinearFunction(L1, l - L2, q1[1], q2[1]);
 
-                load.Wx1 = load.Wx2 = wxFunc.GetValueAt(x);
-                load.Wy1 = load.Wy2 = wyFunc.GetValueAt(x);
-                load.L1 = load.L2 = x;
-                load.LoadDirection = LoadDirection.Local;
-            }
-            else
-            {
-                var wxFunc = new LinearFunction(L1, l - L2, Wx1, Wx2);
-                var wyFunc = new LinearFunction(L1, l - L2, Wy1, Wy2);
-                load.Wx1 = load.Wx2 = wxFunc.GetValueAt(x);
-                load.Wy1 = load.Wy2 = wyFunc.GetValueAt(x);
-                load.L1 = load.L2 = x;
-            }
+            load.Wx1 = load.Wx2 = wxFunc.GetValueAt(x);
+            load.Wy1 = load.Wy2 = wyFunc.GetValueAt(x);
+            load.L1 = load.L2 = x;
+            load.LoadDirection = LoadDirection.Local;
+        }
+        else
+        {
+            var wxFunc = new LinearFunction(L1, l - L2, Wx1, Wx2);
+            var wyFunc = new LinearFunction(L1, l - L2, Wy1, Wy2);
+            load.Wx1 = load.Wx2 = wxFunc.GetValueAt(x);
+            load.Wy1 = load.Wy2 = wyFunc.GetValueAt(x);
+            load.L1 = load.L2 = x;
         }
 
         return load;

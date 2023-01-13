@@ -14,7 +14,7 @@ namespace FEALiTE2D.Tests.Meshing
         {
             var structure = new FEALiTE2D.Structure.Structure();
             IMaterial material = new GenericIsotropicMaterial() { E = 30E6, U = 0.2, Label = "Steel", Alpha = 0.000012, Gama = 39885, MaterialType = MaterialType.Steel };
-            IFrame2DSection section = new Generic2DSection(0.075, 0.075, 0.075, 0.000480, 0.000480, 0.000480 * 2, 0.1, 0.1, material);
+            Frame2DSection section = new Generic2DSection(0.075, 0.075, 0.075, 0.000480, 0.000480, 0.000480 * 2, 0.1, 0.1, material);
 
             structure.LinearMesher = new LinearMesher(10, 1);
             var n1 = new Node2D(0, 0, "n1");

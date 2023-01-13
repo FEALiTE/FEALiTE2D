@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using FEALiTE2D.Elements;
+﻿using FEALiTE2D.Elements;
 
 namespace FEALiTE2D.Loads;
 
@@ -34,30 +33,39 @@ public class NodalLoad
     /// <summary>
     /// Force in X-Direction.
     /// </summary>
-    public double Fx { get; set; }
+    public double Fx { get; }
 
     /// <summary>
     /// Force in Y-Direction.
     /// </summary>
-    public double Fy { get; set; }
+    public double Fy { get; }
 
     /// <summary>
     /// Moment in Z-Direction.
     /// </summary>
-    public double Mz { get; set; }
+    public double Mz { get; }
 
-    /// <inheritdoc/>
+
+    /// <summary>
+    /// 
+    /// </summary>
     public LoadDirection LoadDirection { get; set; }
 
-    /// <inheritdoc/>
-    public LoadCase LoadCase { get; set; }
+    /// <summary>
+    /// 
+    /// </summary>
+    public LoadCase LoadCase { get; }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="node"></param>
+    /// <returns></returns>
     public double[] GetGlobalFixedEndForces(Node2D node)
     {
         // create force vector
-        var q = new double[3] { Fx, Fy, Mz };
-            
+        var q = new[] { Fx, Fy, Mz };
+
         // if the forces is in global coordinate system of the node then return it.
         if (LoadDirection == LoadDirection.Global)
         {
@@ -70,7 +78,7 @@ public class NodalLoad
     }
 
     /// <inheritdoc/>
-    [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     public override bool Equals(object obj)
     {
         if (obj is null)
@@ -81,15 +89,17 @@ public class NodalLoad
         {
             return false;
         }
-        var nl = obj as NodalLoad;
-        if (Fx != nl.Fx || Fy != nl.Fy || Mz != nl.Mz || LoadCase != nl.LoadCase)
-        {
-            return false;
-        }
-        return true;
+        var nl = (NodalLoad)obj;
+        return Fx == nl.Fx && Fy == nl.Fy && Mz == nl.Mz && LoadCase == nl.LoadCase;
     }
 
-    /// <inheritdoc/>
+
+    /// <summary>
+    /// Equality
+    /// </summary>
+    /// <param name="nl1"></param>
+    /// <param name="nl2"></param>
+    /// <returns></returns>
     public static bool operator ==(NodalLoad nl1, NodalLoad nl2)
     {
         if (nl1 is null)
@@ -99,7 +109,12 @@ public class NodalLoad
         return nl1.Equals(nl2);
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Inequality
+    /// </summary>
+    /// <param name="nl1"></param>
+    /// <param name="nl2"></param>
+    /// <returns></returns>
     public static bool operator !=(NodalLoad nl1, NodalLoad nl2)
     {
         if (ReferenceEquals(nl1, null))

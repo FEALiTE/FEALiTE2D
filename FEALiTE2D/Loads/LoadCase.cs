@@ -126,6 +126,7 @@ public enum LoadCaseType
 /// <summary>
 /// Represents Load Duration Classes.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "UnusedMember.Global")]
 public enum LoadCaseDuration
 {
     /// <summary>

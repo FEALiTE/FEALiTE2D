@@ -14,7 +14,7 @@ namespace FEALiTE2D.Tests.Elements
         FrameElement2D e1;
         FrameElement2D e2;
         IMaterial material;
-        IFrame2DSection section;
+        Frame2DSection section;
 
         [SetUp]
         public void Setup()

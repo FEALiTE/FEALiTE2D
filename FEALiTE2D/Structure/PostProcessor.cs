@@ -3,15 +3,17 @@ using FEALiTE2D.Loads;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FEALiTE2D.Meshing;
 
 namespace FEALiTE2D.Structure;
 
 /// <summary>
 /// This class represents a post-processor for <see cref="Structure"/> class to retrieve elements data after the structure is solved. 
 /// </summary>
+[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "UnusedMember.Global")]
 public class PostProcessor
 {
-    private readonly Structure structure;
+    private readonly Structure _structure;
 
     /// <summary>
     /// Creates a new instance of <see cref="PostProcessor"/> class.
@@ -21,13 +23,13 @@ public class PostProcessor
     {
         if (structure == null)
         {
-            throw new ArgumentNullException("Structure can't be null.");
+            throw new ArgumentNullException(nameof(structure));
         }
         if (structure.AnalysisStatus == AnalysisStatus.Failure)
         {
             throw new ArgumentException("Structure should be successfully run.");
         }
-        this.structure = structure;
+        _structure = structure;
     }
 
     /// <summary>
@@ -38,12 +40,9 @@ public class PostProcessor
     /// <returns>support reaction</returns>
     public Force GetSupportReaction(Node2D node, LoadCase loadCase)
     {
-        var R = new Force();
+        var r = new Force();
 
-        if (node.IsFree)
-        {
-            return null;
-        }
+        if (node.IsFree) { return null; }
 
         // check if this node have an elastic support
         if (node.Support is NodalSpringSupport ns)
@@ -54,49 +53,49 @@ public class PostProcessor
             var f = new double[3];
             ns.GlobalStiffnessMatrix.Multiply(d.ToVector(), f);
 
-            R.Fx -= f[0];
-            R.Fy -= f[1];
-            R.Mz -= f[2];
+            r.Fx -= f[0];
+            r.Fy -= f[1];
+            r.Mz -= f[2];
 
-            return R;
+            return r;
         }
 
         //add external loads on nodes
         foreach (var load in node.NodalLoads.Where(ii => ii.LoadCase == loadCase))
         {
-            R.Fx -= load.Fx;
-            R.Fy -= load.Fy;
-            R.Mz -= load.Mz;
+            r.Fx -= load.Fx;
+            r.Fy -= load.Fy;
+            r.Mz -= load.Mz;
         }
 
         // get connected elements to this node
-        var connectedElements = structure.Elements.Where(o => o.Nodes.Contains(node));
+        var connectedElements = _structure.Elements.Where(o => o.Nodes.Contains(node));
 
         // reactions are the sum of global external fixed end forces
         foreach (var e in connectedElements)
         {
-            var fext = GetElementGlobalFixedEndForeces(e, loadCase);
+            var fixedEndForces = GetElementGlobalFixedEndForces(e, loadCase);
 
             if (e.Nodes[0] == node)
             {
-                R.Fx += fext[0];
-                R.Fy += fext[1];
-                R.Mz += fext[2];
+                r.Fx += fixedEndForces[0];
+                r.Fy += fixedEndForces[1];
+                r.Mz += fixedEndForces[2];
             }
             else
             {
-                R.Fx += fext[3];
-                R.Fy += fext[4];
-                R.Mz += fext[5];
+                r.Fx += fixedEndForces[3];
+                r.Fy += fixedEndForces[4];
+                r.Mz += fixedEndForces[5];
             }
         }
 
         // get rid of redundant values which are very small such as 1e-15
-        if (node.IsRestrained(NodalDegreeOfFreedom.Ux) != true) R.Fx = 0;
-        if (node.IsRestrained(NodalDegreeOfFreedom.Uy) != true) R.Fy = 0;
-        if (node.IsRestrained(NodalDegreeOfFreedom.Rz) != true) R.Mz = 0;
+        if (node.IsRestrained(NodalDegreeOfFreedom.Ux) != true) r.Fx = 0;
+        if (node.IsRestrained(NodalDegreeOfFreedom.Uy) != true) r.Fy = 0;
+        if (node.IsRestrained(NodalDegreeOfFreedom.Rz) != true) r.Mz = 0;
 
-        return R;
+        return r;
     }
 
     /// <summary>
@@ -107,12 +106,12 @@ public class PostProcessor
     /// <returns>support reaction</returns>
     public Force GetSupportReaction(Node2D node, LoadCombination loadCombination)
     {
-        var R = new Force();
+        var r = new Force();
         foreach (var lc in loadCombination)
         {
-            R += lc.Value * GetSupportReaction(node, lc.Key);
+            r += lc.Value * GetSupportReaction(node, lc.Key);
         }
-        return R;
+        return r;
     }
 
     /// <summary>
@@ -125,30 +124,20 @@ public class PostProcessor
     {
         var nd = new Displacement();
 
-        if (structure.AnalysisStatus == AnalysisStatus.Successful)
+        if (_structure.AnalysisStatus != AnalysisStatus.Successful) return nd;
+        foreach (var load in node.SupportDisplacementLoad)
         {
-            foreach (var load in node.SupportDisplacementLoad)
-            {
-                if (load.LoadCase == loadCase)
-                {
-                    nd.Ux += load.Ux;
-                    nd.Uy += load.Uy;
-                    nd.Rz += load.Rz;
-                }
-            }
-
-            // get displacement from displacement vector if this node is free
-            var dVector = structure.DisplacementVectors[loadCase];
-
-            if (node.DegreeOfFreedomIndices[0] < dVector.Length)
-                nd.Ux = dVector[node.DegreeOfFreedomIndices[0]];
-
-            if (node.DegreeOfFreedomIndices[1] < dVector.Length)
-                nd.Uy = dVector[node.DegreeOfFreedomIndices[1]];
-
-            if (node.DegreeOfFreedomIndices[2] < dVector.Length)
-                nd.Rz = dVector[node.DegreeOfFreedomIndices[2]];
+            if (load.LoadCase != loadCase) continue;
+            nd.Ux += load.Ux;
+            nd.Uy += load.Uy;
+            nd.Rz += load.Rz;
         }
+
+        // get displacement from displacement vector if this node is free
+        var dVector = _structure.DisplacementVectors[loadCase];
+        if (node.DegreeOfFreedomIndices[0] < dVector.Length) { nd.Ux = dVector[node.DegreeOfFreedomIndices[0]]; }
+        if (node.DegreeOfFreedomIndices[1] < dVector.Length) { nd.Uy = dVector[node.DegreeOfFreedomIndices[1]]; }
+        if (node.DegreeOfFreedomIndices[2] < dVector.Length) { nd.Rz = dVector[node.DegreeOfFreedomIndices[2]]; }
         return nd;
     }
 
@@ -158,27 +147,27 @@ public class PostProcessor
     /// <param name="element">an element</param>
     /// <param name="loadCase">a load case</param>
     /// <returns>Local End forces of an element after the structure is solved.</returns>
-    public double[] GetElementLocalFixedEndForeces(IElement element, LoadCase loadCase)
+    public double[] GetElementLocalFixedEndForces(IElement element, LoadCase loadCase)
     {
-        var q = new double[6];
+        var results = new double[6];
 
         // Q = k*u+qf
         var dl = GetElementLocalEndDisplacement(element, loadCase);
 
         //ql = kl*dl
-        element.LocalStiffnessMatrix.Multiply(dl, q);
+        element.LocalStiffnessMatrix.Multiply(dl, results);
 
         // get external fixed end loads from element load dictionary.
-        var qextg = element.GlobalEndForcesForLoadCase[loadCase];
-        var qextl = new double[qextg.Length];
-        element.TransformationMatrix.Multiply(qextg, qextl);
+        var globalEndForcesForLoadCase = element.GlobalEndForcesForLoadCase[loadCase];
+        var globalResults = new double[globalEndForcesForLoadCase.Length];
+        element.TransformationMatrix.Multiply(globalEndForcesForLoadCase, globalResults);
 
-        for (var i = 0; i < qextl.Length; i++)
+        for (var i = 0; i < globalResults.Length; i++)
         {
-            q[i] += qextl[i];
+            results[i] += globalResults[i];
         }
 
-        return q;
+        return results;
     }
 
     /// <summary>
@@ -187,9 +176,9 @@ public class PostProcessor
     /// <param name="element">an element</param>
     /// <param name="loadCase">a load case</param>
     /// <returns>Global End forces of an element after the structure is solved.</returns>
-    public double[] GetElementGlobalFixedEndForeces(IElement element, LoadCase loadCase)
+    public double[] GetElementGlobalFixedEndForces(IElement element, LoadCase loadCase)
     {
-        var ql = GetElementLocalFixedEndForeces(element, loadCase);
+        var ql = GetElementLocalFixedEndForces(element, loadCase);
 
         // fg = Tt*fl
         var fg = new double[ql.Length];
@@ -208,7 +197,7 @@ public class PostProcessor
         var nd1 = GetNodeGlobalDisplacement(element.Nodes[0], loadCase);
         var nd2 = GetNodeGlobalDisplacement(element.Nodes[1], loadCase);
 
-        var dg = new double[] { nd1.Ux, nd1.Uy, nd1.Rz, nd2.Ux, nd2.Uy, nd2.Rz };
+        var dg = new[] { nd1.Ux, nd1.Uy, nd1.Rz, nd2.Ux, nd2.Uy, nd2.Rz };
         var dl = new double[dg.Length];
         element.TransformationMatrix.Multiply(dg, dl); // dl = T*dg
 
@@ -221,12 +210,12 @@ public class PostProcessor
     /// <param name="element">an element to get its internal forces</param>
     /// <param name="loadCase">a load case to get the internal forces in an element</param>
     /// <returns>List of segments containing internal forces and displacements of an element.</returns>
-    public List<Meshing.LinearMeshSegment> GetElementInternalForces(IElement element, LoadCase loadCase)
+    public List<LinearMeshSegment> GetElementInternalForces(IElement element, LoadCase loadCase)
     {
         var len = element.Length;
 
         // get local end forces after the structure is solved
-        var fl = GetElementLocalFixedEndForeces(element, loadCase);
+        var fl = GetElementLocalFixedEndForces(element, loadCase);
         var dl = GetElementLocalEndDisplacement(element, loadCase);
 
         //loop through each segment
@@ -242,7 +231,6 @@ public class PostProcessor
             //assign local end displacements and rotations to start segment
             if (i == 0)
             {
-                var ls = segment.x2 - segment.x1;
                 segment.Displacement1 = new Displacement()
                 {
                     Ux = dl[0],
@@ -257,16 +245,16 @@ public class PostProcessor
                 segment.Displacement1.Ux = pS.AxialDisplacementAt(pS.x2 - pS.x1);
                 segment.Displacement1.Uy = pS.VerticalDisplacementAt(pS.x2 - pS.x1);
                 segment.Displacement1.Rz = pS.SlopeAngleAt(pS.x2 - pS.x1);
-                   
+
                 // use shape function for elements with end releases.
-                if(element is FrameElement2D ee)
+                if (element is FrameElement2D ee)
                 {
-                    if(ee.EndRelease != Frame2DEndRelease.NoRelease)
+                    if (ee.EndRelease != Frame2DEndRelease.NoRelease)
                     {
                         // get shape function at start of the segment
-                        var N = ee.GetShapeFunctionAt(segment.x1);
+                        var n = ee.GetShapeFunctionAt(segment.x1);
                         var u = new double[3];
-                        N.Multiply(dl, u);
+                        n.Multiply(dl, u);
                         segment.Displacement1 = Displacement.FromVector(u);
                     }
                 }
@@ -284,96 +272,87 @@ public class PostProcessor
             {
                 if (load is FramePointLoad pL)
                 {
-                    if (pL.L1 <= x)
-                    {
-                        // get point load in lcs.
-                        var p = pL.GetLoadValueAt(element, pL.L1) as FramePointLoad;
-                        segment.Internalforces1.Fx += p.Fx;
-                        segment.Internalforces1.Fy += p.Fy;
-                        segment.Internalforces1.Mz += p.Mz - p.Fy * (x - pL.L1);
-                    }
+                    if (!(pL.L1 <= x)) continue;
+                    // get point load in lcs.
+                    var p = pL.GetLoadValueAt(element, pL.L1) as FramePointLoad;
+                    segment.Internalforces1.Fx += p.Fx;
+                    segment.Internalforces1.Fy += p.Fy;
+                    segment.Internalforces1.Mz += p.Mz - p.Fy * (x - pL.L1);
                 }
                 else if (load is FrameUniformLoad uL)
                 {
                     // check the load is before or just before the segment
-                    if (uL.L1 <= x)
+                    if (!(uL.L1 <= x)) continue;
+                    // get uniform load in lcs.
+                    var uniformLoad = uL.GetLoadValueAt(element, x) as FrameUniformLoad;
+                    double wx = uniformLoad.Wx,
+                        wy = uniformLoad.Wy,
+                        x1 = uL.L1,
+                        x2 = len - uL.L2; // make x2 measured from start of the element
+
+                    // check if the load stops at start  of the segment 
+                    if (x2 > x)
                     {
-                        // get uniform load in lcs.
-                        var uniformLoad = uL.GetLoadValueAt(element, x) as FrameUniformLoad;
-                        double wx = uniformLoad.Wx,
-                            wy = uniformLoad.Wy,
-                            x1 = uL.L1,
-                            x2 = len - uL.L2; // make x2 measured from start of the element
-
-                        // check if the load stops at start  of the segment 
-                        if (x2 > x)
-                        {
-                            segment.wx1 += wx;
-                            segment.wx2 += wx;
-                            segment.wy1 += wy;
-                            segment.wy2 += wy;
-                            x2 = x;
-                        }
-
-                        segment.Internalforces1.Fx += wx * (x2 - x1);
-                        segment.Internalforces1.Fy += wy * (x2 - x1);
-                        segment.Internalforces1.Mz -= wy * (x2 - x1) * (x - 0.5 * x2 - 0.5 * x1);
+                        segment.wx1 += wx;
+                        segment.wx2 += wx;
+                        segment.wy1 += wy;
+                        segment.wy2 += wy;
+                        x2 = x;
                     }
+
+                    segment.Internalforces1.Fx += wx * (x2 - x1);
+                    segment.Internalforces1.Fy += wy * (x2 - x1);
+                    segment.Internalforces1.Mz -= wy * (x2 - x1) * (x - 0.5 * x2 - 0.5 * x1);
                 }
                 else if (load is FrameTrapezoidalLoad tL)
                 {
                     // check the load is before or just before the segment
-                    if (tL.L1 <= x)
+                    if (!(tL.L1 <= x)) continue;
+                    // get trap load in lcs.
+                    var tl1 = tL.GetLoadValueAt(element, tL.L1) as FrameTrapezoidalLoad;
+                    var tl2 = tL.GetLoadValueAt(element, len - tL.L2) as FrameTrapezoidalLoad;
+                    double wx1 = tl1.Wx1,
+                        wx2 = tl2.Wx1,
+                        wy1 = tl1.Wy1,
+                        wy2 = tl2.Wy1,
+                        x1 = tl1.L1,
+                        x2 = len - tL.L2; // make x2 of the load measured from start of the element
+
+                    //check if the load stops at start  of the segment
+                    if (x2 > x)
                     {
-                        // get trap load in lcs.
-                        var tl1 = tL.GetLoadValueAt(element, tL.L1) as FrameTrapezoidalLoad;
-                        var tl2 = tL.GetLoadValueAt(element, len - tL.L2) as FrameTrapezoidalLoad;
-                        double wx1 = tl1.Wx1,
-                            wx2 = tl2.Wx1,
-                            wy1 = tl1.Wy1,
-                            wy2 = tl2.Wy1,
-                            x1 = tl1.L1,
-                            x2 = len - tL.L2; // make x2 of the load measured from start of the element
+                        // add load to the segment.
+                        segment.wx1 += ((wx2 - wx1) / (x2 - x1)) * (x - x1) + wx1;
+                        segment.wx2 += ((wx2 - wx1) / (x2 - x1)) * (segment.x2 - x1) + wx1;
+                        segment.wy1 += ((wy2 - wy1) / (x2 - x1)) * (x - x1) + wy1;
+                        segment.wy2 += ((wy2 - wy1) / (x2 - x1)) * (segment.x2 - x1) + wy1;
 
-                        //check if the load stops at start  of the segment
-                        if (x2 > x)
-                        {
-                            // add load to the segment.
-                            segment.wx1 += ((wx2 - wx1) / (x2 - x1)) * (x - x1) + wx1;
-                            segment.wx2 += ((wx2 - wx1) / (x2 - x1)) * (segment.x2 - x1) + wx1;
-                            segment.wy1 += ((wy2 - wy1) / (x2 - x1)) * (x - x1) + wy1;
-                            segment.wy2 += ((wy2 - wy1) / (x2 - x1)) * (segment.x2 - x1) + wy1;
-
-                            //measure the load at start of the segment if it passes the start of the segment
-                            wx2 = ((wx2 - wx1) / (x2 - x1)) * (x - x1) + wx1;
-                            wy2 = ((wy2 - wy1) / (x2 - x1)) * (x - x1) + wy1;
-                            x2 = x;
-                        }
-
-                        segment.Internalforces1.Fx += 0.5 * (wx1 + wx2) * (x2 - x1);
-                        segment.Internalforces1.Fy += 0.5 * (wy1 + wy2) * (x2 - x1);
-                        segment.Internalforces1.Mz += (2 * wy1 * x1 - 3 * wy1 * x + wy1 * x2 + wy2 * x1 - 3 * wy2 * x + 2 * wy2 * x2) * (x2 - x1) / 6;
+                        //measure the load at start of the segment if it passes the start of the segment
+                        wx2 = ((wx2 - wx1) / (x2 - x1)) * (x - x1) + wx1;
+                        wy2 = ((wy2 - wy1) / (x2 - x1)) * (x - x1) + wy1;
+                        x2 = x;
                     }
+
+                    segment.Internalforces1.Fx += 0.5 * (wx1 + wx2) * (x2 - x1);
+                    segment.Internalforces1.Fy += 0.5 * (wy1 + wy2) * (x2 - x1);
+                    segment.Internalforces1.Mz += (2 * wy1 * x1 - 3 * wy1 * x + wy1 * x2 + wy2 * x1 - 3 * wy2 * x + 2 * wy2 * x2) * (x2 - x1) / 6;
                 }
             }
 
             // set internal forces at the end
             segment.Internalforces2 = segment.GetInternalForceAt(segment.x2 - segment.x1);
             segment.Displacement2 = segment.GetDisplacementAt(segment.x2 - segment.x1);
-                
-            // use shape function for elements with end releases.
-            if (element is FrameElement2D eee)
-            {
-                if (eee.EndRelease != Frame2DEndRelease.NoRelease)
-                {
-                    // get shape function at start of the segment
-                    var N = eee.GetShapeFunctionAt(segment.x2);
-                    var u = new double[3];
-                    N.Multiply(dl, u);
-                    segment.Displacement2 = Displacement.FromVector(u);
-                }
-            }
 
+            // use shape function for elements with end releases.
+            if (element is not FrameElement2D eee) continue;
+            {
+                if (eee.EndRelease == Frame2DEndRelease.NoRelease) continue;
+                // get shape function at start of the segment
+                var n = eee.GetShapeFunctionAt(segment.x2);
+                var u = new double[3];
+                n.Multiply(dl, u);
+                segment.Displacement2 = Displacement.FromVector(u);
+            }
         }
 
         return element.MeshSegments;
@@ -385,19 +364,19 @@ public class PostProcessor
     /// <param name="element">an element to get its internal forces</param>
     /// <param name="loadCombination">a load combination</param>
     /// <returns>List of segments containing internal forces and displacements of an element.</returns>
-    public List<Meshing.LinearMeshSegment> GetElementInternalForces(IElement element, LoadCombination loadCombination)
+    public List<LinearMeshSegment> GetElementInternalForces(IElement element, LoadCombination loadCombination)
     {
-        var list = new List<Meshing.LinearMeshSegment>();
-        for (var i = 0; i < element.MeshSegments.Count; i++)
+        var results = new List<LinearMeshSegment>();
+        foreach (var meshSegment in element.MeshSegments)
         {
-            var temp = new Meshing.LinearMeshSegment();
-            var cSegment = element.MeshSegments[i];
-            temp.x1 = cSegment.x1;
-            temp.x2 = cSegment.x2;
-            temp.A = cSegment.A;
-            temp.Ix = cSegment.Ix;
-            temp.E = cSegment.E;
-            list.Add(temp);
+            results.Add(new()
+            {
+                x1 = meshSegment.x1,
+                x2 = meshSegment.x2,
+                A = meshSegment.A,
+                Ix = meshSegment.Ix,
+                E = meshSegment.E
+            });
         }
 
         foreach (var lc in loadCombination)
@@ -408,7 +387,7 @@ public class PostProcessor
             {
                 // get reference to current segments
                 var cSegment = segments[i];
-                var cListItem = list[i];
+                var cListItem = results[i];
                 cListItem.fx += lc.Value * cSegment.fx;
                 cListItem.fy += lc.Value * cSegment.fy;
                 cListItem.mz += lc.Value * cSegment.mz;
@@ -421,10 +400,8 @@ public class PostProcessor
                 cListItem.Internalforces1 += lc.Value * cSegment.Internalforces1;
                 cListItem.Internalforces2 += lc.Value * cSegment.Internalforces2;
             }
-
         }
-
-        return list;
+        return results;
     }
 
     /// <summary>
@@ -441,9 +418,12 @@ public class PostProcessor
 
         // loop through the segments to find which segment this distance is bounded to.
         foreach (var segment in segments)
+        {
             if (x >= segment.x1 && x <= segment.x2)
+            {
                 return segment.GetInternalForceAt(x - segment.x1);
-
+            }
+        }
         return null;
     }
 
@@ -460,9 +440,12 @@ public class PostProcessor
 
         // loop through the segments to find which segment this distance is bounded to.
         foreach (var segment in segments)
+        {
             if (x >= segment.x1 && x <= segment.x2)
+            {
                 return segment.GetInternalForceAt(x - segment.x1);
-
+            }
+        }
         return null;
     }
 
@@ -480,9 +463,12 @@ public class PostProcessor
 
         // loop through the segments to find which segment this distance is bounded to.
         foreach (var segment in segments)
+        {
             if (x >= segment.x1 && x <= segment.x2)
+            {
                 return segment.GetDisplacementAt(x - segment.x1);
-
+            }
+        }
         return null;
     }
 
@@ -500,9 +486,12 @@ public class PostProcessor
 
         // loop through the segments to find which segment this distance is bounded to.
         foreach (var segment in segments)
+        {
             if (x >= segment.x1 && x <= segment.x2)
+            {
                 return segment.GetDisplacementAt(x - segment.x1);
-
+            }
+        }
         return null;
     }
 

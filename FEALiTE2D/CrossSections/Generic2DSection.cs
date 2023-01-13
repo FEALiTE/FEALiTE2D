@@ -6,7 +6,7 @@ namespace FEALiTE2D.CrossSections;
 /// Creates a generic section (user defined section), the user will have to give all required section properties for the section.
 /// </summary>
 [System.Serializable]
-public class Generic2DSection : IFrame2DSection
+public class Generic2DSection : Frame2DSection
 {
     /// <summary>
     /// Creates a new instance of the <see cref="Generic2DSection"/>

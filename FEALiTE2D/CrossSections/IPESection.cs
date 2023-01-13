@@ -6,9 +6,9 @@ namespace FEALiTE2D.CrossSections;
 /// <summary>
 /// Represent an European I beams section.
 /// </summary>
-/// <seealso cref="FEALiTE2D.CrossSections.IFrame2DSection" />
+/// <seealso cref="Frame2DSection" />
 [Serializable]
-public class IpeSection : IFrame2DSection
+public class IpeSection : Frame2DSection
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="IpeSection"/> class.
@@ -21,11 +21,11 @@ public class IpeSection : IFrame2DSection
     /// <param name="material">the material.</param>
     public IpeSection(double tf, double tw, double b, double h, double r, IMaterial material)
     {
-        this.Tf = tf;
-        this.Tw = tw;
-        this.B = b;
-        this.H = h;
-        this.R = r;
+        Tf = tf;
+        Tw = tw;
+        B = b;
+        H = h;
+        R = r;
         Material = material;
 
         // calculate section properties and set them here 

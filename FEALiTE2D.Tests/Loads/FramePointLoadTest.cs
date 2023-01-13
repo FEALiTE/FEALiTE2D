@@ -13,7 +13,7 @@ namespace FEALiTE2D.Tests.Loads
         Node2D n2;
         FrameElement2D e1;
         IMaterial material;
-        IFrame2DSection section;
+        Frame2DSection section;
 
         [SetUp]
         public void Setup()

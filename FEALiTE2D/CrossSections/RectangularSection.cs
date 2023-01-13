@@ -6,7 +6,7 @@ namespace FEALiTE2D.CrossSections;
 /// Represents a Solid Rectangular Cross-Section.
 /// </summary>
 [System.Serializable]
-public class RectangularSection : IFrame2DSection
+public class RectangularSection : Frame2DSection
 {
     /// <summary>
     /// Creates new instance of a <see cref="RectangularSection"/>.
@@ -16,8 +16,8 @@ public class RectangularSection : IFrame2DSection
     /// <param name="material">Material of the rectangle section.</param>
     public RectangularSection(double b, double t, IMaterial material)
     {
-        this.B = b;
-        this.T = t;
+        B = b;
+        T = t;
         Material = material;
 
         // calculate section properties and set them here 

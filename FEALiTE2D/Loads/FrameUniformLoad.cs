@@ -69,20 +69,18 @@ public class FrameUniformLoad : ILoad
     public double[] GetGlobalFixedEndForces(Elements.FrameElement2D element)
     {
         var fem = new double[6];
-        double wx = Wx,
-            wy = Wy,
-            l = element.Length;
+        double wx = Wx, wy = Wy, l = element.Length;
 
         // transform forces and moments from global to local.
         if (LoadDirection == LoadDirection.Global)
         {
-            var F = new double[] { Wx, Wy, 0 };
+            var f = new[] { Wx, Wy, 0 };
 
-            var Q = new double[3];
-            element.LocalCoordinateSystemMatrix.Multiply(F, Q);
+            var q = new double[3];
+            element.LocalCoordinateSystemMatrix.Multiply(f, q);
 
             // assign the transformed values to the main new forces values.
-            wx = Q[0]; wy = Q[1];
+            wx = q[0]; wy = q[1];
         }
 
         // 0 |Qx start|
@@ -109,40 +107,36 @@ public class FrameUniformLoad : ILoad
             fem[5] += n[1, 5] * wy * weights[i];
         }
 
-        var fansewr = new double[6];
-        element.TransformationMatrix.TransposeMultiply(fem, fansewr);
-        return fansewr;
+        var globalFixedEndForces = new double[6];
+        element.TransformationMatrix.TransposeMultiply(fem, globalFixedEndForces);
+        return globalFixedEndForces;
     }
 
     /// <inheritdoc/>
     public ILoad GetLoadValueAt(Elements.IElement element, double x)
     {
-        FrameUniformLoad load = null;
         var l = element.Length;
 
-        if (x >= L1 && x <= l - L2)
+        if (!(x >= L1) || !(x <= l - L2)) return null;
+        var load = new FrameUniformLoad { LoadCase = LoadCase };
+        if (LoadDirection == LoadDirection.Global)
         {
-            load = new FrameUniformLoad();
-            load.LoadCase = LoadCase;
-            if (LoadDirection == LoadDirection.Global)
-            {
-                var F = new double[] { Wx, Wy, 0 };
+            var f = new[] { Wx, Wy, 0 };
 
-                var Q = new double[3];
-                element.LocalCoordinateSystemMatrix.Multiply(F, Q);
+            var q = new double[3];
+            element.LocalCoordinateSystemMatrix.Multiply(f, q);
 
-                // assign the transformed values to the main new forces values.
-                load.Wx = Q[0];
-                load.Wy = Q[1];
-                load.L1 = load.L2 = x;
-                load.LoadDirection = LoadDirection.Local;
-            }
-            else
-            {
-                load.Wx = Wx;
-                load.Wy = Wy;
-                load.L1 = load.L2 = x;
-            }
+            // assign the transformed values to the main new forces values.
+            load.Wx = q[0];
+            load.Wy = q[1];
+            load.L1 = load.L2 = x;
+            load.LoadDirection = LoadDirection.Local;
+        }
+        else
+        {
+            load.Wx = Wx;
+            load.Wy = Wy;
+            load.L1 = load.L2 = x;
         }
 
         return load;

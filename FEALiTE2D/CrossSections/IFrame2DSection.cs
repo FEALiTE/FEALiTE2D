@@ -3,20 +3,16 @@
 namespace FEALiTE2D.CrossSections;
 
 /// <summary>
-/// Represents a class for <see cref="IFrame2DSection"/>.
+/// Represents a class for <see cref="Frame2DSection"/>.
 /// </summary>
 [System.Serializable]
-public abstract class IFrame2DSection
+public abstract class Frame2DSection
 {
     /// <summary>
-    /// Material of the <see cref="IFrame2DSection"/>.
+    /// Material of the <see cref="Frame2DSection"/>.
     /// </summary>
     public IMaterial Material { get; set; }
 
-    /// <summary>
-    /// Label of <see cref="IFrame2DSection"/>.
-    /// </summary>
-    public string Label { get; set; }
     /// <summary>
     /// Cross-sectional area.
     /// </summary>
