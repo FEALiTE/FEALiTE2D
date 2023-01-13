@@ -2,13 +2,9 @@
 using FEALiTE2D.Elements;
 using FEALiTE2D.Materials;
 using FEALiTE2D.Loads;
-using FEALiTE2D.Helper;
 using FEALiTE2D.Tests.Helper;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using MathNet.Numerics.Integration;
 
 namespace FEALiTE2D.Tests.Loads
 {
@@ -18,7 +14,7 @@ namespace FEALiTE2D.Tests.Loads
         Node2D n2;
         FrameElement2D e1;
         IMaterial material;
-        IFrame2DSection section;
+        Frame2DSection section;
 
         [SetUp]
         public void Setup()
@@ -43,7 +39,7 @@ namespace FEALiTE2D.Tests.Loads
             var f = pl.GetGlobalFixedEndForces(e1);
             var fexpected = new[] { 24.75, 15.1025, 36.42916666, 30.25, 19.8975, -42.904166666 };
 
-            for (int i = 0; i < 6; i++)
+            for (var i = 0; i < 6; i++)
             {
                 Assert.AreEqual(f[i], fexpected[i], 1e-8);
             }
@@ -61,7 +57,7 @@ namespace FEALiTE2D.Tests.Loads
             var f = pl.GetGlobalFixedEndForces(e1);
             var fexpected = new[] { 12.476367613, 53.60458482541, 92.1875294514, 13.381496759, 62.7558048677, -101.4205092616 };
 
-            for (int i = 0; i < 6; i++)
+            for (var i = 0; i < 6; i++)
             {
                 Assert.AreEqual(f[i], fexpected[i], 1e-8);
             }
@@ -92,7 +88,7 @@ namespace FEALiTE2D.Tests.Loads
             var f = pl.GetGlobalFixedEndForces(e1);
             var fexpected = new[] { 46.539755217801385, 29.921445911116606, -37.249386980526339, 54.023736643239047, 34.073503455000022, 40.980074200163081 };
 
-            for (int i = 0; i < 6; i++)
+            for (var i = 0; i < 6; i++)
             {
                 Assert.AreEqual(f[i], fexpected[i], 1e-8);
             }
@@ -119,7 +115,7 @@ namespace FEALiTE2D.Tests.Loads
             var f = pl.GetGlobalFixedEndForces(e1);
             var fexpected = new[] { 0, -40.7899375, -93.517395833, 0, -56.7100625, 113.5346875 };
 
-            for (int i = 0; i < 6; i++)
+            for (var i = 0; i < 6; i++)
             {
                 Assert.AreEqual(f[i], fexpected[i], 1e-8);
             }

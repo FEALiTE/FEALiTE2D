@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Mohamed Salah Ibrahim</Authors>
     <Description>A plotting library used by FEALiTE2D to plot internal forces diagrams and displacement diagrams for any load case or load combination in a dxf format.</Description>

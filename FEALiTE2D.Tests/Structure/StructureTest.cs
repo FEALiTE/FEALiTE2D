@@ -1,10 +1,7 @@
 ﻿using FEALiTE2D.Elements;
 using FEALiTE2D.Materials;
 using FEALiTE2D.CrossSections;
-using FEALiTE2D.Tests.Helper;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using FEALiTE2D.Loads;
 using NUnit.Framework;
 using FEALiTE2D.Structure;
@@ -19,28 +16,28 @@ namespace FEALiTE2D.Tests.Structure
         public void TestStructure()
         {
             // units are kN, m
-            FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
+            var structure = new FEALiTE2D.Structure.Structure();
 
-            Node2D n1 = new Node2D(0, 0, "n1");
-            Node2D n2 = new Node2D(9, 0, "n2");
-            Node2D n3 = new Node2D(0, 6, "n3");
-            Node2D n4 = new Node2D(9, 6, "n4");
-            Node2D n5 = new Node2D(0, 12, "n5");
+            var n1 = new Node2D(0, 0, "n1");
+            var n2 = new Node2D(9, 0, "n2");
+            var n3 = new Node2D(0, 6, "n3");
+            var n4 = new Node2D(9, 6, "n4");
+            var n5 = new Node2D(0, 12, "n5");
             n1.Support = new NodalSupport(true, true, true); //fully restrained
             n2.Support = new NodalSupport(true, true, true); //fully restrained
 
             structure.AddNode(n1, n2, n3, n4, n5);
             IMaterial material = new GenericIsotropicMaterial() { E = 30E6, U = 0.2, Label = "Steel", Alpha = 0.000012, Gama = 39885, MaterialType = MaterialType.Steel };
-            IFrame2DSection section = new Generic2DSection(0.075, 0.075, 0.075, 0.000480, 0.000480, 0.000480 * 2, 0.1, 0.1, material);
+            Frame2DSection section = new Generic2DSection(0.075, 0.075, 0.075, 0.000480, 0.000480, 0.000480 * 2, 0.1, 0.1, material);
 
-            FrameElement2D e1 = new FrameElement2D(n1, n3, "e1") { CrossSection = section };
-            FrameElement2D e2 = new FrameElement2D(n2, n4, "e2") { CrossSection = section };
-            FrameElement2D e3 = new FrameElement2D(n3, n5, "e3") { CrossSection = section };
-            FrameElement2D e4 = new FrameElement2D(n3, n4, "e4") { CrossSection = section };
-            FrameElement2D e5 = new FrameElement2D(n4, n5, "e5") { CrossSection = section };
+            var e1 = new FrameElement2D(n1, n3, "e1") { CrossSection = section };
+            var e2 = new FrameElement2D(n2, n4, "e2") { CrossSection = section };
+            var e3 = new FrameElement2D(n3, n5, "e3") { CrossSection = section };
+            var e4 = new FrameElement2D(n3, n4, "e4") { CrossSection = section };
+            var e5 = new FrameElement2D(n4, n5, "e5") { CrossSection = section };
             structure.AddElement(new[] { e1, e2, e3, e4, e5 });
 
-            LoadCase loadCase = new LoadCase("live", LoadCaseType.Live);
+            var loadCase = new LoadCase("live", LoadCaseType.Live);
             structure.LoadCasesToRun.Add(loadCase);
             n2.SupportDisplacementLoad.Add(new SupportDisplacementLoad(10E-3, -5E-3, -2.5 * Math.PI / 180, loadCase));
             e3.Loads.Add(new FramePointLoad(0, 0, 7.5, e3.Length / 2, LoadDirection.Global, loadCase));
@@ -50,7 +47,7 @@ namespace FEALiTE2D.Tests.Structure
             n5.NodalLoads.Add(new NodalLoad(40, 0, 0, LoadDirection.Global, loadCase));
             n1.NodalLoads.Add(new NodalLoad(40, 0, 0, LoadDirection.Global, loadCase));
 
-            structure.LinearMesher.NumberSegements = 35;
+            structure.LinearMesher.NumberSegments = 35;
             structure.Solve();
 
             var nd1 = structure.Results.GetNodeGlobalDisplacement(n1, loadCase);
@@ -91,28 +88,28 @@ namespace FEALiTE2D.Tests.Structure
         public void TestStructure2()
         {
             // units are kips, in
-            FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
+            var structure = new FEALiTE2D.Structure.Structure();
 
-            Node2D n1 = new Node2D(0, 0, "n1");
-            Node2D n2 = new Node2D(120, 240, "n2");
-            Node2D n3 = new Node2D(360, 240, "n3");
+            var n1 = new Node2D(0, 0, "n1");
+            var n2 = new Node2D(120, 240, "n2");
+            var n3 = new Node2D(360, 240, "n3");
             n1.Support = new NodalSupport(true, true, true); //fully restrained
             n3.Support = new NodalSupport(true, true, true); //fully restrained
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 29E3, U = 0.2, Label = "Concrete", Alpha = 0.000012, Gama = 24.53, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section = new Generic2DSection(11.8, 11.8, 11.8, 310, 310, 310 * 2, 0.1, 0.1, material);
+            Frame2DSection section = new Generic2DSection(11.8, 11.8, 11.8, 310, 310, 310 * 2, 0.1, 0.1, material);
 
-            FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section };
-            FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section };
+            var e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section };
+            var e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section };
             structure.AddElement(new[] { e1, e2 });
 
-            LoadCase loadCase = new LoadCase("live", LoadCaseType.Live);
+            var loadCase = new LoadCase("live", LoadCaseType.Live);
             e1.Loads.Add(new FramePointLoad(0, -90, 0, e1.Length / 2, LoadDirection.Global, loadCase));
             e2.Loads.Add(new FrameUniformLoad(0, -0.125, LoadDirection.Global, loadCase, 0, 0));
             n2.NodalLoads.Add(new NodalLoad(0, 0, -1500, LoadDirection.Global, loadCase));
             structure.LoadCasesToRun.Add(loadCase);
-            structure.LinearMesher.NumberSegements = 50;
+            structure.LinearMesher.NumberSegments = 50;
             structure.Solve();
 
             Assert.AreEqual(structure.Results.GetSupportReaction(n1, loadCase), Force.FromVector(new double[] { 30.37225194999335, 102.08675797670341, 1215.9664523968904 }));
@@ -133,10 +130,10 @@ namespace FEALiTE2D.Tests.Structure
             Assert.AreEqual(nd2.Uy, -0.06732180013884803);
             Assert.AreEqual(nd2.Rz, -0.0025498997289483097);
 
-            var ql1 = structure.Results.GetElementLocalFixedEndForeces(e1, loadCase);
-            var ql2 = structure.Results.GetElementLocalFixedEndForeces(e2, loadCase);
-            var fg1 = structure.Results.GetElementGlobalFixedEndForeces(e1, loadCase);
-            var fg2 = structure.Results.GetElementGlobalFixedEndForeces(e2, loadCase);
+            var ql1 = structure.Results.GetElementLocalFixedEndForces(e1, loadCase);
+            var ql2 = structure.Results.GetElementLocalFixedEndForces(e2, loadCase);
+            var fg1 = structure.Results.GetElementGlobalFixedEndForces(e1, loadCase);
+            var fg2 = structure.Results.GetElementGlobalFixedEndForces(e2, loadCase);
 
             Assert.AreEqual(ql1[0], 104.89205617337821);
             Assert.AreEqual(ql1[1], 18.488818091721274);
@@ -175,23 +172,23 @@ namespace FEALiTE2D.Tests.Structure
         public void TestStructure2WithSettelment()
         {
             // units are kip, in
-            FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
+            var structure = new FEALiTE2D.Structure.Structure();
 
-            Node2D n1 = new Node2D(0, 0, "n1");
-            Node2D n2 = new Node2D(120, 240, "n2");
-            Node2D n3 = new Node2D(360, 240, "n3");
+            var n1 = new Node2D(0, 0, "n1");
+            var n2 = new Node2D(120, 240, "n2");
+            var n3 = new Node2D(360, 240, "n3");
             n1.Support = new NodalSupport(true, true, true); //fully restrained
             n3.Support = new NodalSupport(true, true, true); //fully restrained
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 29E3, U = 0.2, Label = "Concrete", Alpha = 0.000012, Gama = 24.53, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section = new Generic2DSection(11.8, 11.8, 11.8, 310, 310, 310 * 2, 0.1, 0.1, material);
+            Frame2DSection section = new Generic2DSection(11.8, 11.8, 11.8, 310, 310, 310 * 2, 0.1, 0.1, material);
 
-            FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section };
-            FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section };
+            var e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section };
+            var e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section };
             structure.AddElement(new[] { e1, e2 });
 
-            LoadCase loadCase = new LoadCase("live", LoadCaseType.Live);
+            var loadCase = new LoadCase("live", LoadCaseType.Live);
             e1.Loads.Add(new FramePointLoad(0, -90, 0, e1.Length / 2, LoadDirection.Global, loadCase));
             e2.Loads.Add(new FrameUniformLoad(0, -0.125, LoadDirection.Global, loadCase, 0, 0));
             n2.NodalLoads.Add(new NodalLoad(0, 0, -1500, LoadDirection.Global, loadCase));
@@ -214,10 +211,10 @@ namespace FEALiTE2D.Tests.Structure
             Assert.AreEqual(nd2.Uy, -1.059915467868475);
             Assert.AreEqual(nd2.Rz, 0.00074191638715062017);
 
-            var ql1 = structure.Results.GetElementLocalFixedEndForeces(e1, loadCase);
-            var ql2 = structure.Results.GetElementLocalFixedEndForeces(e2, loadCase);
-            var fg1 = structure.Results.GetElementGlobalFixedEndForeces(e1, loadCase);
-            var fg2 = structure.Results.GetElementGlobalFixedEndForeces(e2, loadCase);
+            var ql1 = structure.Results.GetElementLocalFixedEndForces(e1, loadCase);
+            var ql2 = structure.Results.GetElementLocalFixedEndForces(e2, loadCase);
+            var fg1 = structure.Results.GetElementGlobalFixedEndForces(e1, loadCase);
+            var fg2 = structure.Results.GetElementGlobalFixedEndForces(e2, loadCase);
 
             Assert.AreEqual(ql1[0], 98.463276589933216);
             Assert.AreEqual(ql1[1], 20.91875793338594);
@@ -253,12 +250,12 @@ namespace FEALiTE2D.Tests.Structure
         public void TestContinousBeam()
         {
             // units are kN, m
-            FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
+            var structure = new FEALiTE2D.Structure.Structure();
 
-            Node2D n1 = new Node2D(0, 0, "n1");
-            Node2D n2 = new Node2D(6, 0, "n2");
-            Node2D n3 = new Node2D(10, 0, "n3");
-            Node2D n4 = new Node2D(20, 0, "n4");
+            var n1 = new Node2D(0, 0, "n1");
+            var n2 = new Node2D(6, 0, "n2");
+            var n3 = new Node2D(10, 0, "n3");
+            var n4 = new Node2D(20, 0, "n4");
 
             n1.Support = new NodalSupport(true, true, true); //fully restrained
             n3.Support = new NodalSupport(false, true, false); //roller support
@@ -266,22 +263,22 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3, n4);
             IMaterial material = new GenericIsotropicMaterial() { E = 28E6, U = 0.2, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section1 = new Generic2DSection(0.03228, 0.03228, 0.03228, 0.0058, 0.0058, 0, 0, 0, material);
-            IFrame2DSection section2 = new Generic2DSection(1.5 * 0.03228, 1.5 * 0.03228, 1.5 * 0.1634, 1.5 * 0.0058, 1.5 * 0.0058, 0, 0, 0, material);
+            Frame2DSection section1 = new Generic2DSection(0.03228, 0.03228, 0.03228, 0.0058, 0.0058, 0, 0, 0, material);
+            Frame2DSection section2 = new Generic2DSection(1.5 * 0.03228, 1.5 * 0.03228, 1.5 * 0.1634, 1.5 * 0.0058, 1.5 * 0.0058, 0, 0, 0, material);
 
-            FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section2 };
-            FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1 };
-            FrameElement2D e3 = new FrameElement2D(n3, n4, "e3") { CrossSection = section1 };
+            var e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section2 };
+            var e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1 };
+            var e3 = new FrameElement2D(n3, n4, "e3") { CrossSection = section1 };
             structure.AddElement(new[] { e1, e2, e3 });
 
-            LoadCase loadCase = new LoadCase("live", LoadCaseType.Live);
+            var loadCase = new LoadCase("live", LoadCaseType.Live);
             structure.LoadCasesToRun.Add(loadCase);
             e1.Loads.Add(new FrameTrapezoidalLoad(0, 0, -30, 0, LoadDirection.Global, loadCase, 0, 0));
             e3.Loads.Add(new FramePointLoad(0, -150, 0, e3.Length / 2, LoadDirection.Global, loadCase));
             n2.NodalLoads.Add(new NodalLoad(0, -200, 0, LoadDirection.Global, loadCase));
             n3.NodalLoads.Add(new NodalLoad(0, 0, -90, LoadDirection.Global, loadCase));
 
-            structure.LinearMesher.NumberSegements = 20;
+            structure.LinearMesher.NumberSegments = 20;
             structure.Solve();
 
             var R1 = structure.Results.GetSupportReaction(n1, loadCase);
@@ -323,63 +320,63 @@ namespace FEALiTE2D.Tests.Structure
         public void TestInternalForces()
         {
             // units are kN, m
-            FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
+            var structure = new FEALiTE2D.Structure.Structure();
 
-            Node2D n1 = new Node2D(0, 0, "n1");
-            Node2D n2 = new Node2D(5, 0, "n2");
-            Node2D n3 = new Node2D(10, 0, "n3");
+            var n1 = new Node2D(0, 0, "n1");
+            var n2 = new Node2D(5, 0, "n2");
+            var n3 = new Node2D(10, 0, "n3");
 
             n1.Support = new NodalSupport(true, true, false); //hinged restrained
             n3.Support = new NodalSupport(true, true, false); //hinged restrained
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section1 = new RectangularSection(0.25, 0.75, material);
+            Frame2DSection section1 = new RectangularSection(0.25, 0.75, material);
 
-            FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
-            FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1 };
+            var e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
+            var e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1 };
             structure.AddElement(new[] { e1, e2 });
 
-            LoadCase loadCase = new LoadCase("live", LoadCaseType.Live);
+            var loadCase = new LoadCase("live", LoadCaseType.Live);
             structure.LoadCasesToRun.Add(loadCase);
             //e2.Loads.Add(new FrameUniformLoad(0, -7.5, LoadDirection.Global, loadCase));
             e1.Loads.Add(new FrameTrapezoidalLoad(100, 0, -13.5, -5.5, LoadDirection.Global, loadCase, 1.35));
 
-            structure.LinearMesher.NumberSegements = 10;
+            structure.LinearMesher.NumberSegments = 10;
             structure.Solve();
 
             var MeshSegments = structure.Results.GetElementInternalForces(e1, loadCase);
 
-            Assert.AreEqual(MeshSegments[0].Internalforces1.Fy, 24.553854166666675);
-            Assert.AreEqual(MeshSegments[0].Internalforces2.Fy, 24.553854166666675);
-            Assert.AreEqual(MeshSegments[3].Internalforces2.Fy, 22.553511700913251);
-            Assert.AreEqual(MeshSegments[4].Internalforces1.Fy, 22.553511700913251);
-            Assert.AreEqual(MeshSegments[4].Internalforces2.Fy, 16.241867865296811);
-            Assert.AreEqual(MeshSegments[5].Internalforces1.Fy, 16.241867865296811);
-            Assert.AreEqual(MeshSegments[5].Internalforces2.Fy, 10.478169235159823);
-            Assert.AreEqual(MeshSegments[6].Internalforces1.Fy, 10.478169235159823);
-            Assert.AreEqual(MeshSegments[6].Internalforces2.Fy, 5.2624158105022882);
-            Assert.AreEqual(MeshSegments[0].Internalforces1.Mz, 0, 1e-8);
-            Assert.AreEqual(MeshSegments[0].Internalforces2.Mz, -12.276927083333323);
-            Assert.AreEqual(MeshSegments[3].Internalforces2.Mz, -36.680139126712334);
-            Assert.AreEqual(MeshSegments[4].Internalforces1.Mz, -36.680139126712326);
-            Assert.AreEqual(MeshSegments[4].Internalforces2.Mz, -46.356152968036533);
-            Assert.AreEqual(MeshSegments[5].Internalforces1.Mz, -46.356152968036533);
-            Assert.AreEqual(MeshSegments[5].Internalforces2.Mz, -53.013331192922386);
-            Assert.AreEqual(MeshSegments[6].Internalforces1.Mz, -53.013331192922372);
-            Assert.AreEqual(MeshSegments[6].Internalforces2.Mz, -56.925646404109592);
+            Assert.AreEqual(MeshSegments[0].InternalForces1.Fy, 24.553854166666675);
+            Assert.AreEqual(MeshSegments[0].InternalForces2.Fy, 24.553854166666675);
+            Assert.AreEqual(MeshSegments[3].InternalForces2.Fy, 22.553511700913251);
+            Assert.AreEqual(MeshSegments[4].InternalForces1.Fy, 22.553511700913251);
+            Assert.AreEqual(MeshSegments[4].InternalForces2.Fy, 16.241867865296811);
+            Assert.AreEqual(MeshSegments[5].InternalForces1.Fy, 16.241867865296811);
+            Assert.AreEqual(MeshSegments[5].InternalForces2.Fy, 10.478169235159823);
+            Assert.AreEqual(MeshSegments[6].InternalForces1.Fy, 10.478169235159823);
+            Assert.AreEqual(MeshSegments[6].InternalForces2.Fy, 5.2624158105022882);
+            Assert.AreEqual(MeshSegments[0].InternalForces1.Mz, 0, 1e-8);
+            Assert.AreEqual(MeshSegments[0].InternalForces2.Mz, -12.276927083333323);
+            Assert.AreEqual(MeshSegments[3].InternalForces2.Mz, -36.680139126712334);
+            Assert.AreEqual(MeshSegments[4].InternalForces1.Mz, -36.680139126712326);
+            Assert.AreEqual(MeshSegments[4].InternalForces2.Mz, -46.356152968036533);
+            Assert.AreEqual(MeshSegments[5].InternalForces1.Mz, -46.356152968036533);
+            Assert.AreEqual(MeshSegments[5].InternalForces2.Mz, -53.013331192922386);
+            Assert.AreEqual(MeshSegments[6].InternalForces1.Mz, -53.013331192922372);
+            Assert.AreEqual(MeshSegments[6].InternalForces2.Mz, -56.925646404109592);
         }
 
         [Test]
         public void TestSprings()
         {
             // units are kN, m
-            FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
+            var structure = new FEALiTE2D.Structure.Structure();
 
-            Node2D n1 = new Node2D(0, 0, "n1");
-            Node2D n2 = new Node2D(0, -5, "n2");
-            Node2D n3 = new Node2D(0, 5, "n3");
-            Node2D n4 = new Node2D(5, 0, "n3");
+            var n1 = new Node2D(0, 0, "n1");
+            var n2 = new Node2D(0, -5, "n2");
+            var n3 = new Node2D(0, 5, "n3");
+            var n4 = new Node2D(5, 0, "n3");
 
             n1.Support = new NodalSupport(true, true, true);
             n2.Support = new NodalSupport(true, true, true);
@@ -388,12 +385,12 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3, n4);
 
-            SpringElement2D e1 = new SpringElement2D(n1, n4, "e1") { K = 1000 };
-            SpringElement2D e2 = new SpringElement2D(n2, n4, "e2") { K = 1000 };
-            SpringElement2D e3 = new SpringElement2D(n3, n4, "e3") { K = 1000 };
+            var e1 = new SpringElement2D(n1, n4, "e1") { K = 1000 };
+            var e2 = new SpringElement2D(n2, n4, "e2") { K = 1000 };
+            var e3 = new SpringElement2D(n3, n4, "e3") { K = 1000 };
             structure.AddElement(new[] { e1, e2, e3 });
 
-            LoadCase loadCase = new LoadCase("live", LoadCaseType.Live);
+            var loadCase = new LoadCase("live", LoadCaseType.Live);
             structure.LoadCasesToRun.Add(loadCase);
             n4.NodalLoads.Add(new NodalLoad(0, -100, 0, LoadDirection.Global, loadCase));
 
@@ -414,13 +411,13 @@ namespace FEALiTE2D.Tests.Structure
         public void TestSprings2()
         {
             // units are kN, m
-            FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
+            var structure = new FEALiTE2D.Structure.Structure();
 
-            Node2D n1 = new Node2D(0, 0, "n1");
-            Node2D n2 = new Node2D(1, 0, "n2");
-            Node2D n3 = new Node2D(2, 0, "n3");
-            Node2D n4 = new Node2D(3, 0, "n4");
-            Node2D n5 = new Node2D(4, 0, "n5");
+            var n1 = new Node2D(0, 0, "n1");
+            var n2 = new Node2D(1, 0, "n2");
+            var n3 = new Node2D(2, 0, "n3");
+            var n4 = new Node2D(3, 0, "n4");
+            var n5 = new Node2D(4, 0, "n5");
 
             n1.Support = new NodalSupport(true, true, true);
             n2.Support = new NodalSupport(false, true, true);
@@ -430,13 +427,13 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3, n4, n5);
 
-            SpringElement2D e1 = new SpringElement2D(n1, n2, "e1") { K = 20 };
-            SpringElement2D e2 = new SpringElement2D(n2, n3, "e2") { K = 20 };
-            SpringElement2D e3 = new SpringElement2D(n3, n4, "e3") { K = 20 };
-            SpringElement2D e4 = new SpringElement2D(n4, n5, "e4") { K = 20 };
+            var e1 = new SpringElement2D(n1, n2, "e1") { K = 20 };
+            var e2 = new SpringElement2D(n2, n3, "e2") { K = 20 };
+            var e3 = new SpringElement2D(n3, n4, "e3") { K = 20 };
+            var e4 = new SpringElement2D(n4, n5, "e4") { K = 20 };
             structure.AddElement(new[] { e1, e2, e3, e4 });
 
-            LoadCase loadCase = new LoadCase("live", LoadCaseType.Live);
+            var loadCase = new LoadCase("live", LoadCaseType.Live);
             structure.LoadCasesToRun.Add(loadCase);
             n3.NodalLoads.Add(new NodalLoad(5, 0, 0, LoadDirection.Global, loadCase));
 
@@ -460,11 +457,11 @@ namespace FEALiTE2D.Tests.Structure
         public void TestBeamWihEndRelease()
         {
             // units are kN, m
-            FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
+            var structure = new FEALiTE2D.Structure.Structure();
 
-            Node2D n1 = new Node2D(0, 0, "n1");
-            Node2D n2 = new Node2D(3, 0, "n2");
-            Node2D n3 = new Node2D(7, 0, "n3");
+            var n1 = new Node2D(0, 0, "n1");
+            var n2 = new Node2D(3, 0, "n2");
+            var n3 = new Node2D(7, 0, "n3");
 
             n1.Support = new NodalSupport(true, true, false); //hinged
             n2.Support = new NodalSupport(true, true, false); //hinged
@@ -472,18 +469,18 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section1 = new RectangularSection(0.25, 0.75, material);
+            Frame2DSection section1 = new RectangularSection(0.25, 0.75, material);
 
-            FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
-            FrameElement2D e2 = new FrameElement2D(n2, n3, "e3") { CrossSection = section1, EndRelease = Frame2DEndRelease.StartRelease };
+            var e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
+            var e2 = new FrameElement2D(n2, n3, "e3") { CrossSection = section1, EndRelease = Frame2DEndRelease.StartRelease };
             structure.AddElement(new IElement[] { e1, e2 });
 
-            LoadCase loadCase = new LoadCase("live", LoadCaseType.Live);
+            var loadCase = new LoadCase("live", LoadCaseType.Live);
             structure.LoadCasesToRun.Add(loadCase);
             e1.Loads.Add(new FrameUniformLoad(0, -3.5, LoadDirection.Global, loadCase));
             e2.Loads.Add(new FramePointLoad(0, -6, 0, 2, LoadDirection.Global, loadCase));
 
-            structure.LinearMesher.NumberSegements = 50;
+            structure.LinearMesher.NumberSegments = 50;
             structure.Solve();
 
             var nd1 = structure.Results.GetNodeGlobalDisplacement(n1, loadCase);
@@ -502,26 +499,26 @@ namespace FEALiTE2D.Tests.Structure
         [Test]
         public void TestTrussWithSpringElementAsSupport()
         {
-            Node2D n1 = new Node2D(0, 0, "n1");
-            Node2D n2 = new Node2D(-3.5355339059327376220042218105242, 3.5355339059327376220042218105242, "n2");
-            Node2D n3 = new Node2D(-10, 0, "n3");
-            Node2D n4 = new Node2D(0, -1, "n4");
+            var n1 = new Node2D(0, 0, "n1");
+            var n2 = new Node2D(-3.5355339059327376220042218105242, 3.5355339059327376220042218105242, "n2");
+            var n3 = new Node2D(-10, 0, "n3");
+            var n4 = new Node2D(0, -1, "n4");
 
             n1.Support = new NodalSupport(false, false, true);
             n2.Support = new NodalSupport(true, true, true);
             n3.Support = new NodalSupport(true, true, true);
             n4.Support = new NodalSupport(true, true, true);
 
-            LoadCase loadCase = new LoadCase("ll", LoadCaseType.Live);
+            var loadCase = new LoadCase("ll", LoadCaseType.Live);
             n1.NodalLoads.Add(new NodalLoad(0, -50, 0, LoadDirection.Global, loadCase));
 
-            FEALiTE2D.Structure.Structure system = new FEALiTE2D.Structure.Structure();
+            var system = new FEALiTE2D.Structure.Structure();
             system.AddNode(n1, n2, n3, n4);
             system.LoadCasesToRun.Add(loadCase);
 
-            FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { EndRelease = Frame2DEndRelease.FullRelease };
-            FrameElement2D e2 = new FrameElement2D(n1, n3, "e2") { EndRelease = Frame2DEndRelease.FullRelease };
-            SpringElement2D e3 = new SpringElement2D(n1, n4, "e3") { K = 2000 };
+            var e1 = new FrameElement2D(n1, n2, "e1") { EndRelease = Frame2DEndRelease.FullRelease };
+            var e2 = new FrameElement2D(n1, n3, "e2") { EndRelease = Frame2DEndRelease.FullRelease };
+            var e3 = new SpringElement2D(n1, n4, "e3") { K = 2000 };
 
             e1.CrossSection = e2.CrossSection = new FEALiTE2D.CrossSections.Generic2DSection(5.0e-4, 5.0e-4, 5.0e-4, 0.1, 0.1, 0.1, 0.1, 0.1, new GenericIsotropicMaterial() { E = 210000000, U = 0.2 });
 
@@ -542,14 +539,14 @@ namespace FEALiTE2D.Tests.Structure
         public void TestBeamWihEndReleaseAndSupportsAsSprings()
         {
             // units are kN, m
-            FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
+            var structure = new FEALiTE2D.Structure.Structure();
 
-            Node2D n1 = new Node2D(0, 0, "n1");
-            Node2D n2 = new Node2D(3, 0, "n2");
-            Node2D n3 = new Node2D(7, 0, "n3");
-            Node2D n1_ = new Node2D(0, -1, "n4");
-            Node2D n2_ = new Node2D(3, -1, "n5");
-            Node2D n3_ = new Node2D(7, -1, "n6");
+            var n1 = new Node2D(0, 0, "n1");
+            var n2 = new Node2D(3, 0, "n2");
+            var n3 = new Node2D(7, 0, "n3");
+            var n1_ = new Node2D(0, -1, "n4");
+            var n2_ = new Node2D(3, -1, "n5");
+            var n3_ = new Node2D(7, -1, "n6");
 
             n1_.Support = new NodalSupport(true, true, true);
             n2_.Support = new NodalSupport(true, true, true);
@@ -557,16 +554,16 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3, n1_, n2_, n3_);
             IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section1 = new RectangularSection(0.25, 0.75, material);
+            Frame2DSection section1 = new RectangularSection(0.25, 0.75, material);
 
-            FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
-            FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1, EndRelease = Frame2DEndRelease.StartRelease };
-            SpringElement2D s1 = new SpringElement2D(n1, n1_, "s1") { K = 1e15 };
-            SpringElement2D s2 = new SpringElement2D(n2, n2_, "s2") { K = 1e15 };
-            SpringElement2D s3 = new SpringElement2D(n3, n3_, "s3") { K = 1e15 };
+            var e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
+            var e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1, EndRelease = Frame2DEndRelease.StartRelease };
+            var s1 = new SpringElement2D(n1, n1_, "s1") { K = 1e15 };
+            var s2 = new SpringElement2D(n2, n2_, "s2") { K = 1e15 };
+            var s3 = new SpringElement2D(n3, n3_, "s3") { K = 1e15 };
             structure.AddElement(new IElement[] { e1, e2, s1, s2, s3 });
 
-            LoadCase loadCase = new LoadCase("live", LoadCaseType.Live);
+            var loadCase = new LoadCase("live", LoadCaseType.Live);
             structure.LoadCasesToRun.Add(loadCase);
             e1.Loads.Add(new FrameUniformLoad(0, -3.5, LoadDirection.Global, loadCase));
             e2.Loads.Add(new FramePointLoad(0, -6, 0, 2, LoadDirection.Global, loadCase));
@@ -590,11 +587,11 @@ namespace FEALiTE2D.Tests.Structure
         public void TestBeamWihEndReleaseAndSpringsSupports()
         {
             // units are kN, m
-            FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
+            var structure = new FEALiTE2D.Structure.Structure();
 
-            Node2D n1 = new Node2D(0, 0, "n1");
-            Node2D n2 = new Node2D(3, 0, "n2");
-            Node2D n3 = new Node2D(7, 0, "n3");
+            var n1 = new Node2D(0, 0, "n1");
+            var n2 = new Node2D(3, 0, "n2");
+            var n3 = new Node2D(7, 0, "n3");
 
             n1.Support = new NodalSpringSupport(1e15, 1e15, 0);
             n2.Support = new NodalSpringSupport(1e15, 1e15, 0);
@@ -602,13 +599,13 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section1 = new RectangularSection(0.25, 0.75, material);
+            Frame2DSection section1 = new RectangularSection(0.25, 0.75, material);
 
-            FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
-            FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1, EndRelease = Frame2DEndRelease.StartRelease };
+            var e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
+            var e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1, EndRelease = Frame2DEndRelease.StartRelease };
             structure.AddElement(new IElement[] { e1, e2 });
 
-            LoadCase loadCase = new LoadCase("live", LoadCaseType.Live);
+            var loadCase = new LoadCase("live", LoadCaseType.Live);
             structure.LoadCasesToRun.Add(loadCase);
             e1.Loads.Add(new FrameUniformLoad(0, -3.5, LoadDirection.Global, loadCase));
             e2.Loads.Add(new FramePointLoad(0, -6, 0, 2, LoadDirection.Global, loadCase));
@@ -634,16 +631,16 @@ namespace FEALiTE2D.Tests.Structure
         public void TestStructureWithLoadCombination()
         {
             // units are kN, m
-            FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
+            var structure = new FEALiTE2D.Structure.Structure();
 
-            Node2D n1 = new Node2D(1, 0, "n1");
-            Node2D n2 = new Node2D(1, 2, "n2");
-            Node2D n3 = new Node2D(1, 4, "n3");
-            Node2D n4 = new Node2D(4, 0, "n4");
-            Node2D n5 = new Node2D(4, 2, "n5");
-            Node2D n6 = new Node2D(4, 4, "n6");
-            Node2D n7 = new Node2D(0, 4, "n7");
-            Node2D n8 = new Node2D(5, 4, "n8");
+            var n1 = new Node2D(1, 0, "n1");
+            var n2 = new Node2D(1, 2, "n2");
+            var n3 = new Node2D(1, 4, "n3");
+            var n4 = new Node2D(4, 0, "n4");
+            var n5 = new Node2D(4, 2, "n5");
+            var n6 = new Node2D(4, 4, "n6");
+            var n7 = new Node2D(0, 4, "n7");
+            var n8 = new Node2D(5, 4, "n8");
             //n1.Support = new NodalSpringSupport(10e5, 10e5, 10e5); //fully restrained
             //n4.Support = new NodalSpringSupport(10e5, 10e5, 10e5); //fully restrained
             n1.Support = new NodalSupport(true, true, true); //fully restrained
@@ -651,24 +648,24 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3, n4, n5, n6, n7, n8);
             IMaterial material = new GenericIsotropicMaterial() { E = 30E6, U = 0.2, Label = "Steel", Alpha = 0.000012, Gama = 39885, MaterialType = MaterialType.Steel };
-            IFrame2DSection Columns_Section = new CirclularSection(0.4, material);
-            IFrame2DSection Beam_Section = new RectangularSection(0.4, 0.4, material);
+            Frame2DSection Columns_Section = new CircularSection(0.4, material);
+            Frame2DSection Beam_Section = new RectangularSection(0.4, 0.4, material);
 
             // columns
-            FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = Columns_Section };
-            FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = Columns_Section };
-            FrameElement2D e3 = new FrameElement2D(n4, n5, "e3") { CrossSection = Columns_Section };
-            FrameElement2D e4 = new FrameElement2D(n5, n6, "e4") { CrossSection = Columns_Section };
+            var e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = Columns_Section };
+            var e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = Columns_Section };
+            var e3 = new FrameElement2D(n4, n5, "e3") { CrossSection = Columns_Section };
+            var e4 = new FrameElement2D(n5, n6, "e4") { CrossSection = Columns_Section };
 
             // beams
-            FrameElement2D e5 = new FrameElement2D(n7, n3, "e5") { CrossSection = Beam_Section };
-            FrameElement2D e6 = new FrameElement2D(n3, n6, "e6") { CrossSection = Beam_Section };
-            FrameElement2D e7 = new FrameElement2D(n6, n8, "e7") { CrossSection = Beam_Section };
-            FrameElement2D e8 = new FrameElement2D(n2, n5, "e8") { CrossSection = Beam_Section, EndRelease = Frame2DEndRelease.FullRelease };
+            var e5 = new FrameElement2D(n7, n3, "e5") { CrossSection = Beam_Section };
+            var e6 = new FrameElement2D(n3, n6, "e6") { CrossSection = Beam_Section };
+            var e7 = new FrameElement2D(n6, n8, "e7") { CrossSection = Beam_Section };
+            var e8 = new FrameElement2D(n2, n5, "e8") { CrossSection = Beam_Section, EndRelease = Frame2DEndRelease.FullRelease };
             structure.AddElement(new[] { e1, e2, e3, e4, e5, e6, e7, e8 });
 
-            LoadCase LiveLoadCase = new LoadCase("Live", LoadCaseType.Live);
-            LoadCase DeadLoadCase = new LoadCase("Dead", LoadCaseType.Dead);
+            var LiveLoadCase = new LoadCase("Live", LoadCaseType.Live);
+            var DeadLoadCase = new LoadCase("Dead", LoadCaseType.Dead);
             structure.LoadCasesToRun.AddRange(new[] { LiveLoadCase, DeadLoadCase });
 
             e5.Loads.Add(new FrameTrapezoidalLoad(0, 0, 0, -15, LoadDirection.Local, LiveLoadCase));
@@ -677,7 +674,7 @@ namespace FEALiTE2D.Tests.Structure
 
             n2.NodalLoads.Add(new NodalLoad(20, 0, 0, LoadDirection.Global, DeadLoadCase));
 
-            structure.LinearMesher.NumberSegements = 30;
+            structure.LinearMesher.NumberSegments = 30;
             structure.Solve();
 
             var op = new Plotting.Dxf.PlottingOption
@@ -688,11 +685,11 @@ namespace FEALiTE2D.Tests.Structure
                 DisplacmentScaleFactor = 1000,
                 DiagramsHorizontalOffsets = 2
             };
-            FEALiTE2D.Plotting.Dxf.Plotter plotter = new Plotting.Dxf.Plotter(structure, op);
+            var plotter = new Plotting.Dxf.Plotter(structure, op);
             plotter.Plot("D:\\text.dxf", LiveLoadCase);
             plotter.Plot("D:\\text2.dxf", structure.LoadCasesToRun);
 
-            LoadCombination loadCombo = new LoadCombination("uls");
+            var loadCombo = new LoadCombination("uls");
             loadCombo.Add(DeadLoadCase, 1.35);
             loadCombo.Add(LiveLoadCase, 1.5);
 
