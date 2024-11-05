@@ -299,13 +299,9 @@ namespace FEALiTE2D.Structure
                         if (uL.L1 <= x)
                         {
                             // get uniform load in lcs.
-                            FrameUniformLoad uniformLoad = uL.GetLoadValueAt(element, x) as FrameUniformLoad;
-                            
-                            // Null may be returned if ul end is before the segment
-                            if (uniformLoad == null)
-                            {
-                                continue;
-                            }
+                            // CD: uniformLoad is used only for global-local transformation. Must never be null.
+                            // CD: Replace x with uL.L1 to avoid null.
+                            FrameUniformLoad uniformLoad = uL.GetLoadValueAt(element, uL.L1) as FrameUniformLoad;
                             
                             double wx = uniformLoad.Wx,
                                    wy = uniformLoad.Wy,

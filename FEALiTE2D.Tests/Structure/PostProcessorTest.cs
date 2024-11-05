@@ -66,7 +66,32 @@ namespace FEALiTE2D.Tests.Structure
                 Assert.That(new double[] { f2.Fx, f2.Fy, f2.Mz }, Is.EqualTo(expectedRightEndForce).Within(1E-3));
             });
         }
+        
+        [Test]
+        public void GetElementInternalForcesAt_WithPartialUniformLoad_EdgeSegment_ReturnsCorrectForce()
+        {
+            var w = 0.39023287672392115;
+            var a = 0.16751904679908325;
+            var b = 0.637225136662688 - a;
+            var c = _L - a - b;
+            
+            _elem.Loads.Add(new FrameUniformLoad(0.0, w, LoadDirection.Local, _lc, a, c));
+            
+            _structure.LinearMesher.NumberSegements = 4;
+            _structure.Solve();
+            
+            var postProcessor = _structure.Results;
 
+            var x = 1.0;
+            var expectedForce = new[] {0.0, 0.0737, 0.0}; // Fx, Fy, Mz
+            
+            var f = postProcessor.GetElementInternalForcesAt(_elem, _lc, x);
+            var actualForce = new[] { f.Fx, f.Fy, f.Mz };
+            
+            Assert.That(actualForce, Is.EqualTo(expectedForce).Within(1E-3));
+        }
+        
+        
         [Test]
         public void GetElementInternalForcesAt_WithPartialUniformLoad_ReturnsCorrectForce()
         {
@@ -76,7 +101,6 @@ namespace FEALiTE2D.Tests.Structure
             var c = _L - a - b;
             
             _elem.Loads.Add(new FrameUniformLoad(0.0, w, LoadDirection.Local, _lc, a, c));
-            
             _structure.Solve();
             
             var postProcessor = _structure.Results;
