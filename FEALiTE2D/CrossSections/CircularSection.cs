@@ -8,14 +8,14 @@ namespace FEALiTE2D.CrossSections
     /// </summary>
     /// <seealso cref="FEALiTE2D.CrossSections.IFrame2DSection" />
     [System.Serializable]
-    public class CirclularSection : IFrame2DSection
+    public class CircularSection : IFrame2DSection
     {
         /// <summary>
-        /// Creates new instance of a <see cref="CirclularSection"/>.
+        /// Creates new instance of a <see cref="CircularSection"/>.
         /// </summary>
-        /// <param name="d">diameter of the <see cref="CirclularSection"/>.</param>
+        /// <param name="d">diameter of the <see cref="CircularSection"/>.</param>
         /// <param name="material">Material of the cross-section.</param>
-        public CirclularSection(double d, IMaterial material) : base()
+        public CircularSection(double d, IMaterial material) : base()
         {
             this.D = d;
             this.Material = material;
@@ -33,7 +33,7 @@ namespace FEALiTE2D.CrossSections
         /// <summary>
         /// Sets the section properties.
         /// </summary>
-        /// <param name="d">diameter of the <see cref="CirclularSection"/>.</param>
+        /// <param name="d">diameter of the <see cref="CircularSection"/>.</param>
         private void SetSectionProperties(double d)
         {
             this.A = PI * d * d / 4.0;
