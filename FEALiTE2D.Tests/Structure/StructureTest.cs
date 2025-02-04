@@ -8,6 +8,8 @@ using System.Text;
 using FEALiTE2D.Loads;
 using NUnit.Framework;
 using FEALiTE2D.Structure;
+using System.IO;
+using System.Reflection;
 
 namespace FEALiTE2D.Tests.Structure
 {
@@ -168,7 +170,7 @@ namespace FEALiTE2D.Tests.Structure
 
             var op = new FEALiTE2D.Plotting.Dxf.PlottingOption { NFDScaleFactor = 0.5, SFDScaleFactor = 5.0, BMDScaleFactor = 0.1, DisplacmentScaleFactor = 100, DiagramsHorizontalOffsets = 200 };
             var plotter = new FEALiTE2D. Plotting.Dxf.Plotter(structure, op);
-            plotter.Plot("D:\\text.dxf", loadCase);
+            plotter.Plot(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)+"\\test.dxf", loadCase);
         }
 
         [Test]
@@ -689,8 +691,8 @@ namespace FEALiTE2D.Tests.Structure
                 DiagramsHorizontalOffsets = 2
             };
             FEALiTE2D.Plotting.Dxf.Plotter plotter = new Plotting.Dxf.Plotter(structure, op);
-            plotter.Plot("D:\\text.dxf", LiveLoadCase);
-            plotter.Plot("D:\\text2.dxf", structure.LoadCasesToRun);
+            plotter.Plot(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\test2.dxf", LiveLoadCase);
+            plotter.Plot(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\test3.dxf", structure.LoadCasesToRun);
 
             LoadCombination loadCombo = new LoadCombination("uls");
             loadCombo.Add(DeadLoadCase, 1.35);
