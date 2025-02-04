@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
+		<TargetFrameworks>net45;netstandard2.0;net8.0</TargetFrameworks>
 		<Authors>Mohamed Salah Ibrahim</Authors>
 		<Copyright>Copyright © 2021 Mohamed Salah Ibrahim Civilms@outlook.com</Copyright>
 		<Description>A fast and reliable finite element analysis library for 2D frame, beam and truss elements using C#.</Description>
@@ -12,9 +12,8 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<EnableNETAnalyzers>false</EnableNETAnalyzers>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<Version>1.1.0</Version>
-		<PackageReleaseNotes>- Dxf Plotter.
-- Additional meshing points at any location on the frame element.</PackageReleaseNotes>
+		<Version>1.1.2</Version>
+		<PackageReleaseNotes>Fix bug in element with parital uniform loading (works this time)</PackageReleaseNotes>
 		<PackageProjectUrl>https://github.com/FEALiTE/FEALiTE2D</PackageProjectUrl>
 	</PropertyGroup>
 

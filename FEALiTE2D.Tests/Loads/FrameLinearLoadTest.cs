@@ -35,7 +35,7 @@ namespace FEALiTE2D.Tests.Loads
 
         // confirmed with robot
         [Test]
-        public void FrameUnifromLoadStraightTest()
+        public void FrameUniformLoadStraightTest()
         {
             Console.WriteLine(e1.LocalCoordinateSystemMatrix.PrintDenseMatrix());
 
@@ -51,7 +51,7 @@ namespace FEALiTE2D.Tests.Loads
 
         // confirmed with robot
         [Test]
-        public void FrameUnifromLoadLocalStraightTest2()
+        public void FrameUniformLoadLocalStraightTest2()
         {
             e1.EndNode = new Node2D(10, 10, "n2");
             e1.Initialize();
@@ -82,7 +82,7 @@ namespace FEALiTE2D.Tests.Loads
 
         // confirmed with robot
         [Test]
-        public void FrameUnifromLoadGlobalStraightTest3()
+        public void FrameUniformLoadGlobalStraightTest3()
         {
             e1.EndNode = new Node2D(10, 10, "n2");
             e1.Initialize();

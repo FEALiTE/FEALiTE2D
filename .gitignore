@@ -1,3 +1,4 @@
+.idea/
 .vs/
 FEALiTE2D/obj
 FEALiTE2D/bin
@@ -5,3 +6,38 @@ FEALiTE2D.Tests/bin
 FEALiTE2D.Tests/obj
 FEALiTE2D.Plotting/bin
 FEALiTE2D.Plotting/obj
+
+_site/**/*
+api/**/*
+
+# User specific
+**/.idea/**/workspace.xml
+**/.idea/**/tasks.xml
+**/.idea/shelf/*
+**/.idea/dictionaries
+**/.idea/httpRequests/
+
+# Sensitive or high-churn files
+**/.idea/**/dataSources/
+**/.idea/**/dataSources.ids
+**/.idea/**/dataSources.xml
+**/.idea/**/dataSources.local.xml
+**/.idea/**/sqlDataSources.xml
+**/.idea/**/dynamic.xml
+
+# Rider
+# Rider auto-generates .iml files, and contentModel.xml
+**/.idea/**/*.iml
+**/.idea/**/contentModel.xml
+**/.idea/**/modules.xml
+
+*.suo
+*.user
+[Bb]in/
+[Oo]bj/
+_UpgradeReport_Files/
+[Pp]ackages/
+
+Thumbs.db
+Desktop.ini
+.DS_Store
