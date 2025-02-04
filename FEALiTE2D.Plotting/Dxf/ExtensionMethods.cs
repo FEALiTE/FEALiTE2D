@@ -37,13 +37,10 @@ namespace FEALiTE2D.Plotting.Dxf
             double x2 = element.Nodes[1].X;
             double y2 = element.Nodes[1].Y;
 
-            // find slope of the element
-            double m1 = (y2 - y1) / (x2 - x1);
-
             // find required point a long the element.
             Vector2 startPerPoint = PointLocationOnLine(element, x);
-            double m2 = -1 / m1;
-            double theta = Math.Atan(m2);
+
+            double theta = Math.Atan2(x1 - x2, y2 - y1);
             return new Vector2() { X = startPerPoint.X + perDistance * Math.Cos(theta), Y = startPerPoint.Y + perDistance * Math.Sin(theta) };
         }
 

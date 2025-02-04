@@ -726,5 +726,86 @@ namespace FEALiTE2D.Tests.Structure
             Assert.AreEqual(R4c.Fy, 30 * 1.5 + 1.35 * 3.09192933, 1e-5);
             Assert.AreEqual(R4c.Mz, -0.6770761 * 1.5 + 1.35 * 15.2051570, 1e-5);
         }
+
+        [Test]
+        public void TestFixedEndBeam()
+        {
+            // this test is for plotting issue which was raised on https://github.com/FEALiTE/FEALiTE2D/discussions/10
+
+            // units are N, mm
+            FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
+
+            Node2D n1 = new Node2D(0, 0, "n1");
+            Node2D n2 = new Node2D(5000, 0, "n2");
+
+            Node2D n11 = new Node2D(0, 2000, "n11");
+            Node2D n12 = new Node2D(4000, 5000, "n12");
+
+            Node2D n21 = new Node2D(0, 5000, "n21");
+            Node2D n22 = new Node2D(4000, 8000, "n22");
+
+            Node2D n31 = new Node2D(0, 14000, "n31");
+            Node2D n32 = new Node2D(4000, 11000, "n32");
+
+            n1.Support = new NodalSupport(true, true, true);
+            n2.Support = new NodalSupport(false, true, true);
+
+            n11.Support = new NodalSupport(true, true, true);
+            n12.Support = new NodalSupport(true, true, true);
+
+            n21.Support = new NodalSupport(true, true, true);
+            n22.Support = new NodalSupport(true, true, true);
+
+            n31.Support = new NodalSupport(true, true, true);
+            n32.Support = new NodalSupport(true, true, true);
+
+            structure.AddNode(n1);
+            structure.AddNode(n2);
+            structure.AddNode(n11);
+            structure.AddNode(n12);
+            structure.AddNode(n21);
+            structure.AddNode(n22);
+            structure.AddNode(n31);
+            structure.AddNode(n32);
+
+            IMaterial material = new GenericIsotropicMaterial() { E = 205000, U = 0.3, MaterialType = MaterialType.Steel };
+            IFrame2DSection section1 = new Generic2DSection(2667, 1600, 1100 * 100, 18100000, 1, 1, 200, 100, material);  // H-200x100
+
+            FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
+            FrameElement2D e2 = new FrameElement2D(n11, n12, "e2") { CrossSection = section1 };
+            FrameElement2D e3 = new FrameElement2D(n21, n22, "e3") { CrossSection = section1 };
+            FrameElement2D e4 = new FrameElement2D(n31, n32, "e4") { CrossSection = section1 };
+
+            structure.AddElement(e1);
+            structure.AddElement(e2);
+            structure.AddElement(e3);
+            structure.AddElement(e4);
+
+            LoadCase loadCase = new LoadCase("G", LoadCaseType.Dead);
+            structure.LoadCasesToRun.Add(loadCase);
+            e1.Loads.Add(new FrameUniformLoad(0.0, -0.8, LoadDirection.Global, loadCase));
+            e2.Loads.Add(new FrameUniformLoad(0.0, -0.8, LoadDirection.Global, loadCase));
+            e3.Loads.Add(new FrameUniformLoad(0.0, -0.8, LoadDirection.Local, loadCase));
+            e4.Loads.Add(new FrameUniformLoad(0.0, -0.8, LoadDirection.Global, loadCase));
+            structure.LinearMesher.NumberSegements = 20;
+
+            structure.Solve();
+
+            // checking some result
+            // ....
+
+            var op = new Plotting.Dxf.PlottingOption
+            {
+                NFDScaleFactor = 0.2,
+                SFDScaleFactor = 0.2,
+                BMDScaleFactor = 0.001,
+                DisplacmentScaleFactor = 1000,
+                DiagramsHorizontalOffsets = 2000
+            };
+
+            FEALiTE2D.Plotting.Dxf.Plotter plotter = new Plotting.Dxf.Plotter(structure, op);
+            plotter.Plot(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\fixedEndBeam.dxf", loadCase);
+
+        }
     }
 }
