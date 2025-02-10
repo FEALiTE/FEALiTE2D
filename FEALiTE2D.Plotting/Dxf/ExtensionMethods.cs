@@ -3,6 +3,9 @@ using netDxf;
 
 namespace FEALiTE2D.Plotting.Dxf
 {
+    /// <summary>
+    /// Extension methods class
+    /// </summary>
     public static class ExtensionMethods
     {
         /// <summary>
