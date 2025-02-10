@@ -13,13 +13,15 @@
 		<EnableNETAnalyzers>false</EnableNETAnalyzers>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Version>1.1.2</Version>
-		<PackageReleaseNotes>Fix bug in element with parital uniform loading (works this time)</PackageReleaseNotes>
+		<PackageReleaseNotes>Fix bug in element with parital uniform loading and corrected dxf plotting for inclined elements </PackageReleaseNotes>
 		<PackageProjectUrl>https://github.com/FEALiTE/FEALiTE2D</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="CSparse" Version="3.5.0" />
 		<PackageReference Include="MathNet.Numerics" Version="4.15.0" />
+		<None Include="..\README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
 </Project>
