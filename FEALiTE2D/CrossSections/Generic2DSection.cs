@@ -13,20 +13,20 @@ namespace FEALiTE2D.CrossSections
         /// Creates a new instance of the <see cref="Generic2DSection"/>
         /// </summary>
         /// <param name="A">Cross section area.</param>
-        /// <param name="Ax">Shear area in x-x direction.</param>
+        /// <param name="Az">Shear area in z-z direction.</param>
         /// <param name="Ay">Shear area in y-y direction.</param>
-        /// <param name="Ix">Area moment of inertia about x axis.</param>
+        /// <param name="Iz">Area moment of inertia about z axis.</param>
         /// <param name="Iy">Area moment of inertia about y axis.</param>
         /// <param name="J">Torsional constant.</param>
         /// <param name="hmax">max. height.</param>
         /// <param name="wmax">max. width.</param>
         /// <param name="material">material.</param>
-        public Generic2DSection(double A, double Ax, double Ay, double Ix, double Iy, double J, double hmax, double wmax, IMaterial material) : base()
+        public Generic2DSection(double A, double Az, double Ay, double Iz, double Iy, double J, double hmax, double wmax, IMaterial material) : base()
         {
             base.A = A;
-            base.Ax = Ax;
+            base.Az = Az;
             base.Ay = Ay;
-            base.Ix = Ix;
+            base.Iz = Iz;
             base.Iy = Iy;
             base.J = J;
             base.MaxHeight = hmax;

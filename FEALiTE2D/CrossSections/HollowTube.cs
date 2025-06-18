@@ -47,9 +47,9 @@ namespace FEALiTE2D.CrossSections
         {
             double di = d - 2 * t;
             this.A = 0.25 * PI * (d * d - di * di);
-            this.Ay = this.Ax = this.A * 0.5;
+            this.Ay = this.Az = this.A * 0.5;
             this.Iy = this.Iy = PI * Pow(d / 2, 3) * t;
-            this.J = Iy + Ix;
+            this.J = Iy + Iz;
             base.MaxWidth = base.MaxHeight = d;
         }       
     }

@@ -150,8 +150,8 @@ namespace FEALiTE2D.Elements
         {
             DenseMatrix D = new DenseMatrix(3, 3);
             D[0, 0] = CrossSection.A * CrossSection.Material.E;
-            D[1, 1] = CrossSection.Ax * CrossSection.Material.G;
-            D[2, 2] = CrossSection.Ix * CrossSection.Material.E;
+            D[1, 1] = CrossSection.Az * CrossSection.Material.G;
+            D[2, 2] = CrossSection.Iz * CrossSection.Material.E;
             return D;
         }
 
@@ -246,9 +246,9 @@ namespace FEALiTE2D.Elements
             double l2 = l * l;
             double l3 = l * l * l;
             double EAL = this.CrossSection.Material.E * this.CrossSection.A / l;
-            double EIL = this.CrossSection.Material.E * this.CrossSection.Ix / l;
-            double EIL2 = this.CrossSection.Material.E * this.CrossSection.Ix / l2;
-            double EIL3 = this.CrossSection.Material.E * this.CrossSection.Ix / l3;
+            double EIL = this.CrossSection.Material.E * this.CrossSection.Iz / l;
+            double EIL2 = this.CrossSection.Material.E * this.CrossSection.Iz / l2;
+            double EIL3 = this.CrossSection.Material.E * this.CrossSection.Iz / l3;
 
             DenseMatrix k = new DenseMatrix(6, 6);
 
@@ -288,9 +288,9 @@ namespace FEALiTE2D.Elements
             double l2 = l * l;
             double l3 = l * l * l;
             double EAL = this.CrossSection.Material.E * this.CrossSection.A / l;
-            double EIL = this.CrossSection.Material.E * this.CrossSection.Ix / l;
-            double EIL2 = this.CrossSection.Material.E * this.CrossSection.Ix / l2;
-            double EIL3 = this.CrossSection.Material.E * this.CrossSection.Ix / l3;
+            double EIL = this.CrossSection.Material.E * this.CrossSection.Iz / l;
+            double EIL2 = this.CrossSection.Material.E * this.CrossSection.Iz / l2;
+            double EIL3 = this.CrossSection.Material.E * this.CrossSection.Iz / l3;
 
             DenseMatrix k = new DenseMatrix(6, 6);
 
@@ -322,9 +322,9 @@ namespace FEALiTE2D.Elements
             double l2 = l * l;
             double l3 = l * l * l;
             double EAL = this.CrossSection.Material.E * this.CrossSection.A / l;
-            double EIL = this.CrossSection.Material.E * this.CrossSection.Ix / l;
-            double EIL2 = this.CrossSection.Material.E * this.CrossSection.Ix / l2;
-            double EIL3 = this.CrossSection.Material.E * this.CrossSection.Ix / l3;
+            double EIL = this.CrossSection.Material.E * this.CrossSection.Iz / l;
+            double EIL2 = this.CrossSection.Material.E * this.CrossSection.Iz / l2;
+            double EIL3 = this.CrossSection.Material.E * this.CrossSection.Iz / l3;
 
             DenseMatrix k = new DenseMatrix(6, 6);
 

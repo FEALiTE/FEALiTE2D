@@ -25,7 +25,7 @@ namespace FEALiTE2D.Meshing
                             Displacement2;  // displacement at end of  the segment.
         public double E, // modulus of elasticity of material of the cross-section at this segment.
                       A, // area of the cross-section at the segment.
-                      Ix; // second moment of inertial of the cross-section at the segment.
+                      Iz; // second moment of inertial of the cross-section at the segment.
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 
 
@@ -97,7 +97,7 @@ namespace FEALiTE2D.Meshing
                      - Internalforces1.Fy * x * x / 2.0
                      - wy1 * x * x * x / 6.0
                      - x * x * x * x * ((wy2 - wy1) / (x2 - x1)) / 24 // uniform and trap load.
-                ) / (E * Ix);
+                ) / (E * Iz);
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace FEALiTE2D.Meshing
                          - Internalforces1.Fy * x * x * x / 6.0
                          - wy1 * x * x * x * x / 24.0
                          - x * x * x * x * x * ((wy2 - wy1) / (x2 - x1)) / 120.0 // uniform and trap load.
-                    ) / (E * Ix)
+                    ) / (E * Iz)
                 );
         }
 
