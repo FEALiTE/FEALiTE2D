@@ -398,7 +398,7 @@ namespace FEALiTE2D.Structure
                 temp.x1 = cSegment.x1;
                 temp.x2 = cSegment.x2;
                 temp.A = cSegment.A;
-                temp.Ix = cSegment.Ix;
+                temp.Iz = cSegment.Iz;
                 temp.E = cSegment.E;
                 list.Add(temp);
             }

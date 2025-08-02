@@ -44,8 +44,8 @@ namespace FEALiTE2D.CrossSections
         private void SetSectionProperties(double b, double t)
         {
             this.A = b * t;
-            this.Ay = this.Ax = this.A * 5.0 / 6.0;
-            this.Ix = b * t * t * t / 12.0;
+            this.Ay = this.Az = this.A * 5.0 / 6.0;
+            this.Iz = b * t * t * t / 12.0;
             this.Iy = b * b * b * t / 12.0;
             double _t = Max(b, t);
             double _b = Min(b, t);

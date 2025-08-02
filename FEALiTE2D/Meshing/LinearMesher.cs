@@ -124,7 +124,7 @@ namespace FEALiTE2D.Meshing
                 if (!(element is SpringElement2D))
                 {
                     segment.E = element.CrossSection.Material.E;
-                    segment.Ix = element.CrossSection.Ix;
+                    segment.Iz = element.CrossSection.Iz;
                     segment.A = element.CrossSection.A;
                 }
 
