@@ -33,7 +33,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3, n4, n5);
             IMaterial material = new GenericIsotropicMaterial() { E = 30E6, U = 0.2, Label = "Steel", Alpha = 0.000012, Gama = 39885, MaterialType = MaterialType.Steel };
-            IFrame2DSection section = new Generic2DSection(0.075, 0.075, 0.075, 0.000480, 0.000480, 0.000480 * 2, 0.1, 0.1, material);
+            Frame2DSection section = new Generic2DSection(0.075, 0.075, 0.075, 0.000480, 0.000480, 0.000480 * 2, 0.1, 0.1, material);
 
             FrameElement2D e1 = new FrameElement2D(n1, n3, "e1") { CrossSection = section };
             FrameElement2D e2 = new FrameElement2D(n2, n4, "e2") { CrossSection = section };
@@ -103,7 +103,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 29E3, U = 0.2, Label = "Concrete", Alpha = 0.000012, Gama = 24.53, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section = new Generic2DSection(11.8, 11.8, 11.8, 310, 310, 310 * 2, 0.1, 0.1, material);
+            Frame2DSection section = new Generic2DSection(11.8, 11.8, 11.8, 310, 310, 310 * 2, 0.1, 0.1, material);
 
             FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section };
             FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section };
@@ -187,7 +187,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 29E3, U = 0.2, Label = "Concrete", Alpha = 0.000012, Gama = 24.53, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section = new Generic2DSection(11.8, 11.8, 11.8, 310, 310, 310 * 2, 0.1, 0.1, material);
+            Frame2DSection section = new Generic2DSection(11.8, 11.8, 11.8, 310, 310, 310 * 2, 0.1, 0.1, material);
 
             FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section };
             FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section };
@@ -268,8 +268,8 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3, n4);
             IMaterial material = new GenericIsotropicMaterial() { E = 28E6, U = 0.2, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section1 = new Generic2DSection(0.03228, 0.03228, 0.03228, 0.0058, 0.0058, 0, 0, 0, material);
-            IFrame2DSection section2 = new Generic2DSection(1.5 * 0.03228, 1.5 * 0.03228, 1.5 * 0.1634, 1.5 * 0.0058, 1.5 * 0.0058, 0, 0, 0, material);
+            Frame2DSection section1 = new Generic2DSection(0.03228, 0.03228, 0.03228, 0.0058, 0.0058, 0, 0, 0, material);
+            Frame2DSection section2 = new Generic2DSection(1.5 * 0.03228, 1.5 * 0.03228, 1.5 * 0.1634, 1.5 * 0.0058, 1.5 * 0.0058, 0, 0, 0, material);
 
             FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section2 };
             FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1 };
@@ -336,7 +336,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section1 = new RectangularSection(0.25, 0.75, material);
+            Frame2DSection section1 = new RectangularSection(0.25, 0.75, material);
 
             FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
             FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1 };
@@ -474,7 +474,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section1 = new RectangularSection(0.25, 0.75, material);
+            Frame2DSection section1 = new RectangularSection(0.25, 0.75, material);
 
             FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
             FrameElement2D e2 = new FrameElement2D(n2, n3, "e3") { CrossSection = section1, EndRelease = Frame2DEndRelease.StartRelease };
@@ -559,7 +559,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3, n1_, n2_, n3_);
             IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section1 = new RectangularSection(0.25, 0.75, material);
+            Frame2DSection section1 = new RectangularSection(0.25, 0.75, material);
 
             FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
             FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1, EndRelease = Frame2DEndRelease.StartRelease };
@@ -604,7 +604,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section1 = new RectangularSection(0.25, 0.75, material);
+            Frame2DSection section1 = new RectangularSection(0.25, 0.75, material);
 
             FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
             FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1, EndRelease = Frame2DEndRelease.StartRelease };
@@ -653,8 +653,8 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3, n4, n5, n6, n7, n8);
             IMaterial material = new GenericIsotropicMaterial() { E = 30E6, U = 0.2, Label = "Steel", Alpha = 0.000012, Gama = 39885, MaterialType = MaterialType.Steel };
-            IFrame2DSection Columns_Section = new CircularSection(0.4, material);
-            IFrame2DSection Beam_Section = new RectangularSection(0.4, 0.4, material);
+            Frame2DSection Columns_Section = new CircularSection(0.4, material);
+            Frame2DSection Beam_Section = new RectangularSection(0.4, 0.4, material);
 
             // columns
             FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = Columns_Section };
@@ -769,7 +769,7 @@ namespace FEALiTE2D.Tests.Structure
             structure.AddNode(n32);
 
             IMaterial material = new GenericIsotropicMaterial() { E = 205000, U = 0.3, MaterialType = MaterialType.Steel };
-            IFrame2DSection section1 = new Generic2DSection(2667, 1600, 1100 * 100, 18100000, 1, 1, 200, 100, material);  // H-200x100
+            Frame2DSection section1 = new Generic2DSection(2667, 1600, 1100 * 100, 18100000, 1, 1, 200, 100, material);  // H-200x100
 
             FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
             FrameElement2D e2 = new FrameElement2D(n11, n12, "e2") { CrossSection = section1 };

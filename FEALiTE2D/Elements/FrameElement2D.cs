@@ -61,7 +61,7 @@ namespace FEALiTE2D.Elements
         /// <summary>
         /// Cross section of the <see cref="FrameElement2D"/>.
         /// </summary>
-        public IFrame2DSection CrossSection { get; set; }
+        public Frame2DSection CrossSection { get; set; }
 
         /// <inheritdoc/>
         public double Length => Sqrt(Pow(EndNode.X - StartNode.X, 2) + Pow(EndNode.Y - StartNode.Y, 2));

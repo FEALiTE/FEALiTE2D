@@ -7,7 +7,7 @@ namespace FEALiTE2D.CrossSections
     /// Represents a Solid Rectangular Cross-Section.
     /// </summary>
     [System.Serializable]
-    public class RectangularSection : IFrame2DSection
+    public class RectangularSection : Frame2DSection
     {
         /// <summary>
         /// Creates new instance of a <see cref="RectangularSection"/>.
