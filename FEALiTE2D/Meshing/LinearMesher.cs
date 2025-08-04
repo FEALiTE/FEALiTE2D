@@ -94,7 +94,7 @@ namespace FEALiTE2D.Meshing
             }
 
             // 2- add locations based on number of segments and length of the segment.
-            if (element.GetType() != typeof(SpringElement2D))
+            if (!(element is SpringElement2D))
             {
                 int n1 = (int)
                         Math.Floor(len / (this.MinDistance == 0d ? len : this.MinDistance));
