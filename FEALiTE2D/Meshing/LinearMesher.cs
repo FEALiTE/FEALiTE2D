@@ -123,9 +123,8 @@ namespace FEALiTE2D.Meshing
                 // set geometric properties.
                 if (!(element is SpringElement2D))
                 {
-                    segment.E = element.CrossSection.Material.E;
-                    segment.Iz = element.CrossSection.Iz;
-                    segment.A = element.CrossSection.A;
+                       segment.EIz = element.CrossSection.EIz;
+                    segment.EA = element.CrossSection.EA;
                 }
 
                 element.MeshSegments.Add(segment);

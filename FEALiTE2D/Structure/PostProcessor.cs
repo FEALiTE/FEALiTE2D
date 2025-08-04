@@ -397,9 +397,8 @@ namespace FEALiTE2D.Structure
                 var cSegment = element.MeshSegments[i];
                 temp.x1 = cSegment.x1;
                 temp.x2 = cSegment.x2;
-                temp.A = cSegment.A;
-                temp.Iz = cSegment.Iz;
-                temp.E = cSegment.E;
+                temp.EIz = cSegment.EIz;
+                temp.EA = cSegment.EA;
                 list.Add(temp);
             }
 

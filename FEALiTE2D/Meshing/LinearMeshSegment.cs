@@ -23,9 +23,8 @@ namespace FEALiTE2D.Meshing
         public Force Internalforces2; // internal forces at end of the segment.
         public Displacement Displacement1, // displacement at start of the segment.
                             Displacement2;  // displacement at end of  the segment.
-        public double E, // modulus of elasticity of material of the cross-section at this segment.
-                      A, // area of the cross-section at the segment.
-                      Iz; // second moment of inertial of the cross-section at the segment.
+        public double  EIz, // modulus of elasticity times second moment of inertial of the cross-section at the segment.area 
+                       EA; // modulus of elasticity times area of the cross-section at the segment.
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 
 
@@ -97,7 +96,7 @@ namespace FEALiTE2D.Meshing
                      - Internalforces1.Fy * x * x / 2.0
                      - wy1 * x * x * x / 6.0
                      - x * x * x * x * ((wy2 - wy1) / (x2 - x1)) / 24 // uniform and trap load.
-                ) / (E * Iz);
+                ) / (EIz);
         }
 
         /// <summary>
@@ -114,7 +113,7 @@ namespace FEALiTE2D.Meshing
                          - Internalforces1.Fy * x * x * x / 6.0
                          - wy1 * x * x * x * x / 24.0
                          - x * x * x * x * x * ((wy2 - wy1) / (x2 - x1)) / 120.0 // uniform and trap load.
-                    ) / (E * Iz)
+                    ) / (EIz)
                 );
         }
 
@@ -124,7 +123,6 @@ namespace FEALiTE2D.Meshing
         /// <param name="x">a distance</param>
         public double AxialDisplacementAt(double x)
         {
-            double EA = E * A;
             return Displacement1.Ux -
                 Internalforces1.Fx * x / EA + wx1 * x * x / (2.0 * EA) + (wx2 - wx1) * x * x * x / (6.0 * EA * (x2 - x1));
         }

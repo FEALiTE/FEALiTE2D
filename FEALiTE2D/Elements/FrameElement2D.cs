@@ -149,9 +149,9 @@ namespace FEALiTE2D.Elements
         public DenseMatrix GetConstitutiveMatrix()
         {
             DenseMatrix D = new DenseMatrix(3, 3);
-            D[0, 0] = CrossSection.A * CrossSection.Material.E;
-            D[1, 1] = CrossSection.Az * CrossSection.Material.G;
-            D[2, 2] = CrossSection.Iz * CrossSection.Material.E;
+            D[0, 0] = CrossSection.EA;
+            D[1, 1] = CrossSection.GAz;
+            D[2, 2] = CrossSection.EIz;
             return D;
         }
 

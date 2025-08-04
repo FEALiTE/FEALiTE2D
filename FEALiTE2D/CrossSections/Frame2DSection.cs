@@ -55,6 +55,55 @@ namespace FEALiTE2D.CrossSections
         /// <summary>
         /// Gets or sets the maximum width.
         /// </summary>
-        public virtual double MaxWidth { get; set; }        
+        public virtual double MaxWidth { get; set; }
+
+        private double? _EIz;
+        internal double EIz
+        {
+            get
+            {
+                if (_EIz == null)
+                {
+                    _EIz = Material.E * Iz;
+                }
+                return _EIz.Value;
+            }
+        }
+        private double? _EIy;
+        internal double EIy
+        {
+            get
+            {
+                if (_EIy == null)
+                {
+                    _EIy = Material.E * Iy;
+                }
+                return _EIy.Value;
+            }
+        }
+        private double? _GAz;
+        internal double GAz
+        {
+            get
+            {
+                if (_GAz == null)
+                {
+                    _GAz = Material.G * Az;
+                }
+                return _GAz.Value;
+            }
+        }
+        private double? _EA;
+        internal double EA
+        {
+            get
+            {
+                if (_EA == null)
+                {
+                    _EA = Material.E * A;
+                }
+                return _EA.Value;
+            }
+        }    
     }
 }
