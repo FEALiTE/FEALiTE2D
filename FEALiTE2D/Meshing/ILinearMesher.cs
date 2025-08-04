@@ -8,7 +8,7 @@
         /// <summary>
         /// Gets or sets the minimum number of segments that the <see cref="Elements.IElement"/> be discretized into.
         /// </summary>
-        int NumberSegements { get; set; }
+        int NumberSegments { get; set; }
 
         /// <summary>
         /// Gets or sets the minimum length of segments that the <see cref="Elements.IElement"/> be discretized into.
