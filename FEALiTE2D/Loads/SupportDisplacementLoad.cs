@@ -76,7 +76,7 @@ namespace FEALiTE2D.Loads
             {
                 return false;
             }
-            if (obj.GetType() != typeof(SupportDisplacementLoad))
+            if (!(obj is SupportDisplacementLoad))
             {
                 return false;
             }

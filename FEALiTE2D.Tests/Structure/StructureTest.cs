@@ -33,7 +33,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3, n4, n5);
             IMaterial material = new GenericIsotropicMaterial() { E = 30E6, U = 0.2, Label = "Steel", Alpha = 0.000012, Gama = 39885, MaterialType = MaterialType.Steel };
-            IFrame2DSection section = new Generic2DSection(0.075, 0.075, 0.075, 0.000480, 0.000480, 0.000480 * 2, 0.1, 0.1, material);
+            Frame2DSection section = new Generic2DSection(0.075, 0.075, 0.075, 0.000480, 0.000480, 0.000480 * 2, 0.1, 0.1, material);
 
             FrameElement2D e1 = new FrameElement2D(n1, n3, "e1") { CrossSection = section };
             FrameElement2D e2 = new FrameElement2D(n2, n4, "e2") { CrossSection = section };
@@ -52,7 +52,7 @@ namespace FEALiTE2D.Tests.Structure
             n5.NodalLoads.Add(new NodalLoad(40, 0, 0, LoadDirection.Global, loadCase));
             n1.NodalLoads.Add(new NodalLoad(40, 0, 0, LoadDirection.Global, loadCase));
 
-            structure.LinearMesher.NumberSegements = 35;
+            structure.LinearMesher.NumberSegments = 35;
             structure.Solve();
 
             var nd1 = structure.Results.GetNodeGlobalDisplacement(n1, loadCase);
@@ -103,7 +103,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 29E3, U = 0.2, Label = "Concrete", Alpha = 0.000012, Gama = 24.53, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section = new Generic2DSection(11.8, 11.8, 11.8, 310, 310, 310 * 2, 0.1, 0.1, material);
+            Frame2DSection section = new Generic2DSection(11.8, 11.8, 11.8, 310, 310, 310 * 2, 0.1, 0.1, material);
 
             FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section };
             FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section };
@@ -114,7 +114,7 @@ namespace FEALiTE2D.Tests.Structure
             e2.Loads.Add(new FrameUniformLoad(0, -0.125, LoadDirection.Global, loadCase, 0, 0));
             n2.NodalLoads.Add(new NodalLoad(0, 0, -1500, LoadDirection.Global, loadCase));
             structure.LoadCasesToRun.Add(loadCase);
-            structure.LinearMesher.NumberSegements = 50;
+            structure.LinearMesher.NumberSegments = 50;
             structure.Solve();
 
             Assert.AreEqual(structure.Results.GetSupportReaction(n1, loadCase), Force.FromVector(new double[] { 30.37225194999335, 102.08675797670341, 1215.9664523968904 }));
@@ -187,7 +187,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 29E3, U = 0.2, Label = "Concrete", Alpha = 0.000012, Gama = 24.53, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section = new Generic2DSection(11.8, 11.8, 11.8, 310, 310, 310 * 2, 0.1, 0.1, material);
+            Frame2DSection section = new Generic2DSection(11.8, 11.8, 11.8, 310, 310, 310 * 2, 0.1, 0.1, material);
 
             FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section };
             FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section };
@@ -268,8 +268,8 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3, n4);
             IMaterial material = new GenericIsotropicMaterial() { E = 28E6, U = 0.2, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section1 = new Generic2DSection(0.03228, 0.03228, 0.03228, 0.0058, 0.0058, 0, 0, 0, material);
-            IFrame2DSection section2 = new Generic2DSection(1.5 * 0.03228, 1.5 * 0.03228, 1.5 * 0.1634, 1.5 * 0.0058, 1.5 * 0.0058, 0, 0, 0, material);
+            Frame2DSection section1 = new Generic2DSection(0.03228, 0.03228, 0.03228, 0.0058, 0.0058, 0, 0, 0, material);
+            Frame2DSection section2 = new Generic2DSection(1.5 * 0.03228, 1.5 * 0.03228, 1.5 * 0.1634, 1.5 * 0.0058, 1.5 * 0.0058, 0, 0, 0, material);
 
             FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section2 };
             FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1 };
@@ -283,7 +283,7 @@ namespace FEALiTE2D.Tests.Structure
             n2.NodalLoads.Add(new NodalLoad(0, -200, 0, LoadDirection.Global, loadCase));
             n3.NodalLoads.Add(new NodalLoad(0, 0, -90, LoadDirection.Global, loadCase));
 
-            structure.LinearMesher.NumberSegements = 20;
+            structure.LinearMesher.NumberSegments = 20;
             structure.Solve();
 
             var R1 = structure.Results.GetSupportReaction(n1, loadCase);
@@ -336,7 +336,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section1 = new RectangularSection(0.25, 0.75, material);
+            Frame2DSection section1 = new RectangularSection(0.25, 0.75, material);
 
             FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
             FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1 };
@@ -347,7 +347,7 @@ namespace FEALiTE2D.Tests.Structure
             //e2.Loads.Add(new FrameUniformLoad(0, -7.5, LoadDirection.Global, loadCase));
             e1.Loads.Add(new FrameTrapezoidalLoad(100, 0, -13.5, -5.5, LoadDirection.Global, loadCase, 1.35));
 
-            structure.LinearMesher.NumberSegements = 10;
+            structure.LinearMesher.NumberSegments = 10;
             structure.Solve();
 
             var MeshSegments = structure.Results.GetElementInternalForces(e1, loadCase);
@@ -474,7 +474,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section1 = new RectangularSection(0.25, 0.75, material);
+            Frame2DSection section1 = new RectangularSection(0.25, 0.75, material);
 
             FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
             FrameElement2D e2 = new FrameElement2D(n2, n3, "e3") { CrossSection = section1, EndRelease = Frame2DEndRelease.StartRelease };
@@ -485,7 +485,7 @@ namespace FEALiTE2D.Tests.Structure
             e1.Loads.Add(new FrameUniformLoad(0, -3.5, LoadDirection.Global, loadCase));
             e2.Loads.Add(new FramePointLoad(0, -6, 0, 2, LoadDirection.Global, loadCase));
 
-            structure.LinearMesher.NumberSegements = 50;
+            structure.LinearMesher.NumberSegments = 50;
             structure.Solve();
 
             var nd1 = structure.Results.GetNodeGlobalDisplacement(n1, loadCase);
@@ -559,7 +559,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3, n1_, n2_, n3_);
             IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section1 = new RectangularSection(0.25, 0.75, material);
+            Frame2DSection section1 = new RectangularSection(0.25, 0.75, material);
 
             FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
             FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1, EndRelease = Frame2DEndRelease.StartRelease };
@@ -604,7 +604,7 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3);
             IMaterial material = new GenericIsotropicMaterial() { E = 30000000, U = 0.2, MaterialType = MaterialType.Concrete };
-            IFrame2DSection section1 = new RectangularSection(0.25, 0.75, material);
+            Frame2DSection section1 = new RectangularSection(0.25, 0.75, material);
 
             FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
             FrameElement2D e2 = new FrameElement2D(n2, n3, "e2") { CrossSection = section1, EndRelease = Frame2DEndRelease.StartRelease };
@@ -653,8 +653,8 @@ namespace FEALiTE2D.Tests.Structure
 
             structure.AddNode(n1, n2, n3, n4, n5, n6, n7, n8);
             IMaterial material = new GenericIsotropicMaterial() { E = 30E6, U = 0.2, Label = "Steel", Alpha = 0.000012, Gama = 39885, MaterialType = MaterialType.Steel };
-            IFrame2DSection Columns_Section = new CircularSection(0.4, material);
-            IFrame2DSection Beam_Section = new RectangularSection(0.4, 0.4, material);
+            Frame2DSection Columns_Section = new CircularSection(0.4, material);
+            Frame2DSection Beam_Section = new RectangularSection(0.4, 0.4, material);
 
             // columns
             FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = Columns_Section };
@@ -679,7 +679,7 @@ namespace FEALiTE2D.Tests.Structure
 
             n2.NodalLoads.Add(new NodalLoad(20, 0, 0, LoadDirection.Global, DeadLoadCase));
 
-            structure.LinearMesher.NumberSegements = 30;
+            structure.LinearMesher.NumberSegments = 30;
             structure.Solve();
 
             var op = new Plotting.Dxf.PlottingOption
@@ -769,7 +769,7 @@ namespace FEALiTE2D.Tests.Structure
             structure.AddNode(n32);
 
             IMaterial material = new GenericIsotropicMaterial() { E = 205000, U = 0.3, MaterialType = MaterialType.Steel };
-            IFrame2DSection section1 = new Generic2DSection(2667, 1600, 1100 * 100, 18100000, 1, 1, 200, 100, material);  // H-200x100
+            Frame2DSection section1 = new Generic2DSection(2667, 1600, 1100 * 100, 18100000, 1, 1, 200, 100, material);  // H-200x100
 
             FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section1 };
             FrameElement2D e2 = new FrameElement2D(n11, n12, "e2") { CrossSection = section1 };
@@ -787,7 +787,7 @@ namespace FEALiTE2D.Tests.Structure
             e2.Loads.Add(new FrameUniformLoad(0.0, -0.8, LoadDirection.Global, loadCase));
             e3.Loads.Add(new FrameUniformLoad(0.0, -0.8, LoadDirection.Local, loadCase));
             e4.Loads.Add(new FrameUniformLoad(0.0, -0.8, LoadDirection.Global, loadCase));
-            structure.LinearMesher.NumberSegements = 20;
+            structure.LinearMesher.NumberSegments = 20;
 
             structure.Solve();
 

@@ -78,7 +78,7 @@ namespace FEALiTE2D.Loads
             {
                 return false;
             }
-            if (obj.GetType() != typeof(NodalLoad))
+            if (!(obj is NodalLoad))
             {
                 return false;
             }

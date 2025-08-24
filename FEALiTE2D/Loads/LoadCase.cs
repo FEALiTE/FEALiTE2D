@@ -58,7 +58,7 @@
             {
                 return false;
             }
-            if (this.GetType() != typeof(LoadCase) || obj.GetType() != typeof(LoadCase))
+            if (! (this is LoadCase) || ! (obj is LoadCase))
             {
                 return false;
             }

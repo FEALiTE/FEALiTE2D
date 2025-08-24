@@ -77,7 +77,7 @@ namespace FEALiTE2D.Tests.Structure
             
             _elem.Loads.Add(new FrameUniformLoad(0.0, w, LoadDirection.Local, _lc, a, c));
             
-            _structure.LinearMesher.NumberSegements = 4;
+            _structure.LinearMesher.NumberSegments = 4;
             _structure.Solve();
             
             var postProcessor = _structure.Results;

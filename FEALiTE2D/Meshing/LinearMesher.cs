@@ -17,7 +17,7 @@ namespace FEALiTE2D.Meshing
         /// </summary>
         public LinearMesher()
         {
-            this.NumberSegements = 5;
+            this.NumberSegments = 5;
         }
 
         /// <summary>
@@ -28,11 +28,11 @@ namespace FEALiTE2D.Meshing
         public LinearMesher(int n, double d)
         {
             this.MinDistance = d;
-            this.NumberSegements = n;
+            this.NumberSegments = n;
         }
 
         /// <inheritdoc/>
-        public int NumberSegements { get; set; }
+        public int NumberSegments { get; set; }
 
         /// <inheritdoc/>
         public double MinDistance { get; set; }
@@ -94,17 +94,18 @@ namespace FEALiTE2D.Meshing
             }
 
             // 2- add locations based on number of segments and length of the segment.
-            if (element.GetType() != typeof(SpringElement2D))
+            if (!(element is SpringElement2D))
             {
-                int n1 = (int)Math.Floor(len / this.MinDistance);
-                int n2 = this.NumberSegements;
-                int n = Math.Max(n1, n2);
-                double dx = len / n;
+                int n1 = (int)
+                        Math.Floor(len / (this.MinDistance == 0d ? len : this.MinDistance));
+                    int n2 = this.NumberSegments;
+                    int n = Math.Max(n1, n2);
+                    double dx = len / n;
 
-                for (int i = 0; i < n; i++)
-                {
-                    discreteLocations.Add(i * dx);
-                }
+                    for (int i = 0; i < n; i++)
+                    {
+                        discreteLocations.Add(i * dx);
+                    }
             }
 
             // add last point
@@ -123,9 +124,8 @@ namespace FEALiTE2D.Meshing
                 // set geometric properties.
                 if (!(element is SpringElement2D))
                 {
-                    segment.E = element.CrossSection.Material.E;
-                    segment.Iz = element.CrossSection.Iz;
-                    segment.A = element.CrossSection.A;
+                       segment.EIz = element.CrossSection.EIz;
+                    segment.EA = element.CrossSection.EA;
                 }
 
                 element.MeshSegments.Add(segment);

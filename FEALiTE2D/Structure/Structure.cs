@@ -84,6 +84,8 @@ namespace FEALiTE2D.Structure
         /// </summary>
         public FEALiTE2D.Meshing.ILinearMesher LinearMesher { get; set; }
 
+        private static bool CopyrightDisplayed = false; 
+        
         /// <summary>
         /// Adds a node to the structure, We check if the node is already added to avoid duplicate nodes.
         /// </summary>
@@ -214,14 +216,23 @@ namespace FEALiTE2D.Structure
         /// <summary>
         /// Solve the structure.
         /// </summary>
-        public void Solve()
+        public void Solve(bool detailedAnalysisOutput = true)
         {
-            Console.WriteLine(" ================= FEALiTE Analysis Solver ================= ");
-            Console.WriteLine(" FEALiTE2D V1.0.0 - Copyright (C) 2021 Mohamed S. Ibrahim");
-            Console.WriteLine(" Linear Analysis of 1D structures.");
-            Console.WriteLine($" Analysis Start: {DateTime.Now}.");
+            if (!CopyrightDisplayed)
+            {
+                Console.WriteLine(" ================= FEALiTE Analysis Solver ================= ");
+                Console.WriteLine(" FEALiTE2D V1.0.0 - Copyright (C) 2021 Mohamed S. Ibrahim");
+                Console.WriteLine(" Linear Analysis of 1D structures.");
+                CopyrightDisplayed = true;
+            }
 
-            System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+            System.Diagnostics.Stopwatch sw = null;
+            if (detailedAnalysisOutput)
+            {
+
+                Console.WriteLine($" Analysis Start: {DateTime.Now}.");
+                 sw = System.Diagnostics.Stopwatch.StartNew();
+            }
 
             if (this.LoadCasesToRun.Count <= 0)
             {
@@ -270,10 +281,13 @@ namespace FEALiTE2D.Structure
 
             AnalysisStatus = AnalysisStatus.Successful;
 
-            sw.Stop();
-            Console.WriteLine($" No. of Equations: {this.nDOF}");
-            Console.WriteLine($" Analysis End Date: {DateTime.Now}.");
-            Console.WriteLine($" Analysis Took {sw.Elapsed.TotalSeconds} sec.");
+            if (detailedAnalysisOutput)
+            {
+               sw.Stop();
+               Console.WriteLine($" No. of Equations: {this.nDOF}");
+               Console.WriteLine($" Analysis End Date: {DateTime.Now}.");
+               Console.WriteLine($" Analysis Took {sw.Elapsed.TotalSeconds} sec.");
+            }
 
             this.Results = new PostProcessor(this);
             this.SetUpMeshingSegments();
