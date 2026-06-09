@@ -13,7 +13,7 @@ namespace FEALiTE2D.Structure
     /// To solve a structural model, the model must have at least one degree of freedom.
     /// </summary>
     [System.Serializable]
-    public class Structure
+    public partial class Structure
     {
         /// <summary>
         /// Create a new instance of <see cref="Structure"/>.
@@ -116,6 +116,17 @@ namespace FEALiTE2D.Structure
         /// <param name="addNodes">Add the nodes of the element to Nodes list?</param>
         public void AddElement(IElement element, bool addNodes = false)
         {
+            this.AddElement(element, DefaultOptions, addNodes);
+        }
+
+        /// <summary>
+        /// Adds elements to the structure.
+        /// </summary>
+        /// <param name="element">The element.</param>
+        /// <param name="addNodes">Add the nodes of the element to Nodes list?</param>
+        /// <param name="options">additional options, such as shear strain</param>
+        public void AddElement(IElement element, StructureOption options, bool addNodes = false)
+        {
             if (element == null)
                 throw new NullReferenceException($"element {element.Label} is null");
 
@@ -130,12 +141,19 @@ namespace FEALiTE2D.Structure
             if (!this.Elements.Contains(element))
             {
                 this.Elements.Add(element);
-                element.Initialize();
+                if (element is FrameElement2D frameElem)
+                {
+                    frameElem.Initialize(options.ShearStrainOption);
+                }
+                else
+                {
+                    element.Initialize();
+                }
                 element.ParentStructure = this;
             }
         }
 
-        /// <summary>
+      /// <summary>
         /// Adds elements to the structure.
         /// </summary>
         /// <param name="elements">collection of elements.</param>
@@ -144,7 +162,21 @@ namespace FEALiTE2D.Structure
         {
             foreach (var item in elements)
             {
-                this.AddElement(item, addNodes);
+                this.AddElement(item, DefaultOptions, addNodes);
+            }
+        }
+
+        /// <summary>
+        /// Adds elements to the structure.
+        /// </summary>
+        /// <param name="elements">collection of elements.</param>
+        /// <param name="addNodes">Add the nodes of the element to Nodes list?</param>
+        /// <param name="options">additional options, such as shear strain</param>
+        public void AddElement(IEnumerable<IElement> elements, StructureOption options, bool addNodes = false)
+        {
+            foreach (var item in elements)
+            {
+                this.AddElement(item, options, addNodes);
             }
         }
 
@@ -231,7 +263,7 @@ namespace FEALiTE2D.Structure
             {
 
                 Console.WriteLine($" Analysis Start: {DateTime.Now}.");
-                 sw = System.Diagnostics.Stopwatch.StartNew();
+                sw = System.Diagnostics.Stopwatch.StartNew();
             }
 
             if (this.LoadCasesToRun.Count <= 0)
@@ -283,15 +315,14 @@ namespace FEALiTE2D.Structure
 
             if (detailedAnalysisOutput)
             {
-               sw.Stop();
-               Console.WriteLine($" No. of Equations: {this.nDOF}");
-               Console.WriteLine($" Analysis End Date: {DateTime.Now}.");
-               Console.WriteLine($" Analysis Took {sw.Elapsed.TotalSeconds} sec.");
+                sw.Stop();
+                Console.WriteLine($" No. of Equations: {this.nDOF}");
+                Console.WriteLine($" Analysis End Date: {DateTime.Now}.");
+                Console.WriteLine($" Analysis Took {sw.Elapsed.TotalSeconds} sec.");
             }
 
             this.Results = new PostProcessor(this);
             this.SetUpMeshingSegments();
         }
-
     }
 }
