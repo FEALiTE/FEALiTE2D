@@ -31,9 +31,9 @@ namespace FEALiTE2D.Structure
         {
             int nDOF = structure.nDOF;
 
-            // check if there are free dofs available.
+            // fully restrained structure: no free DOFs, skip assembly
             if (structure.nDOF == 0)
-                throw new InvalidOperationException("There are no sufficient degrees of freedom, thus there are no displacements or rotations could occur!");
+                return null;
 
             // global stiffness matrix.
             DenseMatrix Kg = new DenseMatrix(nDOF, nDOF);
@@ -106,9 +106,9 @@ namespace FEALiTE2D.Structure
         /// <param name="loadCase">load case</param>
         internal double[] AssembleGlobalEquivalentLoadVector(LoadCase loadCase)
         {
-            // check if there are free dofs available.
+            // fully restrained structure: no free DOFs, skip assembly
             if (structure.nDOF == 0)
-                throw new InvalidOperationException("There are no sufficient degrees of freedom, thus there are no displacements or rotations could occur!");
+                return new double[0];
 
             int nDOF = structure.nDOF;
 

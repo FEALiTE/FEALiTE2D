@@ -248,7 +248,14 @@ namespace FEALiTE2D.Structure
         /// <summary>
         /// Solve the structure.
         /// </summary>
-        public void Solve(bool detailedAnalysisOutput = true)
+        /// <param name="detailedAnalysisOutput">Whether to print analysis timing information to the console.</param>
+        /// <param name="allowQRFallback">
+        /// TEMPORARY: If true, falls back to QR factorization when Cholesky fails (matrix not SPD).
+        /// This indicates an unstable structure (mechanism) and QR will produce numerically unreliable results.
+        /// If false (default), Cholesky failure throws an exception with a clear error message.
+        /// This option will be removed once proper instability detection is implemented.
+        /// </param>
+        public void Solve(bool detailedAnalysisOutput = true, bool allowQRFallback = false)
         {
             if (!CopyrightDisplayed)
             {
@@ -287,28 +294,44 @@ namespace FEALiTE2D.Structure
                 this.FixedEndLoadsVectors.Add(currentLC, loadVec);
             }
 
-            CSparse.Factorization.ISparseFactorization<double> cholesky = null;
+            if (nDOF > 0)
+            {
+                CSparse.Factorization.ISparseFactorization<double> cholesky;
 
-            try
-            {
-                cholesky = CSparse.Double.Factorization.SparseCholesky.Create(StructuralStiffnessMatrix, ColumnOrdering.MinimumDegreeAtPlusA);
-            }
-            catch (Exception e)
-            {
-                if (e.Message.Contains("Matrix must be symmetric positive definite."))
+                if (allowQRFallback)
                 {
-                    cholesky = CSparse.Double.Factorization.SparseQR.Create(StructuralStiffnessMatrix, ColumnOrdering.Natural);
+                    // TEMPORARY: fallback to QR if Cholesky fails (matrix not SPD = mechanism).
+                    // This should be removed once instability detection is properly implemented.
+                    try
+                    {
+                        cholesky = CSparse.Double.Factorization.SparseCholesky.Create(StructuralStiffnessMatrix, ColumnOrdering.MinimumDegreeAtPlusA);
+                    }
+                    catch (Exception)
+                    {
+                        cholesky = CSparse.Double.Factorization.SparseQR.Create(StructuralStiffnessMatrix, ColumnOrdering.Natural);
+                    }
+                }
+                else
+                {
+                    cholesky = CSparse.Double.Factorization.SparseCholesky.Create(StructuralStiffnessMatrix, ColumnOrdering.MinimumDegreeAtPlusA);
+                }
+
+                for (int i = 0; i < LoadCasesToRun.Count; i++)
+                {
+                    LoadCase currentLC = this.LoadCasesToRun[i];
+                    double[] displacementVector = new double[nDOF];
+
+                    cholesky.Solve(FixedEndLoadsVectors[currentLC], displacementVector);
+
+                    this.DisplacementVectors.Add(currentLC, displacementVector);
                 }
             }
-
-            for (int i = 0; i < LoadCasesToRun.Count; i++)
+            else
             {
-                LoadCase currentLC = this.LoadCasesToRun[i];
-                double[] displacementVector = new double[nDOF];
-
-                cholesky.Solve(FixedEndLoadsVectors[currentLC], displacementVector);
-
-                this.DisplacementVectors.Add(currentLC, displacementVector);
+                for (int i = 0; i < LoadCasesToRun.Count; i++)
+                {
+                    this.DisplacementVectors.Add(LoadCasesToRun[i], new double[0]);
+                }
             }
 
             AnalysisStatus = AnalysisStatus.Successful;
