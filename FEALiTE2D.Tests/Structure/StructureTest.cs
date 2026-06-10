@@ -841,7 +841,7 @@ namespace FEALiTE2D.Tests.Structure
             structure.AddNode(n1, n2, n3, n4, n5);
             structure.AddNode(n1_, n2_, n3_, n4_, n5_);
 
-            IMaterial material = new GenericIsotropicMaterial() { E = 30E6, U = 0.2, Label = "Steel", Alpha = 0.000012, Gama = 39885, MaterialType = MaterialType.Steel };
+            IMaterial material = new GenericIsotropicMaterial() { E = 30E6, U = 2, Label = "Steel", Alpha = 0.000012, Gama = 39885, MaterialType = MaterialType.Steel };//U is deliberately high to make shear deformation more visible
             Frame2DSection section = new Generic2DSection(0.075, 0.075 * 5 / 6, 0.075 * 5 / 6, 0.000480, 0.000480, 0.000480 * 2, 0.1, 0.1, material);
 
             FrameElement2D e1 = new FrameElement2D(n1, n5, "e1") { CrossSection = section };
