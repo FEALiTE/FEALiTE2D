@@ -128,7 +128,7 @@ namespace FEALiTE2D.Structure
         public void AddElement(IElement element, StructureOption options, bool addNodes = false)
         {
             if (element == null)
-                throw new NullReferenceException($"element {element.Label} is null");
+                throw new ArgumentNullException(nameof(element), "Element cannot be null.");
 
             if (addNodes == true)
             {

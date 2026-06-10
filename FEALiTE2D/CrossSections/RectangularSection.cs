@@ -49,7 +49,7 @@ namespace FEALiTE2D.CrossSections
             this.Iy = b * b * b * t / 12.0;
             double _t = Max(b, t);
             double _b = Min(b, t);
-            double beta = 1.0 / 3.0 - 0.21 * (_b / _t) * (1 - Pow(_b / t, 4) / 12.0);
+            double beta = 1.0 / 3.0 - 0.21 * (_b / _t) * (1.0 - Pow(_b / _t, 4) / 12.0);
             this.J = beta * _b * _b * _b * _t;
             base.MaxWidth = b;
             base.MaxHeight = t;

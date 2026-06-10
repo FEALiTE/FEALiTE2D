@@ -206,20 +206,16 @@ namespace FEALiTE2D.Plotting.Dxf
         {
             double scale = PlottingOption.StructureScaleFactor;
 
-            // loop through elements first to plot them
-            for (int i = 0; i < this.Structure.Elements.Count; i++)
+            foreach (var fe in this.Structure.Elements)
             {
-                foreach (var fe in this.Structure.Elements)
+                netDxf.Entities.Line line = new netDxf.Entities.Line(
+                        new netDxf.Vector2((startPosition.X + fe.Nodes[0].X) * scale, (startPosition.Y + fe.Nodes[0].Y) * scale),
+                        new netDxf.Vector2((startPosition.X + fe.Nodes[1].X) * scale, (startPosition.Y + fe.Nodes[1].Y) * scale))
                 {
-                    netDxf.Entities.Line line = new netDxf.Entities.Line(
-                            new netDxf.Vector2((startPosition.X + fe.Nodes[0].X) * scale, (startPosition.Y + fe.Nodes[0].Y) * scale),
-                            new netDxf.Vector2((startPosition.X + fe.Nodes[1].X) * scale, (startPosition.Y + fe.Nodes[1].Y) * scale))
-                    {
-                        Layer = this.PlottingOption.LayerOfStructure
-                    };
+                    Layer = this.PlottingOption.LayerOfStructure
+                };
 
-                    dxfDocument.AddEntity(line);
-                }
+                dxfDocument.AddEntity(line);
             }
         }
 
