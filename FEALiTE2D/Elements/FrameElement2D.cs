@@ -136,7 +136,7 @@ namespace FEALiTE2D.Elements
                    N5 = 3 * xsi2 - 2 * xsi3,
                    N6 = l * (-xsi2 + xsi3),
                    N7 = 6.0 * (-xsi + xsi2) / l,
-                   N8 = 1 - 4 * xsi - 3 * xsi2,
+                   N8 = 1 - 4 * xsi + 3 * xsi2,
                    N9 = 6.0 * (xsi - xsi2) / l,
                    N10 = -2 * xsi + 3.0 * xsi2;
             double[,] nu = new double[,]
@@ -532,6 +532,10 @@ namespace FEALiTE2D.Elements
             }
 
             double l = this.Length;
+            double l2 = l * l;
+            double EIL = this.CrossSection.Material.E * this.CrossSection.Iz / l;
+            double EIL2 = this.CrossSection.Material.E * this.CrossSection.Iz / l2;
+
             switch (this.EndRelease)
             {
                 default:
@@ -539,22 +543,46 @@ namespace FEALiTE2D.Elements
                     break;
                 case Frame2DEndRelease.StartRelease:
                     {
-                        f[1] -= 1.5 * f[2] / l;
-                        f[4] += 1.5 * f[2] / l;
-                        f[5] -= 0.5 * f[2];
+                        // Static condensation of θ₁: f[i] -= K[i,2] / K[2,2] · f[2]
+                        if (this.BeamTheory == BeamTheory.Timoshenko)
+                        {
+                            double Phi = 12 * this.CrossSection.Material.E * this.CrossSection.Iz / (l2 * this.CrossSection.GAz);
+                            f[1] -= 6 / (4 + Phi) * f[2] / l;          // v₁: K[1,2]/K[2,2]
+                            f[4] += 6 / (4 + Phi) * f[2] / l;          // v₂: -K[4,2]/K[2,2]
+                            f[5] -= (2 - Phi) / (4 + Phi) * f[2];      // θ₂: K[5,2]/K[2,2]
+                        }
+                        else
+                        {
+                            f[1] -= 1.5 * f[2] / l;   // v₁: K[1,2]/K[2,2] = 3/(2L)
+                            f[4] += 1.5 * f[2] / l;   // v₂: -K[4,2]/K[2,2] = 3/(2L)
+                            f[5] -= 0.5 * f[2];         // θ₂: K[5,2]/K[2,2] = 1/2
+                        }
                         f[2] = 0;
                         break;
                     }
                 case Frame2DEndRelease.EndRelease:
                     {
-                        f[1] -= 1.5 * f[5] / l;
-                        f[2] -= 0.5 * f[5];
-                        f[4] += 1.5 * f[5] / l;
+                        // Static condensation of θ₂: f[i] -= K[i,5] / K[5,5] · f[5]
+                        if (this.BeamTheory == BeamTheory.Timoshenko)
+                        {
+                            double Phi = 12 * this.CrossSection.Material.E * this.CrossSection.Iz / (l2 * this.CrossSection.GAz);
+                            f[1] -= 6 / (4 + Phi) * f[5] / l;          // v₁: K[1,5]/K[5,5]
+                            f[4] += 6 / (4 + Phi) * f[5] / l;          // v₂: -K[4,5]/K[5,5]
+                            f[2] -= (2 - Phi) / (4 + Phi) * f[5];      // θ₁: K[2,5]/K[5,5]
+                        }
+                        else
+                        {
+                            f[1] -= 1.5 * f[5] / l;   // v₁: K[1,5]/K[5,5] = 3/(2L)
+                            f[4] += 1.5 * f[5] / l;   // v₂: -K[4,5]/K[5,5] = 3/(2L)
+                            f[2] -= 0.5 * f[5];         // θ₁: K[2,5]/K[5,5] = 1/2
+                        }
                         f[5] = 0;
                         break;
                     }
                 case Frame2DEndRelease.FullRelease:
                     {
+                        // Condense θ₁ and θ₂: f_red = f_a - K_ab · K_bb⁻¹ · f_b
+                        // Result is identical for EB and Timoshenko: Δf_v1 = -(M1+M2)/L, Δf_v2 = +(M1+M2)/L
                         f[1] -= (f[2] + f[5]) / l;
                         f[4] += (f[2] + f[5]) / l;
                         f[2] = 0;

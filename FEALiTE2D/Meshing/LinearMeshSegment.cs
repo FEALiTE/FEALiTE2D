@@ -87,7 +87,11 @@ namespace FEALiTE2D.Meshing
         }
 
         /// <summary>
-        /// Get slope angle of a point on a segment due to loads
+        /// Get the cross-section rotation at a point on a segment.
+        /// This is θ(x) = θ₀ - ∫(M/EI)dx, which is the same in both Euler-Bernoulli
+        /// and Timoshenko theory. It is NOT the slope dv/dx (which differs in Timoshenko
+        /// by the shear angle γ = V/GAz). The DOF Rz in the displacement vector is this
+        /// rotation, not the slope.
         /// </summary>
         /// <param name="x">a distance</param>
         public double SlopeAngleAt(double x)
