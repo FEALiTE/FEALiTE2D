@@ -143,7 +143,7 @@ namespace FEALiTE2D.Structure
                 this.Elements.Add(element);
                 if (element is FrameElement2D frameElem)
                 {
-                    frameElem.Initialize(options.ShearStrainOption);
+                    frameElem.Initialize(options.BeamTheory);
                 }
                 else
                 {

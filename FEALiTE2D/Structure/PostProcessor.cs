@@ -399,6 +399,8 @@ namespace FEALiTE2D.Structure
                 temp.x2 = cSegment.x2;
                 temp.EIz = cSegment.EIz;
                 temp.EA = cSegment.EA;
+                temp.GAz = cSegment.GAz;
+                temp.BeamTheory = cSegment.BeamTheory;
                 list.Add(temp);
             }
 

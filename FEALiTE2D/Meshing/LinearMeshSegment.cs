@@ -25,6 +25,8 @@ namespace FEALiTE2D.Meshing
                             Displacement2;  // displacement at end of  the segment.
         public double  EIz, // modulus of elasticity times second moment of inertial of the cross-section at the segment.area 
                        EA; // modulus of elasticity times area of the cross-section at the segment.
+        public FEALiTE2D.Structure.Structure.BeamTheory BeamTheory = FEALiTE2D.Structure.Structure.BeamTheory.EulerBernoulli;
+        public double GAz; // shear modulus times shear area of the cross-section at the segment.
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 
 
@@ -105,7 +107,7 @@ namespace FEALiTE2D.Meshing
         /// <param name="x">a distance</param>
         public double VerticalDisplacementAt(double x)
         {
-            return Displacement1.Uy +
+            double v_bending = Displacement1.Uy +
                 (
                     Displacement1.Rz * x -
                     (
@@ -115,6 +117,18 @@ namespace FEALiTE2D.Meshing
                          - x * x * x * x * x * ((wy2 - wy1) / (x2 - x1)) / 120.0 // uniform and trap load.
                     ) / (EIz)
                 );
+
+            if (BeamTheory == FEALiTE2D.Structure.Structure.BeamTheory.EulerBernoulli)
+                return v_bending;
+
+            // Timoshenko shear correction: v_shear = -integral(V/GAz, dx)
+            double shearCorrection = -(
+                Internalforces1.Fy * x
+                + wy1 * x * x / 2.0
+                + (wy2 - wy1) * x * x * x / (6.0 * (x2 - x1))
+            ) / GAz;
+
+            return v_bending + shearCorrection;
         }
 
         /// <summary>

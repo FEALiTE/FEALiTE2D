@@ -816,7 +816,7 @@ namespace FEALiTE2D.Tests.Structure
 
             FEALiTE2D.Structure.Structure.StructureOption options = new FEALiTE2D.Structure.Structure.StructureOption()
             {
-                ShearStrainOption = FEALiTE2D.Structure.Structure.ShearStrainOption.TwoNodesTBTheory
+                BeamTheory = FEALiTE2D.Structure.Structure.BeamTheory.Timoshenko
             };
 
             var defaultoptions = FEALiTE2D.Structure.Structure.DefaultOptions;
@@ -850,15 +850,15 @@ namespace FEALiTE2D.Tests.Structure
             structure.AddElement(new[] { e1 }, options);
             structure.AddElement(new[] { e1_ }, defaultoptions);
 
-            FrameElement2D e2 = new FrameElement2D(n1, n2, "e1") { CrossSection = section };
-            FrameElement2D e3 = new FrameElement2D(n2, n3, "e2") { CrossSection = section };
-            FrameElement2D e4 = new FrameElement2D(n3, n4, "e3") { CrossSection = section };
-            FrameElement2D e5 = new FrameElement2D(n4, n5, "e4") { CrossSection = section };
+            FrameElement2D e2 = new FrameElement2D(n1, n2, "e2") { CrossSection = section };
+            FrameElement2D e3 = new FrameElement2D(n2, n3, "e3") { CrossSection = section };
+            FrameElement2D e4 = new FrameElement2D(n3, n4, "e4") { CrossSection = section };
+            FrameElement2D e5 = new FrameElement2D(n4, n5, "e5") { CrossSection = section };
 
-            FrameElement2D e2_ = new FrameElement2D(n1_, n2_, "e1_") { CrossSection = section };
-            FrameElement2D e3_ = new FrameElement2D(n2_, n3_, "e2_") { CrossSection = section };
-            FrameElement2D e4_ = new FrameElement2D(n3_, n4_, "e3_") { CrossSection = section };
-            FrameElement2D e5_ = new FrameElement2D(n4_, n5_, "e4_") { CrossSection = section };
+            FrameElement2D e2_ = new FrameElement2D(n1_, n2_, "e2_") { CrossSection = section };
+            FrameElement2D e3_ = new FrameElement2D(n2_, n3_, "e3_") { CrossSection = section };
+            FrameElement2D e4_ = new FrameElement2D(n3_, n4_, "e4_") { CrossSection = section };
+            FrameElement2D e5_ = new FrameElement2D(n4_, n5_, "e5_") { CrossSection = section };
 
             structure.AddNode(n1, n2, n3, n4, n5);
             structure.AddNode(n1_, n2_, n3_, n4_, n5_);
@@ -885,38 +885,21 @@ namespace FEALiTE2D.Tests.Structure
             var displElt2to5 = structure.Results.GetElementDisplacementAt(e3, loadCase, 1); // midspan
             var displElt2to5_ = structure.Results.GetElementDisplacementAt(e3_, loadCase, 1);
 
+            Assert.AreEqual(displElt1.Uy, displElt2to5.Uy, 1e-10); // midspan displacement: single element vs fine mesh with shear
+            Assert.AreEqual(displElt1_.Uy, displElt2to5_.Uy, 1e-10); // midspan displacement ssingle element vs fine mesh (both EB)
+
+            Assert.Greater(Math.Abs(displElt1.Uy), Math.Abs(displElt1_.Uy)); // displacement with shear should be larger
+            Assert.Greater(Math.Abs(displElt2to5.Uy), Math.Abs(displElt2to5_.Uy)); // displacement with shear should be larger
+
             double length = e1.Length;
             double bendDispl = -wy * 5.0 / (384 * material.E * section.Iz) * Math.Pow(length, 4);
-
             Assert.AreEqual(bendDispl, displElt1_.Uy, 1e-10);
             Assert.AreEqual(bendDispl, displElt2to5_.Uy, 1e-10);
 
-            Assert.AreEqual(displElt1.Uy, displElt2to5.Uy, 1e-10); // midspan displacement should be same
-            Assert.AreEqual(displElt1_.Uy, displElt2to5_.Uy, 1e-10); // midspan displacement should be different due to shear
-
-            Assert.Greater(Math.Abs(displElt1.Uy), Math.Abs(displElt1.Uy)); // displacement with shear should be larger
-            Assert.Greater(Math.Abs(displElt2to5.Uy), Math.Abs(displElt2to5_.Uy)); // displacement with shear should be larger
-
-            /*
-            var d = structure.Results.GetNodeGlobalDisplacement(n2, loadCase);
-            var r = structure.Results.GetSupportReaction(n1, loadCase);
-            var verif = wy * 4 / 2;
-
-            double moment = wy * length / 8;
-            double shearDispl = -moment / (section.Az * material.G);
-            double totDispl = bendDispl +  shearDispl; // usual explicit formula for total displacement
-            Assert.AreEqual(nd1.Uy, totDispl, 1e-10);
-            */
-
-
-            /* 
-            double length = e1 .Length + e2.Length + e3.Length + e4.Length;
-            double bendDispl = - wy * 5.0 / (384 * material.E * section.Iz) * Math.Pow(length, 4);
-            double moment = wy * length / 8;
-            double shearDispl = -moment / (section.Az * material.G);
-            double totDispl = bendDispl + shearDispl; // usual explicit formula for total displacement
-            Assert.AreEqual(nd1.Uy, totDispl, 1e-10);
-            */
+            double shearDispl = -wy * length * length / (8 * section.Az * material.G); // -wL²/(8GAz) = -M_max/(GAz)
+            double totDispl = bendDispl + shearDispl; // usual explicit formula for total displacement for simply supported beam with uniform load
+            Assert.AreEqual(displElt1.Uy, totDispl, 1e-10);
+            Assert.AreEqual(displElt2to5.Uy, totDispl, 1e-10);
         }
     }
 }
