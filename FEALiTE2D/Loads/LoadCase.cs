@@ -76,21 +76,17 @@
         /// <inheritdoc/>
         public static bool operator ==(LoadCase lc1, LoadCase lc2)
         {
+            if (ReferenceEquals(lc1, lc2))
+                return true;
             if (lc1 is null)
-            {
                 return false;
-            }
             return lc1.Equals(lc2);
         }
 
         /// <inheritdoc/>
         public static bool operator !=(LoadCase lc1, LoadCase lc2)
         {
-            if (lc1 is null)
-            {
-                return false;
-            }
-            return !lc1.Equals(lc2);
+            return !(lc1 == lc2);
         }
 
         /// <inheritdoc/>

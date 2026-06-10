@@ -135,10 +135,10 @@ namespace FEALiTE2D.Tests.Structure
             Assert.AreEqual(nd2.Uy, -0.06732180013884803);
             Assert.AreEqual(nd2.Rz, -0.0025498997289483097);
 
-            var ql1 = structure.Results.GetElementLocalFixedEndForeces(e1, loadCase);
-            var ql2 = structure.Results.GetElementLocalFixedEndForeces(e2, loadCase);
-            var fg1 = structure.Results.GetElementGlobalFixedEndForeces(e1, loadCase);
-            var fg2 = structure.Results.GetElementGlobalFixedEndForeces(e2, loadCase);
+            var ql1 = structure.Results.GetElementLocalFixedEndForces(e1, loadCase);
+            var ql2 = structure.Results.GetElementLocalFixedEndForces(e2, loadCase);
+            var fg1 = structure.Results.GetElementGlobalFixedEndForces(e1, loadCase);
+            var fg2 = structure.Results.GetElementGlobalFixedEndForces(e2, loadCase);
 
             Assert.AreEqual(ql1[0], 104.89205617337821);
             Assert.AreEqual(ql1[1], 18.488818091721274);
@@ -216,10 +216,10 @@ namespace FEALiTE2D.Tests.Structure
             Assert.AreEqual(nd2.Uy, -1.059915467868475);
             Assert.AreEqual(nd2.Rz, 0.00074191638715062017);
 
-            var ql1 = structure.Results.GetElementLocalFixedEndForeces(e1, loadCase);
-            var ql2 = structure.Results.GetElementLocalFixedEndForeces(e2, loadCase);
-            var fg1 = structure.Results.GetElementGlobalFixedEndForeces(e1, loadCase);
-            var fg2 = structure.Results.GetElementGlobalFixedEndForeces(e2, loadCase);
+            var ql1 = structure.Results.GetElementLocalFixedEndForces(e1, loadCase);
+            var ql2 = structure.Results.GetElementLocalFixedEndForces(e2, loadCase);
+            var fg1 = structure.Results.GetElementGlobalFixedEndForces(e1, loadCase);
+            var fg2 = structure.Results.GetElementGlobalFixedEndForces(e2, loadCase);
 
             Assert.AreEqual(ql1[0], 98.463276589933216);
             Assert.AreEqual(ql1[1], 20.91875793338594);

@@ -533,8 +533,6 @@ namespace FEALiTE2D.Elements
 
             double l = this.Length;
             double l2 = l * l;
-            double EIL = this.CrossSection.Material.E * this.CrossSection.Iz / l;
-            double EIL2 = this.CrossSection.Material.E * this.CrossSection.Iz / l2;
 
             switch (this.EndRelease)
             {

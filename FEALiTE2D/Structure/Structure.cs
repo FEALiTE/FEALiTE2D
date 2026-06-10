@@ -285,6 +285,10 @@ namespace FEALiTE2D.Structure
 
             Assembler assembler = new Assembler(this);
 
+            // Clear previous results to allow re-solving
+            this.FixedEndLoadsVectors.Clear();
+            this.DisplacementVectors.Clear();
+
             this.StructuralStiffnessMatrix = assembler.AssembleGlobalStiffnessMatrix();
 
             for (int i = 0; i < LoadCasesToRun.Count; i++)

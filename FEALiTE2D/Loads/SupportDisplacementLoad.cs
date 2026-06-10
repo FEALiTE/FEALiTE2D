@@ -91,21 +91,17 @@ namespace FEALiTE2D.Loads
         /// <inheritdoc/>
         public static bool operator ==(SupportDisplacementLoad nl1, SupportDisplacementLoad nl2)
         {
+            if (ReferenceEquals(nl1, nl2))
+                return true;
             if (ReferenceEquals(nl1, null))
-            {
                 return false;
-            }
             return nl1.Equals(nl2);
         }
 
         /// <inheritdoc/>
         public static bool operator !=(SupportDisplacementLoad nl1, SupportDisplacementLoad nl2)
         {
-            if (ReferenceEquals(nl1, null))
-            {
-                return false;
-            }
-            return !nl1.Equals(nl2);
+            return !(nl1 == nl2);
         }
 
         /// <inheritdoc/>

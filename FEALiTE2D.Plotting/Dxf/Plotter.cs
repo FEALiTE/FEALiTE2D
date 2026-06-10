@@ -635,7 +635,7 @@ namespace FEALiTE2D.Plotting.Dxf
             {
                 Layer = PlottingOption.LayerOfDisplacement,
                 Height = 0.01 * boundingRectangle.Width,
-                Value = $"Bending Moment Diagram - {loadCase.Label}",
+                Value = $"Displacement Diagram - {loadCase.Label}",
                 AttachmentPoint = netDxf.Entities.MTextAttachmentPoint.MiddleCenter,
                 Position = new Vector3(startPosition.X + boundingRectangle.Width / 2.0, startPosition.Y, 0)
             };
@@ -694,10 +694,10 @@ namespace FEALiTE2D.Plotting.Dxf
         private netDxf.BoundingRectangle BoundingRectangle()
         {
             List<Vector2> allPoints = new List<Vector2>(this.Structure.Nodes.Count);
-            Parallel.ForEach(this.Structure.Nodes, (n) =>
+            foreach (var n in this.Structure.Nodes)
             {
                 allPoints.Add(new Vector2(n.X, n.Y));
-            });
+            }
 
             return new netDxf.BoundingRectangle(allPoints);
         }
