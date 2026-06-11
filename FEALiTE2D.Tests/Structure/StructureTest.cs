@@ -135,10 +135,10 @@ namespace FEALiTE2D.Tests.Structure
             Assert.AreEqual(nd2.Uy, -0.06732180013884803);
             Assert.AreEqual(nd2.Rz, -0.0025498997289483097);
 
-            var ql1 = structure.Results.GetElementLocalFixedEndForeces(e1, loadCase);
-            var ql2 = structure.Results.GetElementLocalFixedEndForeces(e2, loadCase);
-            var fg1 = structure.Results.GetElementGlobalFixedEndForeces(e1, loadCase);
-            var fg2 = structure.Results.GetElementGlobalFixedEndForeces(e2, loadCase);
+            var ql1 = structure.Results.GetElementLocalFixedEndForces(e1, loadCase);
+            var ql2 = structure.Results.GetElementLocalFixedEndForces(e2, loadCase);
+            var fg1 = structure.Results.GetElementGlobalFixedEndForces(e1, loadCase);
+            var fg2 = structure.Results.GetElementGlobalFixedEndForces(e2, loadCase);
 
             Assert.AreEqual(ql1[0], 104.89205617337821);
             Assert.AreEqual(ql1[1], 18.488818091721274);
@@ -169,8 +169,8 @@ namespace FEALiTE2D.Tests.Structure
             Assert.AreEqual(fg2[5], -854.0740487820697);
 
             var op = new FEALiTE2D.Plotting.Dxf.PlottingOption { NFDScaleFactor = 0.5, SFDScaleFactor = 5.0, BMDScaleFactor = 0.1, DisplacmentScaleFactor = 100, DiagramsHorizontalOffsets = 200 };
-            var plotter = new FEALiTE2D. Plotting.Dxf.Plotter(structure, op);
-            plotter.Plot(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)+"\\test.dxf", loadCase);
+            var plotter = new FEALiTE2D.Plotting.Dxf.Plotter(structure, op);
+            plotter.Plot(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\test.dxf", loadCase);
         }
 
         [Test]
@@ -216,10 +216,10 @@ namespace FEALiTE2D.Tests.Structure
             Assert.AreEqual(nd2.Uy, -1.059915467868475);
             Assert.AreEqual(nd2.Rz, 0.00074191638715062017);
 
-            var ql1 = structure.Results.GetElementLocalFixedEndForeces(e1, loadCase);
-            var ql2 = structure.Results.GetElementLocalFixedEndForeces(e2, loadCase);
-            var fg1 = structure.Results.GetElementGlobalFixedEndForeces(e1, loadCase);
-            var fg2 = structure.Results.GetElementGlobalFixedEndForeces(e2, loadCase);
+            var ql1 = structure.Results.GetElementLocalFixedEndForces(e1, loadCase);
+            var ql2 = structure.Results.GetElementLocalFixedEndForces(e2, loadCase);
+            var fg1 = structure.Results.GetElementGlobalFixedEndForces(e1, loadCase);
+            var fg2 = structure.Results.GetElementGlobalFixedEndForces(e2, loadCase);
 
             Assert.AreEqual(ql1[0], 98.463276589933216);
             Assert.AreEqual(ql1[1], 20.91875793338594);
@@ -806,6 +806,158 @@ namespace FEALiTE2D.Tests.Structure
             FEALiTE2D.Plotting.Dxf.Plotter plotter = new Plotting.Dxf.Plotter(structure, op);
             plotter.Plot(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\fixedEndBeam.dxf", loadCase);
 
+        }
+
+        [Test]
+        public void TestStructure_wShear()
+        {
+            // units are kN, m
+            FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
+
+            FEALiTE2D.Structure.Structure.StructureOption options = new FEALiTE2D.Structure.Structure.StructureOption()
+            {
+                BeamTheory = FEALiTE2D.Structure.Structure.BeamTheory.Timoshenko
+            };
+
+            var defaultoptions = FEALiTE2D.Structure.Structure.DefaultOptions;
+            
+
+            Node2D n1 = new Node2D(0, 0, "n1");
+            Node2D n2 = new Node2D(1, 0, "n2");
+            Node2D n3 = new Node2D(2, 0, "n3");
+            Node2D n4 = new Node2D(3, 0, "n4");
+            Node2D n5 = new Node2D(4, 0, "n5");
+            n1.Support = new NodalSupport(true, true, false); //pinned
+            n5.Support = new NodalSupport(false, true, false); //roller 
+
+            Node2D n1_ = new Node2D(0, 0, "n1_");
+            Node2D n2_ = new Node2D(1, 0, "n2_");
+            Node2D n3_ = new Node2D(2, 0, "n3_");
+            Node2D n4_ = new Node2D(3, 0, "n4_");
+            Node2D n5_ = new Node2D(4, 0, "n5_");
+            n1_.Support = new NodalSupport(true, true, false); //pinned
+            n5_.Support = new NodalSupport(false, true, false); //roller 
+
+            structure.AddNode(n1, n2, n3, n4, n5);
+            structure.AddNode(n1_, n2_, n3_, n4_, n5_);
+
+            IMaterial material = new GenericIsotropicMaterial() { E = 30E6, U = 2, Label = "Steel", Alpha = 0.000012, Gama = 39885, MaterialType = MaterialType.Steel };//U is deliberately high to make shear deformation more visible
+            Frame2DSection section = new Generic2DSection(0.075, 0.075 * 5 / 6, 0.075 * 5 / 6, 0.000480, 0.000480, 0.000480 * 2, 0.1, 0.1, material);
+
+            FrameElement2D e1 = new FrameElement2D(n1, n5, "e1") { CrossSection = section };
+            FrameElement2D e1_ = new FrameElement2D(n1_, n5_, "e1_") { CrossSection = section };
+
+            structure.AddElement(new[] { e1 }, options);
+            structure.AddElement(new[] { e1_ }, defaultoptions);
+
+            FrameElement2D e2 = new FrameElement2D(n1, n2, "e2") { CrossSection = section };
+            FrameElement2D e3 = new FrameElement2D(n2, n3, "e3") { CrossSection = section };
+            FrameElement2D e4 = new FrameElement2D(n3, n4, "e4") { CrossSection = section };
+            FrameElement2D e5 = new FrameElement2D(n4, n5, "e5") { CrossSection = section };
+
+            FrameElement2D e2_ = new FrameElement2D(n1_, n2_, "e2_") { CrossSection = section };
+            FrameElement2D e3_ = new FrameElement2D(n2_, n3_, "e3_") { CrossSection = section };
+            FrameElement2D e4_ = new FrameElement2D(n3_, n4_, "e4_") { CrossSection = section };
+            FrameElement2D e5_ = new FrameElement2D(n4_, n5_, "e5_") { CrossSection = section };
+
+            structure.AddNode(n1, n2, n3, n4, n5);
+            structure.AddNode(n1_, n2_, n3_, n4_, n5_);
+
+            structure.AddElement(new[] { e2, e3, e4, e5 }, options); // same elements as e1 but divided
+            structure.AddElement(new[] { e2_, e3_, e4_, e5_ }, defaultoptions); // same
+
+            LoadCase loadCase = new LoadCase("live", LoadCaseType.Live);
+            structure.LoadCasesToRun.Add(loadCase);
+            double wy = 12;
+            var fLoad = new FrameUniformLoad(0, -wy, LoadDirection.Global, loadCase);
+
+            foreach (var e in new[] { e1, e1_, e2, e2_, e3, e3_, e4, e4_, e5, e5_ })
+            {
+                e.Loads.Add(fLoad);
+            }
+
+            structure.LinearMesher.NumberSegments = 35;
+            structure.Solve();
+
+            var displElt1 = structure.Results.GetElementDisplacementAt(e1, loadCase, 2); //midspan
+            var displElt1_ = structure.Results.GetElementDisplacementAt(e1_, loadCase, 2);
+
+            var displElt2to5 = structure.Results.GetElementDisplacementAt(e3, loadCase, 1); // midspan
+            var displElt2to5_ = structure.Results.GetElementDisplacementAt(e3_, loadCase, 1);
+
+            Assert.AreEqual(displElt1.Uy, displElt2to5.Uy, 1e-10); // midspan displacement: single element vs fine mesh with shear
+            Assert.AreEqual(displElt1_.Uy, displElt2to5_.Uy, 1e-10); // midspan displacement ssingle element vs fine mesh (both EB)
+
+            Assert.Greater(Math.Abs(displElt1.Uy), Math.Abs(displElt1_.Uy)); // displacement with shear should be larger
+            Assert.Greater(Math.Abs(displElt2to5.Uy), Math.Abs(displElt2to5_.Uy)); // displacement with shear should be larger
+
+            double length = e1.Length;
+            double bendDispl = -wy * 5.0 / (384 * material.E * section.Iz) * Math.Pow(length, 4);
+            Assert.AreEqual(bendDispl, displElt1_.Uy, 1e-10);
+            Assert.AreEqual(bendDispl, displElt2to5_.Uy, 1e-10);
+
+            double shearDispl = -wy * length * length / (8 * section.Az * material.G); // -wL²/(8GAz) = -M_max/(GAz)
+            double totDispl = bendDispl + shearDispl; // usual explicit formula for total displacement for simply supported beam with uniform load
+            Assert.AreEqual(displElt1.Uy, totDispl, 1e-10);
+            Assert.AreEqual(displElt2to5.Uy, totDispl, 1e-10);
+        }
+
+        [Test]
+        public void TestFixedFixedBeam()
+        {
+            // Beam fixed at both ends (hyperstatic), uniform load
+            // Analytical: midspan deflection = -wL^4/(384EI), end moments = wL^2/12
+            // units: kN, m
+            FEALiTE2D.Structure.Structure structure = new FEALiTE2D.Structure.Structure();
+
+            Node2D n1 = new Node2D(0, 0, "n1");
+            Node2D n2 = new Node2D(6, 0, "n2");
+
+            n1.Support = new NodalSupport(true, true, true); // fixed
+            n2.Support = new NodalSupport(true, true, true); // fixed
+
+            structure.AddNode(n1, n2);
+
+            IMaterial material = new GenericIsotropicMaterial() { E = 210000000, U = 0.3, MaterialType = MaterialType.Steel };
+            Frame2DSection section = new RectangularSection(0.3, 0.5, material);
+
+            FrameElement2D e1 = new FrameElement2D(n1, n2, "e1") { CrossSection = section };
+            structure.AddElement(new[] { e1 });
+
+            LoadCase loadCase = new LoadCase("live", LoadCaseType.Live);
+            structure.LoadCasesToRun.Add(loadCase);
+            e1.Loads.Add(new FrameUniformLoad(0, -10, LoadDirection.Global, loadCase));
+
+            structure.LinearMesher.NumberSegments = 20;
+            structure.Solve();
+
+            double L = e1.Length;
+            double EI = material.E * section.Iz;
+            double w = 10;
+
+            double expectedMidspanDeflection = -w * Math.Pow(L, 4) / (384 * EI);
+            double expectedEndMoment = w * L * L / 12;
+
+            var d1 = structure.Results.GetNodeGlobalDisplacement(n1, loadCase);
+            var d2 = structure.Results.GetNodeGlobalDisplacement(n2, loadCase);
+
+            Assert.AreEqual(0, d1.Ux, 1e-10);
+            Assert.AreEqual(0, d1.Uy, 1e-10);
+            Assert.AreEqual(0, d1.Rz, 1e-10);
+            Assert.AreEqual(0, d2.Ux, 1e-10);
+            Assert.AreEqual(0, d2.Uy, 1e-10);
+            Assert.AreEqual(0, d2.Rz, 1e-10);
+
+            var midspanDisp = structure.Results.GetElementDisplacementAt(e1, loadCase, e1.Length / 2);
+            Assert.AreEqual(expectedMidspanDeflection, midspanDisp.Uy, 1e-6);
+
+            var reaction1 = structure.Results.GetSupportReaction(n1, loadCase);
+            var reaction2 = structure.Results.GetSupportReaction(n2, loadCase);
+
+            Assert.AreEqual(w * L / 2, reaction1.Fy, 1e-6);
+            Assert.AreEqual(w * L / 2, reaction2.Fy, 1e-6);
+            Assert.AreEqual(expectedEndMoment, reaction1.Mz, 1e-6);
+            Assert.AreEqual(-expectedEndMoment, reaction2.Mz, 1e-6);
         }
     }
 }

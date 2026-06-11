@@ -39,7 +39,7 @@ namespace FEALiTE2D.CrossSections
             this.A = PI * d * d / 4.0;
             this.Ay = this.Az = this.A * 0.9;
             this.Iy = this.Iz = PI * d * d * d * d / 64.0;
-            this.J = 0.5 * this.Iy;
+            this.J = 2.0 * this.Iy;
             base.MaxWidth = base.MaxHeight = d;
         }
     }

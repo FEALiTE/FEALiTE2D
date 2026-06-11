@@ -61,7 +61,7 @@ namespace FEALiTE2D.Elements
         /// <summary>
         /// An angle of rotation of the of local axes of the node around Z-axis.
         /// </summary>
-        public double RotaionAngle { get; set; }
+        public double RotationAngle { get; set; }
 
         /// <summary>
         /// Gets number of degrees of freedom of the node.
@@ -106,14 +106,14 @@ namespace FEALiTE2D.Elements
         public Structure.Structure ParentStructure { get; set; }
 
         /// <summary>
-        /// Transformation matrix of the Node due to a <see cref="RotaionAngle"/>.
+        /// Transformation matrix of the Node due to a <see cref="RotationAngle"/>.
         /// </summary>
         public CSparse.Double.DenseMatrix TransformationMatrix
         {
             get
             {
-                double c = Cos(RotaionAngle);
-                double s = Sin(RotaionAngle);
+                double c = Cos(RotationAngle);
+                double s = Sin(RotationAngle);
                 double[,] t = new double[,]
                 {
                     { c, s, 0 },

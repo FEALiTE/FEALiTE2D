@@ -75,7 +75,7 @@ namespace FEALiTE2D.Structure
             // reactions are the sum of global external fixed end forces
             foreach (var e in connectedElements)
             {
-                double[] fext = this.GetElementGlobalFixedEndForeces(e, loadCase);
+                double[] fext = this.GetElementGlobalFixedEndForces(e, loadCase);
 
                 if (e.Nodes[0] == node)
                 {
@@ -158,7 +158,7 @@ namespace FEALiTE2D.Structure
         /// <param name="element">an element</param>
         /// <param name="loadCase">a load case</param>
         /// <returns>Local End forces of an element after the structure is solved.</returns>
-        public double[] GetElementLocalFixedEndForeces(IElement element, LoadCase loadCase)
+        public double[] GetElementLocalFixedEndForces(IElement element, LoadCase loadCase)
         {
             double[] q = new double[6];
 
@@ -187,9 +187,9 @@ namespace FEALiTE2D.Structure
         /// <param name="element">an element</param>
         /// <param name="loadCase">a load case</param>
         /// <returns>Global End forces of an element after the structure is solved.</returns>
-        public double[] GetElementGlobalFixedEndForeces(IElement element, LoadCase loadCase)
+        public double[] GetElementGlobalFixedEndForces(IElement element, LoadCase loadCase)
         {
-            double[] ql = this.GetElementLocalFixedEndForeces(element, loadCase);
+            double[] ql = this.GetElementLocalFixedEndForces(element, loadCase);
 
             // fg = Tt*fl
             double[] fg = new double[ql.Length];
@@ -226,7 +226,7 @@ namespace FEALiTE2D.Structure
             double len = element.Length;
 
             // get local end forces after the structure is solved
-            double[] fl = this.GetElementLocalFixedEndForeces(element, loadCase);
+            double[] fl = this.GetElementLocalFixedEndForces(element, loadCase);
             double[] dl = this.GetElementLocalEndDisplacement(element, loadCase);
 
             //loop through each segment
@@ -399,6 +399,8 @@ namespace FEALiTE2D.Structure
                 temp.x2 = cSegment.x2;
                 temp.EIz = cSegment.EIz;
                 temp.EA = cSegment.EA;
+                temp.GAz = cSegment.GAz;
+                temp.BeamTheory = cSegment.BeamTheory;
                 list.Add(temp);
             }
 

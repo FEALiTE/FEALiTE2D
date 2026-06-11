@@ -4,6 +4,7 @@ using FEALiTE2D.Loads;
 using System.Linq;
 using System.Collections.Generic;
 using static System.Math;
+using static FEALiTE2D.Structure.Structure;
 
 namespace FEALiTE2D.Elements
 {
@@ -96,6 +97,11 @@ namespace FEALiTE2D.Elements
         public Frame2DEndRelease EndRelease { get; set; }
 
         /// <summary>
+        /// Gets the shear strain option used when this element was initialized.
+        /// </summary>
+        public BeamTheory BeamTheory { get; private set; } = BeamTheory.EulerBernoulli;
+
+        /// <summary>
         /// Loads on the <see cref="FrameElement2D"/>.
         /// </summary>
         public IList<ILoad> Loads { get; set; }
@@ -130,7 +136,7 @@ namespace FEALiTE2D.Elements
                    N5 = 3 * xsi2 - 2 * xsi3,
                    N6 = l * (-xsi2 + xsi3),
                    N7 = 6.0 * (-xsi + xsi2) / l,
-                   N8 = 1 - 4 * xsi - 3 * xsi2,
+                   N8 = 1 - 4 * xsi + 3 * xsi2,
                    N9 = 6.0 * (xsi - xsi2) / l,
                    N10 = -2 * xsi + 3.0 * xsi2;
             double[,] nu = new double[,]
@@ -213,27 +219,21 @@ namespace FEALiTE2D.Elements
 
         /// <inheritdoc/>
         public DenseMatrix LocalStiffnessMatrix { get; private set; }
-        private DenseMatrix GetLocalStiffnessMatrix()
+        private DenseMatrix GetLocalStiffnessMatrix(BeamTheory beamTheory)
         {
+            bool includeShear = beamTheory == BeamTheory.Timoshenko;
+
             switch (this.EndRelease)
             {
                 default:
                 case Frame2DEndRelease.NoRelease:
-                    {
-                        return Kl1_1();
-                    }
+                    return includeShear ? Kl1_1_shear() : Kl1_1();
                 case Frame2DEndRelease.StartRelease:
-                    {
-                        return Kl0_1();
-                    }
+                    return includeShear ? Kl0_1_shear() : Kl0_1();
                 case Frame2DEndRelease.EndRelease:
-                    {
-                        return Kl1_0();
-                    }
+                    return includeShear ? Kl1_0_shear() : Kl1_0();
                 case Frame2DEndRelease.FullRelease:
-                    {
-                        return Kl0_0();
-                    }
+                    return includeShear ? Kl0_0_shear() : Kl0_0();
             }
         }
 
@@ -279,6 +279,54 @@ namespace FEALiTE2D.Elements
             return k;
         }
 
+         /// <summary>
+        /// calculate local stiffness matrix when the frame has no releases
+        /// </summary>
+        private DenseMatrix Kl1_1_shear()
+        {
+            double l = this.Length;
+            double l2 = l * l;
+            double l3 = l * l * l;
+            double EAL = this.CrossSection.Material.E * this.CrossSection.A / l;
+            double EIL = this.CrossSection.Material.E * this.CrossSection.Iz / l;
+            double EIL2 = this.CrossSection.Material.E * this.CrossSection.Iz / l2;
+            double EIL3 = this.CrossSection.Material.E * this.CrossSection.Iz / l3;
+            double Phi = 12 * (this.CrossSection.Material.E * this.CrossSection.Iz)
+            / (l2 * this.CrossSection.GAz);
+
+            DenseMatrix k = new DenseMatrix(6, 6);
+
+            k[0, 0] = EAL;
+            k[3, 3] = EAL;
+            k[0, 3] = -EAL;
+            k[3, 0] = -EAL;
+
+
+            k[1, 1] = 12 * EIL3 / (1 + Phi);
+            k[4, 4] = 12 * EIL3 / (1 + Phi);
+            k[1, 4] = -12 * EIL3 / (1 + Phi);
+            k[4, 1] = -12 * EIL3 / (1 + Phi);
+
+            k[2, 1] = 6 * EIL2 / (1 + Phi);
+            k[5, 1] = 6 * EIL2 / (1 + Phi);
+            k[1, 2] = 6 * EIL2 / (1 + Phi);
+            k[1, 5] = 6 * EIL2 / (1 + Phi);
+            k[2, 4] = -6 * EIL2 / (1 + Phi);
+            k[5, 4] = -6 * EIL2 / (1 + Phi);
+            k[4, 2] = -6 * EIL2 / (1 + Phi);
+            k[4, 5] = -6 * EIL2 / (1 + Phi);
+
+            k[2, 2] = (4 + Phi) * EIL / (1 + Phi);
+            k[5, 5] = (4 + Phi) * EIL / (1 + Phi);
+
+            k[2, 5] = (2 - Phi) * EIL / (1 + Phi);
+            k[5, 2] = (2 - Phi) * EIL / (1 + Phi);
+            return k;
+        }
+        
+      
+
+
         /// <summary>
         /// calculate local stiffness matrix when there is a release at it's start
         /// </summary>
@@ -314,7 +362,43 @@ namespace FEALiTE2D.Elements
         }
 
         /// <summary>
-        /// calculate local stiffness matrix when there is a release at it's end
+        /// calculate local stiffness matrix when there is a release at it's start
+        /// </summary>
+        private DenseMatrix Kl0_1_shear()
+        {
+            double l = this.Length;
+            double l2 = l * l;
+            double l3 = l * l * l;
+            double EAL = this.CrossSection.Material.E * this.CrossSection.A / l;
+            double EIL = this.CrossSection.Material.E * this.CrossSection.Iz / l;
+            double EIL2 = this.CrossSection.Material.E * this.CrossSection.Iz / l2;
+            double EIL3 = this.CrossSection.Material.E * this.CrossSection.Iz / l3;
+            double Phi = 12 * (this.CrossSection.Material.E * this.CrossSection.Iz)
+            / (l2 * this.CrossSection.GAz);
+            double C = 4 + Phi;
+
+            DenseMatrix k = new DenseMatrix(6, 6);
+            
+            k[0, 0] = EAL;
+            k[3, 3] = EAL;
+            k[0, 3] = -EAL;
+            k[3, 0] = -EAL;
+
+            k[1, 1] = 12 * EIL3 / C;
+            k[4, 4] = 12 * EIL3 / C;
+            k[1, 4] = -12 * EIL3 / C;
+            k[4, 1] = -12 * EIL3 / C;
+
+            k[5, 1] = 12 * EIL2 / C;
+            k[1, 5] = 12 * EIL2 / C;
+            k[5, 4] = -12 * EIL2 / C;
+            k[4, 5] = -12 * EIL2 / C;
+
+            k[5, 5] = 12 * EIL / C;
+            return k;
+        }
+        /// <summary>
+        /// calculate local stiffness matrix when there is a release at its end
         /// </summary>
         private DenseMatrix Kl1_0()
         {
@@ -348,6 +432,44 @@ namespace FEALiTE2D.Elements
         }
 
         /// <summary>
+        /// calculate local stiffness matrix when there is a release at its end (Timoshenko)
+        /// </summary>
+        private DenseMatrix Kl1_0_shear()
+        {
+            double l = this.Length;
+            double l2 = l * l;
+            double l3 = l * l * l;
+            double EAL = this.CrossSection.Material.E * this.CrossSection.A / l;
+            double EIL = this.CrossSection.Material.E * this.CrossSection.Iz / l;
+            double EIL2 = this.CrossSection.Material.E * this.CrossSection.Iz / l2;
+            double EIL3 = this.CrossSection.Material.E * this.CrossSection.Iz / l3;
+            double Phi = 12 * (this.CrossSection.Material.E * this.CrossSection.Iz)
+            / (l2 * this.CrossSection.GAz);
+            double C = 4 + Phi;
+
+            DenseMatrix k = new DenseMatrix(6, 6);
+
+            k[0, 0] = EAL;
+            k[3, 3] = EAL;
+            k[0, 3] = -EAL;
+            k[3, 0] = -EAL;
+
+            k[1, 1] = 12 * EIL3 / C;
+            k[4, 4] = 12 * EIL3 / C;
+            k[1, 4] = -12 * EIL3 / C;
+            k[4, 1] = -12 * EIL3 / C;
+
+            k[2, 1] = 12 * EIL2 / C;
+            k[1, 2] = 12 * EIL2 / C;
+            k[2, 4] = -12 * EIL2 / C;
+            k[4, 2] = -12 * EIL2 / C;
+
+            k[2, 2] = 12 * EIL / C;
+            return k;
+        }
+        
+
+        /// <summary>
         /// calculate local stiffness matrix when it's fully released.
         /// </summary>
         private DenseMatrix Kl0_0()
@@ -363,6 +485,23 @@ namespace FEALiTE2D.Elements
             k[3, 0] = -EAL;
             return k;
         }
+
+        private DenseMatrix Kl0_0_shear()
+        {
+            double l = this.Length;
+            double EAL = this.CrossSection.Material.E * this.CrossSection.A / l;
+
+            DenseMatrix k = new DenseMatrix(6, 6);
+
+            k[0, 0] = EAL;
+            k[3, 3] = EAL;
+            k[0, 3] = -EAL;
+            k[3, 0] = -EAL;
+            return k;
+        }
+
+
+
 
         /// <inheritdoc/>
         public DenseMatrix GlobalStiffnessMatrix { get; private set; }
@@ -393,6 +532,8 @@ namespace FEALiTE2D.Elements
             }
 
             double l = this.Length;
+            double l2 = l * l;
+
             switch (this.EndRelease)
             {
                 default:
@@ -400,22 +541,46 @@ namespace FEALiTE2D.Elements
                     break;
                 case Frame2DEndRelease.StartRelease:
                     {
-                        f[1] -= 1.5 * f[2] / l;
-                        f[4] += 1.5 * f[2] / l;
-                        f[5] -= 0.5 * f[2];
+                        // Static condensation of θ₁: f[i] -= K[i,2] / K[2,2] · f[2]
+                        if (this.BeamTheory == BeamTheory.Timoshenko)
+                        {
+                            double Phi = 12 * this.CrossSection.Material.E * this.CrossSection.Iz / (l2 * this.CrossSection.GAz);
+                            f[1] -= 6 / (4 + Phi) * f[2] / l;          // v₁: K[1,2]/K[2,2]
+                            f[4] += 6 / (4 + Phi) * f[2] / l;          // v₂: -K[4,2]/K[2,2]
+                            f[5] -= (2 - Phi) / (4 + Phi) * f[2];      // θ₂: K[5,2]/K[2,2]
+                        }
+                        else
+                        {
+                            f[1] -= 1.5 * f[2] / l;   // v₁: K[1,2]/K[2,2] = 3/(2L)
+                            f[4] += 1.5 * f[2] / l;   // v₂: -K[4,2]/K[2,2] = 3/(2L)
+                            f[5] -= 0.5 * f[2];         // θ₂: K[5,2]/K[2,2] = 1/2
+                        }
                         f[2] = 0;
                         break;
                     }
                 case Frame2DEndRelease.EndRelease:
                     {
-                        f[1] -= 1.5 * f[5] / l;
-                        f[2] -= 0.5 * f[5];
-                        f[4] += 1.5 * f[5] / l;
+                        // Static condensation of θ₂: f[i] -= K[i,5] / K[5,5] · f[5]
+                        if (this.BeamTheory == BeamTheory.Timoshenko)
+                        {
+                            double Phi = 12 * this.CrossSection.Material.E * this.CrossSection.Iz / (l2 * this.CrossSection.GAz);
+                            f[1] -= 6 / (4 + Phi) * f[5] / l;          // v₁: K[1,5]/K[5,5]
+                            f[4] += 6 / (4 + Phi) * f[5] / l;          // v₂: -K[4,5]/K[5,5]
+                            f[2] -= (2 - Phi) / (4 + Phi) * f[5];      // θ₁: K[2,5]/K[5,5]
+                        }
+                        else
+                        {
+                            f[1] -= 1.5 * f[5] / l;   // v₁: K[1,5]/K[5,5] = 3/(2L)
+                            f[4] += 1.5 * f[5] / l;   // v₂: -K[4,5]/K[5,5] = 3/(2L)
+                            f[2] -= 0.5 * f[5];         // θ₁: K[2,5]/K[5,5] = 1/2
+                        }
                         f[5] = 0;
                         break;
                     }
                 case Frame2DEndRelease.FullRelease:
                     {
+                        // Condense θ₁ and θ₂: f_red = f_a - K_ab · K_bb⁻¹ · f_b
+                        // Result is identical for EB and Timoshenko: Δf_v1 = -(M1+M2)/L, Δf_v2 = +(M1+M2)/L
                         f[1] -= (f[2] + f[5]) / l;
                         f[4] += (f[2] + f[5]) / l;
                         f[2] = 0;
@@ -427,14 +592,27 @@ namespace FEALiTE2D.Elements
         }
 
         /// <inheritdoc/>
-        public void Initialize()
+        public void Initialize(Structure.Structure.BeamTheory options)
         {
+            if (options == BeamTheory.Timoshenko)
+            {
+                if (this.CrossSection.Material.G == 0)
+                    throw new System.ArgumentException($"Timoshenko beam theory requires a non-zero shear modulus G. Element '{this.Label}' has G = 0.");
+                if (this.CrossSection.Az == 0)
+                    throw new System.ArgumentException($"Timoshenko beam theory requires a non-zero shear area Az. Element '{this.Label}' has Az = 0.");
+            }
+            this.BeamTheory = options;
             this.LocalCoordinateSystemMatrix = GetLocalCoordinateSystemMatrix();
             this.TransformationMatrix = GetTransformationMatrix();
-            this.LocalStiffnessMatrix = GetLocalStiffnessMatrix();
+            this.LocalStiffnessMatrix = GetLocalStiffnessMatrix(options);
             this.GlobalStiffnessMatrix = GetGlobalStiffnessMatrix();
         }
 
+        /// <inheritdoc/>
+        public void Initialize()
+        {
+            Initialize(Structure.Structure.DefaultOptions.BeamTheory);
+        }
     }
 
 

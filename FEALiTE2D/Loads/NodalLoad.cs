@@ -93,21 +93,17 @@ namespace FEALiTE2D.Loads
         /// <inheritdoc/>
         public static bool operator ==(NodalLoad nl1, NodalLoad nl2)
         {
+            if (ReferenceEquals(nl1, nl2))
+                return true;
             if (nl1 is null)
-            {
                 return false;
-            }
             return nl1.Equals(nl2);
         }
 
         /// <inheritdoc/>
         public static bool operator !=(NodalLoad nl1, NodalLoad nl2)
         {
-            if (ReferenceEquals(nl1, null))
-            {
-                return false;
-            }
-            return !nl1.Equals(nl2);
+            return !(nl1 == nl2);
         }
 
         /// <inheritdoc/>
